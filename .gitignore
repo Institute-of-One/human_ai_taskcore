@@ -1,0 +1,24 @@
+# python
+__pycache__/
+*.pyc
+*.egg-info/
+build/
+dist/
+.venv/
+.pytest_cache/
+
+# review evidence — NEVER commit (IORN-002 protocol)
+review_evidence/
+
+# paper build artifacts and submission-only files
+paper/*.tmp
+paper/.~lock*
+paper/susy_*.txt
+paper/response_to_reviewers_*
+paper/cover_letter_*
+paper/rev_*.jpg
+
+# OS noise
+.DS_Store
+Thumbs.db
+desktop.ini

@@ -1,0 +1,23 @@
+[build-system]
+requires = ["setuptools>=68"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "human-ai-taskcore"
+version = "0.1.0"
+description = "IORN-009: physics-to-perception framework for task-based medical imaging (ptx core)"
+readme = "README.md"
+requires-python = ">=3.11"
+license = { text = "MIT" }
+authors = [{ name = "Shuji Yamamoto", email = "yamamoto@lisit.jp" }]
+dependencies = ["numpy>=1.26", "scipy>=1.11"]
+
+[project.optional-dependencies]
+dev = ["pytest>=8"]
+
+[tool.setuptools]
+packages = ["ptx"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+addopts = "-q"
