@@ -1,8 +1,14 @@
 """Task-weighted perceptual detectability integrals (protocol section 5.2).
 
-d'^2_human = eta_cog * Integral |W(f)|^2 |H_eff(f)|^2 CSF^2(f) / N_eff(f) df
+d'^2_human = eta_cog * Integral |W(f)|^2 |H_eff(f)|^2 V^2(f) / N_eff(f) df
 
 plus the derived indices f_sat, R_perceptual and G_useful.
+
+The visual weight ``V`` is unity in the v0.4 primary form, where visual
+sensitivity lives in N_eff as Barten's internal noise; passing the normalised
+CSF instead recovers the superseded v0.3 weight form, kept as the ideal limit
+of the appendix. Both are evaluated in ``ptx.phase1``.
+
 All integrals are deterministic trapezoids on caller-supplied grids.
 """
 
@@ -19,23 +25,39 @@ __all__ = [
 ]
 
 
-def contribution_density(f, w_task, h_eff, csf, n_eff, eta_cog=1.0):
-    """Integrand of the d'^2 integral (per-frequency contribution density)."""
+def contribution_density(
+    f, w_task, h_eff, visual_weight, n_eff, eta_cog=1.0, radial=False
+):
+    """Integrand of the d'^2 integral (per-frequency contribution density).
+
+    With ``radial=True`` the isotropic 2-D Jacobian is folded in
+    (``int ... d^2f = int ... 2 pi f df``), which is the form a 2-D imaging
+    task needs; ``f_sat`` is then read off the same 2-D density.
+    """
     f = np.asarray(f, dtype=float)
     w = np.asarray(w_task, dtype=float)
     h = np.asarray(h_eff, dtype=float)
-    s = np.asarray(csf, dtype=float)
+    s = np.asarray(visual_weight, dtype=float)
     n = np.asarray(n_eff, dtype=float)
     if not (f.shape == w.shape == h.shape == s.shape == n.shape):
         raise ValueError("all spectral arrays must share one grid")
     if np.any(n <= 0):
         raise ValueError("effective noise power must be positive")
-    return eta_cog * (np.abs(w) ** 2) * (np.abs(h) ** 2) * (s**2) / n
+    dens = eta_cog * (np.abs(w) ** 2) * (np.abs(h) ** 2) * (s**2) / n
+    if radial:
+        if np.any(f < 0):
+            raise ValueError("radial form needs non-negative frequencies")
+        dens = dens * 2.0 * np.pi * f
+    return dens
 
 
-def dprime_squared(f, w_task, h_eff, csf, n_eff, eta_cog=1.0):
+def dprime_squared(
+    f, w_task, h_eff, visual_weight, n_eff, eta_cog=1.0, radial=False
+):
     """d'^2_human via trapezoidal integration on the grid ``f``."""
-    dens = contribution_density(f, w_task, h_eff, csf, n_eff, eta_cog)
+    dens = contribution_density(
+        f, w_task, h_eff, visual_weight, n_eff, eta_cog, radial
+    )
     return float(np.trapezoid(dens, np.asarray(f, dtype=float)))
 
 
