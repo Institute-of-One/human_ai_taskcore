@@ -1,0 +1,7 @@
+{
+  "schema_version": "1.0",
+  "frozen": "2026-08-23",
+  "note": "Registry for the H2 external validation (protocol section 8). The inclusion criteria in docs/IORN-009A_H2_preregistration_v1.0.md were frozen before the literature search began; this file is empty at that point on purpose. Every study looked at afterwards is recorded here, either in studies or, with the criterion it failed, in screened.",
+  "studies": [],
+  "screened": []
+}
