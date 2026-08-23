@@ -51,7 +51,7 @@
 
 - **M1(完了):** chain.py(GSDF/眼球MTF/Barten CSF+文献照合テスト)+骨格
 - **M2(完了):** phantom_lung.py 本実装+observer 2系統(NPWE/CHO)+d'積分で Phase 1 完走。`ptx/phase1.py` が §7 のグリッド(540条件)を回して `results/phase1.json` を決定論的に生成
-- **M3(今ここ):** 不確実性伝播(η_cog・κ・視距離・拡大率・輝度の区間)+U-HRCTケーススタディ(`ptx/case_uhrct.py`, H3 の (Z,D) マップと Z*)+Phase 2 digitize外部検証(`ptx/external.py`, H2)
+- **M3(今ここ):** 不確実性伝播(`ptx/uncertainty.py`, 完了)+U-HRCTケーススタディ(`ptx/case_uhrct.py`, (M,D) マップと M*、完了)+**Phase 2 digitize外部検証(`ptx/external.py`, H2)が残り**
 - **M4:** 原稿執筆(第一候補 Medical Physics)
 
 ### M2 で確定した定式化(v0.4 裁定・変更禁止)
@@ -61,15 +61,25 @@
 3. **カーネル約分(床項オフで機械精度の不変性)は validation 結果として保存する。** 消してはいけない
 4. **H3 は「f_sat 回復 + 十分拡大率 Z*」**。d′ は漸近飽和し内点最適を持たない(実測)
 
-M3 の判断材料は `paper/NOTES.md` に記録している。**着手前に必ず読むこと。**
+### M3 で確定した扱い
 
-## テスト実行と Phase 1
+5. **f_sat は位置の指標。** κ を上げると d′ は下がるが f_sat は上がる(神経雑音が低周波支配)。f_sat と d′/G_useful は必ず並べて報告する
+6. **H1 の判定は G_useful の減衰量 ΔG の95%帯下限で行う。** G_useful 自体は符号が常に正で情報を持たない
+7. **チェーン比較は等線量=同一投影雑音スケールで行う**(画素分散を揃えない)。マップの軸は画素ズーム Z ではなく解剖学的拡大率 M
+
+未決事項(典拠未確定の区間・公表値の代用)は `paper/NOTES.md` の「M4までに決着させる未決事項」に記録。**着手前に必ず読むこと。**
+
+## テスト実行と結果再生成
 
 ```bash
 pip install -e ".[dev]"                      # 初回
 python -m pytest -q                          # 全テスト
-python -m ptx.phase1 --out results/phase1.json  # Phase 1 再生成
+python -m ptx.phase1 --out results/phase1.json          # Phase 1(540条件)
+python -m ptx.uncertainty --out results/uncertainty.json # §5.4 区間伝播
+python -m ptx.case_uhrct --out results/case_uhrct.json   # H3 (M,D) マップ
 ```
+
+results/*.json は3本すべて git 追跡対象。再実行してハッシュが変わったら決定論が壊れている。
 
 Windows ローカル環境では `pytest` が PATH に載らないため `python -m pytest` を使う。
 

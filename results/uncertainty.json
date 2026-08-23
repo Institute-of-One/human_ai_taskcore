@@ -1,0 +1,1793 @@
+{
+  "metadata": {
+    "config": {
+      "contrasts_hu": [
+        250.0,
+        880.0
+      ],
+      "diameters_mm": [
+        4.0,
+        6.0,
+        8.0
+      ],
+      "doses_relative": [
+        0.25,
+        0.5,
+        1.0,
+        2.0,
+        4.0
+      ],
+      "fraction": 0.95,
+      "intervals": {
+        "distance_mm": [
+          400.0,
+          700.0
+        ],
+        "eta_cog": [
+          0.3,
+          0.7
+        ],
+        "kappa": [
+          0.5,
+          2.0
+        ],
+        "luminance_cdm2": [
+          50.0,
+          200.0
+        ],
+        "zoom": [
+          1.0,
+          2.0
+        ]
+      },
+      "kernels": [
+        "smooth",
+        "standard",
+        "sharp"
+      ],
+      "n_freq": 1024,
+      "n_samples": 256,
+      "pixel_mm_object": 0.390625,
+      "seed": 20260823,
+      "slice_thickness_mm": 1.0
+    },
+    "h1_rule": "a condition saturates when the lower bound of the 95% band on G_useful's decline is positive; G_useful itself cannot change sign, so its sign carries no information",
+    "n_evaluations": 23040,
+    "n_series": 18,
+    "numpy": "2.5.1",
+    "nyquist_lpmm": 1.28,
+    "protocol": "IORN-009A v0.4, section 5.4 (interval propagation)",
+    "ptx_version": "0.1.0",
+    "python": "3.14.3"
+  },
+  "series": [
+    {
+      "contrast_hu": 250.0,
+      "diameter_mm": 4.0,
+      "doses_relative": [
+        0.25,
+        0.5,
+        1.0,
+        2.0,
+        4.0
+      ],
+      "dprime_human": [
+        {
+          "coverage": 0.95,
+          "lower": 3.3859508938,
+          "median": 4.969627821,
+          "upper": 7.12795611
+        },
+        {
+          "coverage": 0.95,
+          "lower": 3.8172208896,
+          "median": 5.8089804473,
+          "upper": 9.0059403883
+        },
+        {
+          "coverage": 0.95,
+          "lower": 4.1409283398,
+          "median": 6.5890737105,
+          "upper": 11.0064050041
+        },
+        {
+          "coverage": 0.95,
+          "lower": 4.318234375,
+          "median": 7.0578108369,
+          "upper": 12.9576837045
+        },
+        {
+          "coverage": 0.95,
+          "lower": 4.4026213394,
+          "median": 7.4447175724,
+          "upper": 14.768851206
+        }
+      ],
+      "f_sat_lpmm": {
+        "coverage": 0.95,
+        "lower": 0.2450612803,
+        "median": 0.2747417471,
+        "upper": 0.3618987133
+      },
+      "g_useful": [
+        {
+          "coverage": 0.95,
+          "lower": 1.52632015,
+          "median": 3.4657399205,
+          "upper": 7.5772255832
+        },
+        {
+          "coverage": 0.95,
+          "lower": 0.5336019217,
+          "median": 1.5002302062,
+          "upper": 4.1642096398
+        },
+        {
+          "coverage": 0.95,
+          "lower": 0.1660048838,
+          "median": 0.5546617291,
+          "upper": 2.1132880862
+        },
+        {
+          "coverage": 0.95,
+          "lower": 0.0466492217,
+          "median": 0.1792494507,
+          "upper": 0.9384283718
+        }
+      ],
+      "g_useful_decline": {
+        "coverage": 0.95,
+        "lower": 1.4783717962,
+        "median": 3.2834138932,
+        "upper": 6.7005292337
+      },
+      "kernel": "smooth",
+      "neural_noise_share": {
+        "coverage": 0.95,
+        "lower": 0.8174353285,
+        "median": 0.9656016376,
+        "upper": 0.98939838
+      },
+      "r_perceptual": {
+        "coverage": 0.95,
+        "lower": 0.0845735146,
+        "median": 0.143011602,
+        "upper": 0.2837068095
+      },
+      "saturating": true
+    },
+    {
+      "contrast_hu": 250.0,
+      "diameter_mm": 4.0,
+      "doses_relative": [
+        0.25,
+        0.5,
+        1.0,
+        2.0,
+        4.0
+      ],
+      "dprime_human": [
+        {
+          "coverage": 0.95,
+          "lower": 3.6362150433,
+          "median": 5.2204811324,
+          "upper": 7.2519402235
+        },
+        {
+          "coverage": 0.95,
+          "lower": 4.1985011475,
+          "median": 6.2545811484,
+          "upper": 9.2588889483
+        },
+        {
+          "coverage": 0.95,
+          "lower": 4.6994643086,
+          "median": 7.2183513105,
+          "upper": 11.5008113284
+        },
+        {
+          "coverage": 0.95,
+          "lower": 4.9915924714,
+          "median": 8.0782196421,
+          "upper": 13.8471690953
+        },
+        {
+          "coverage": 0.95,
+          "lower": 5.1720409214,
+          "median": 8.6961155212,
+          "upper": 16.1320377498
+        }
+      ],
+      "f_sat_lpmm": {
+        "coverage": 0.95,
+        "lower": 0.4043601277,
+        "median": 0.4399302966,
+        "upper": 0.4662345236
+      },
+      "g_useful": [
+        {
+          "coverage": 0.95,
+          "lower": 2.1047847631,
+          "median": 4.1592258732,
+          "upper": 8.0389421586
+        },
+        {
+          "coverage": 0.95,
+          "lower": 0.8619971957,
+          "median": 1.997813451,
+          "upper": 4.5680134736
+        },
+        {
+          "coverage": 0.95,
+          "lower": 0.3044937292,
+          "median": 0.8637932421,
+          "upper": 2.4606502989
+        },
+        {
+          "coverage": 0.95,
+          "lower": 0.097763918,
+          "median": 0.3350386507,
+          "upper": 1.2250969848
+        }
+      ],
+      "g_useful_decline": {
+        "coverage": 0.95,
+        "lower": 2.0115628079,
+        "median": 3.8606770013,
+        "upper": 6.9115747544
+      },
+      "kernel": "standard",
+      "neural_noise_share": {
+        "coverage": 0.95,
+        "lower": 0.5179600607,
+        "median": 0.8758704852,
+        "upper": 0.9625011708
+      },
+      "r_perceptual": {
+        "coverage": 0.95,
+        "lower": 0.0993539178,
+        "median": 0.1670507174,
+        "upper": 0.3098933625
+      },
+      "saturating": true
+    },
+    {
+      "contrast_hu": 250.0,
+      "diameter_mm": 4.0,
+      "doses_relative": [
+        0.25,
+        0.5,
+        1.0,
+        2.0,
+        4.0
+      ],
+      "dprime_human": [
+        {
+          "coverage": 0.95,
+          "lower": 3.7097749434,
+          "median": 5.2785606338,
+          "upper": 7.2833825967
+        },
+        {
+          "coverage": 0.95,
+          "lower": 4.3213030357,
+          "median": 6.3695484979,
+          "upper": 9.325702276
+        },
+        {
+          "coverage": 0.95,
+          "lower": 4.9090658603,
+          "median": 7.4392542772,
+          "upper": 11.6365284948
+        },
+        {
+          "coverage": 0.95,
+          "lower": 5.2896864568,
+          "median": 8.4510240227,
+          "upper": 14.1006555342
+        },
+        {
+          "coverage": 0.95,
+          "lower": 5.5397739425,
+          "median": 9.2304709522,
+          "upper": 16.5809511631
+        }
+      ],
+      "f_sat_lpmm": {
+        "coverage": 0.95,
+        "lower": 0.4320448597,
+        "median": 0.4816474194,
+        "upper": 0.6456085903
+      },
+      "g_useful": [
+        {
+          "coverage": 0.95,
+          "lower": 2.3427186415,
+          "median": 4.4015061239,
+          "upper": 8.1754876793
+        },
+        {
+          "coverage": 0.95,
+          "lower": 1.026474253,
+          "median": 2.1670317331,
+          "upper": 4.680427458
+        },
+        {
+          "coverage": 0.95,
+          "lower": 0.3990647903,
+          "median": 0.9977480154,
+          "upper": 2.5591693076
+        },
+        {
+          "coverage": 0.95,
+          "lower": 0.1368665623,
+          "median": 0.4330997768,
+          "upper": 1.3245519645
+        }
+      ],
+      "g_useful_decline": {
+        "coverage": 0.95,
+        "lower": 2.2132934658,
+        "median": 3.9930396976,
+        "upper": 6.9470213382
+      },
+      "kernel": "sharp",
+      "neural_noise_share": {
+        "coverage": 0.95,
+        "lower": 0.2813091218,
+        "median": 0.73383215,
+        "upper": 0.918024001
+      },
+      "r_perceptual": {
+        "coverage": 0.95,
+        "lower": 0.1064179989,
+        "median": 0.1773155832,
+        "upper": 0.3185169034
+      },
+      "saturating": true
+    },
+    {
+      "contrast_hu": 880.0,
+      "diameter_mm": 4.0,
+      "doses_relative": [
+        0.25,
+        0.5,
+        1.0,
+        2.0,
+        4.0
+      ],
+      "dprime_human": [
+        {
+          "coverage": 0.95,
+          "lower": 11.9185471462,
+          "median": 17.49308993,
+          "upper": 25.0904055071
+        },
+        {
+          "coverage": 0.95,
+          "lower": 13.4366175314,
+          "median": 20.4476111745,
+          "upper": 31.7009101668
+        },
+        {
+          "coverage": 0.95,
+          "lower": 14.576067756,
+          "median": 23.193539461,
+          "upper": 38.7425456145
+        },
+        {
+          "coverage": 0.95,
+          "lower": 15.2001850001,
+          "median": 24.8434941458,
+          "upper": 45.6110466398
+        },
+        {
+          "coverage": 0.95,
+          "lower": 15.4972271146,
+          "median": 26.2054058547,
+          "upper": 51.986356245
+        }
+      ],
+      "f_sat_lpmm": {
+        "coverage": 0.95,
+        "lower": 0.2450612803,
+        "median": 0.2747417471,
+        "upper": 0.3618987133
+      },
+      "g_useful": [
+        {
+          "coverage": 0.95,
+          "lower": 5.372646928,
+          "median": 12.1994045202,
+          "upper": 26.671834053
+        },
+        {
+          "coverage": 0.95,
+          "lower": 1.8782787644,
+          "median": 5.280810326,
+          "upper": 14.6580179319
+        },
+        {
+          "coverage": 0.95,
+          "lower": 0.584337191,
+          "median": 1.9524092865,
+          "upper": 7.4387740634
+        },
+        {
+          "coverage": 0.95,
+          "lower": 0.1642052603,
+          "median": 0.6309580666,
+          "upper": 3.3032678689
+        }
+      ],
+      "g_useful_decline": {
+        "coverage": 0.95,
+        "lower": 5.2038687226,
+        "median": 11.5576169041,
+        "upper": 23.5858629027
+      },
+      "kernel": "smooth",
+      "neural_noise_share": {
+        "coverage": 0.95,
+        "lower": 0.8174353285,
+        "median": 0.9656016376,
+        "upper": 0.98939838
+      },
+      "r_perceptual": {
+        "coverage": 0.95,
+        "lower": 0.0845735146,
+        "median": 0.143011602,
+        "upper": 0.2837068095
+      },
+      "saturating": true
+    },
+    {
+      "contrast_hu": 880.0,
+      "diameter_mm": 4.0,
+      "doses_relative": [
+        0.25,
+        0.5,
+        1.0,
+        2.0,
+        4.0
+      ],
+      "dprime_human": [
+        {
+          "coverage": 0.95,
+          "lower": 12.7994769525,
+          "median": 18.376093586,
+          "upper": 25.5268295869
+        },
+        {
+          "coverage": 0.95,
+          "lower": 14.7787240392,
+          "median": 22.0161256424,
+          "upper": 32.5912890981
+        },
+        {
+          "coverage": 0.95,
+          "lower": 16.5421143662,
+          "median": 25.408596613,
+          "upper": 40.482855876
+        },
+        {
+          "coverage": 0.95,
+          "lower": 17.5704054994,
+          "median": 28.4353331403,
+          "upper": 48.7420352153
+        },
+        {
+          "coverage": 0.95,
+          "lower": 18.2055840434,
+          "median": 30.6103266346,
+          "upper": 56.7847728792
+        }
+      ],
+      "f_sat_lpmm": {
+        "coverage": 0.95,
+        "lower": 0.4043601277,
+        "median": 0.4399302966,
+        "upper": 0.4662345236
+      },
+      "g_useful": [
+        {
+          "coverage": 0.95,
+          "lower": 7.408842366,
+          "median": 14.6404750738,
+          "upper": 28.2970763981
+        },
+        {
+          "coverage": 0.95,
+          "lower": 3.0342301289,
+          "median": 7.0323033476,
+          "upper": 16.0794074271
+        },
+        {
+          "coverage": 0.95,
+          "lower": 1.0718179267,
+          "median": 3.0405522124,
+          "upper": 8.6614890523
+        },
+        {
+          "coverage": 0.95,
+          "lower": 0.3441289913,
+          "median": 1.1793360506,
+          "upper": 4.3123413864
+        }
+      ],
+      "g_useful_decline": {
+        "coverage": 0.95,
+        "lower": 7.0807010837,
+        "median": 13.5895830446,
+        "upper": 24.3287431354
+      },
+      "kernel": "standard",
+      "neural_noise_share": {
+        "coverage": 0.95,
+        "lower": 0.5179600607,
+        "median": 0.8758704852,
+        "upper": 0.9625011708
+      },
+      "r_perceptual": {
+        "coverage": 0.95,
+        "lower": 0.0993539178,
+        "median": 0.1670507174,
+        "upper": 0.3098933625
+      },
+      "saturating": true
+    },
+    {
+      "contrast_hu": 880.0,
+      "diameter_mm": 4.0,
+      "doses_relative": [
+        0.25,
+        0.5,
+        1.0,
+        2.0,
+        4.0
+      ],
+      "dprime_human": [
+        {
+          "coverage": 0.95,
+          "lower": 13.0584078009,
+          "median": 18.5805334308,
+          "upper": 25.6375067403
+        },
+        {
+          "coverage": 0.95,
+          "lower": 15.2109866856,
+          "median": 22.4208107126,
+          "upper": 32.8264720115
+        },
+        {
+          "coverage": 0.95,
+          "lower": 17.2799118283,
+          "median": 26.1861750557,
+          "upper": 40.9605803018
+        },
+        {
+          "coverage": 0.95,
+          "lower": 18.6196963279,
+          "median": 29.7476045599,
+          "upper": 49.6343074804
+        },
+        {
+          "coverage": 0.95,
+          "lower": 19.5000042776,
+          "median": 32.4912577517,
+          "upper": 58.3649480939
+        }
+      ],
+      "f_sat_lpmm": {
+        "coverage": 0.95,
+        "lower": 0.4320448597,
+        "median": 0.4816474194,
+        "upper": 0.6456085903
+      },
+      "g_useful": [
+        {
+          "coverage": 0.95,
+          "lower": 8.2463696181,
+          "median": 15.4933015562,
+          "upper": 28.7777166312
+        },
+        {
+          "coverage": 0.95,
+          "lower": 3.6131893705,
+          "median": 7.6279517006,
+          "upper": 16.475104652
+        },
+        {
+          "coverage": 0.95,
+          "lower": 1.404708062,
+          "median": 3.5120730141,
+          "upper": 9.0082759628
+        },
+        {
+          "coverage": 0.95,
+          "lower": 0.4817702991,
+          "median": 1.5245112145,
+          "upper": 4.6624229152
+        }
+      ],
+      "g_useful_decline": {
+        "coverage": 0.95,
+        "lower": 7.7907929995,
+        "median": 14.0554997356,
+        "upper": 24.4535151105
+      },
+      "kernel": "sharp",
+      "neural_noise_share": {
+        "coverage": 0.95,
+        "lower": 0.2813091218,
+        "median": 0.73383215,
+        "upper": 0.918024001
+      },
+      "r_perceptual": {
+        "coverage": 0.95,
+        "lower": 0.1064179989,
+        "median": 0.1773155832,
+        "upper": 0.3185169034
+      },
+      "saturating": true
+    },
+    {
+      "contrast_hu": 250.0,
+      "diameter_mm": 6.0,
+      "doses_relative": [
+        0.25,
+        0.5,
+        1.0,
+        2.0,
+        4.0
+      ],
+      "dprime_human": [
+        {
+          "coverage": 0.95,
+          "lower": 4.6690005606,
+          "median": 7.133385708,
+          "upper": 11.0655514987
+        },
+        {
+          "coverage": 0.95,
+          "lower": 5.1105061423,
+          "median": 8.1399077032,
+          "upper": 13.4202356198
+        },
+        {
+          "coverage": 0.95,
+          "lower": 5.4265802407,
+          "median": 8.8246769874,
+          "upper": 15.7267166592
+        },
+        {
+          "coverage": 0.95,
+          "lower": 5.6314280178,
+          "median": 9.3145340937,
+          "upper": 17.9499869902
+        },
+        {
+          "coverage": 0.95,
+          "lower": 5.7452839433,
+          "median": 9.6420124661,
+          "upper": 19.8828683928
+        }
+      ],
+      "f_sat_lpmm": {
+        "coverage": 0.95,
+        "lower": 0.2873966076,
+        "median": 0.3029147894,
+        "upper": 0.312715419
+      },
+      "g_useful": [
+        {
+          "coverage": 0.95,
+          "lower": 1.5404492908,
+          "median": 3.7766912915,
+          "upper": 9.7786133627
+        },
+        {
+          "coverage": 0.95,
+          "lower": 0.5221803685,
+          "median": 1.5290578519,
+          "upper": 5.0097817136
+        },
+        {
+          "coverage": 0.95,
+          "lower": 0.1589879906,
+          "median": 0.545820932,
+          "upper": 2.3030989775
+        },
+        {
+          "coverage": 0.95,
+          "lower": 0.0445954953,
+          "median": 0.1756114696,
+          "upper": 0.9698518971
+        }
+      ],
+      "g_useful_decline": {
+        "coverage": 0.95,
+        "lower": 1.4941861093,
+        "median": 3.5979853812,
+        "upper": 8.8151485335
+      },
+      "kernel": "smooth",
+      "neural_noise_share": {
+        "coverage": 0.95,
+        "lower": 0.8174353285,
+        "median": 0.9656016376,
+        "upper": 0.98939838
+      },
+      "r_perceptual": {
+        "coverage": 0.95,
+        "lower": 0.0594910855,
+        "median": 0.0998408075,
+        "upper": 0.2058825005
+      },
+      "saturating": true
+    },
+    {
+      "contrast_hu": 250.0,
+      "diameter_mm": 6.0,
+      "doses_relative": [
+        0.25,
+        0.5,
+        1.0,
+        2.0,
+        4.0
+      ],
+      "dprime_human": [
+        {
+          "coverage": 0.95,
+          "lower": 4.9316887281,
+          "median": 7.4340928236,
+          "upper": 11.2318602555
+        },
+        {
+          "coverage": 0.95,
+          "lower": 5.5279291525,
+          "median": 8.54052933,
+          "upper": 13.740425239
+        },
+        {
+          "coverage": 0.95,
+          "lower": 6.0544464166,
+          "median": 9.6148368936,
+          "upper": 16.3058116778
+        },
+        {
+          "coverage": 0.95,
+          "lower": 6.411747047,
+          "median": 10.3948027594,
+          "upper": 18.8562659847
+        },
+        {
+          "coverage": 0.95,
+          "lower": 6.5884704356,
+          "median": 11.0225451382,
+          "upper": 21.341524038
+        }
+      ],
+      "f_sat_lpmm": {
+        "coverage": 0.95,
+        "lower": 0.3313004237,
+        "median": 0.4435468749,
+        "upper": 0.472541404
+      },
+      "g_useful": [
+        {
+          "coverage": 0.95,
+          "lower": 2.1447854838,
+          "median": 4.4436533226,
+          "upper": 10.3019320682
+        },
+        {
+          "coverage": 0.95,
+          "lower": 0.8798075232,
+          "median": 2.0574926527,
+          "upper": 5.4271106675
+        },
+        {
+          "coverage": 0.95,
+          "lower": 0.3230677769,
+          "median": 0.8861787007,
+          "upper": 2.6946142771
+        },
+        {
+          "coverage": 0.95,
+          "lower": 0.1048768446,
+          "median": 0.3565369216,
+          "upper": 1.2573690697
+        }
+      ],
+      "g_useful_decline": {
+        "coverage": 0.95,
+        "lower": 2.0421783807,
+        "median": 4.1359341292,
+        "upper": 9.0407834117
+      },
+      "kernel": "standard",
+      "neural_noise_share": {
+        "coverage": 0.95,
+        "lower": 0.5179600607,
+        "median": 0.8758704852,
+        "upper": 0.9625011708
+      },
+      "r_perceptual": {
+        "coverage": 0.95,
+        "lower": 0.0682220865,
+        "median": 0.1141359038,
+        "upper": 0.2209865421
+      },
+      "saturating": true
+    },
+    {
+      "contrast_hu": 250.0,
+      "diameter_mm": 6.0,
+      "doses_relative": [
+        0.25,
+        0.5,
+        1.0,
+        2.0,
+        4.0
+      ],
+      "dprime_human": [
+        {
+          "coverage": 0.95,
+          "lower": 5.0170504786,
+          "median": 7.5254527243,
+          "upper": 11.2763422683
+        },
+        {
+          "coverage": 0.95,
+          "lower": 5.6609881509,
+          "median": 8.6548028087,
+          "upper": 13.8279156927
+        },
+        {
+          "coverage": 0.95,
+          "lower": 6.2828881924,
+          "median": 9.8480118715,
+          "upper": 16.4693971058
+        },
+        {
+          "coverage": 0.95,
+          "lower": 6.7490342616,
+          "median": 10.8465145119,
+          "upper": 19.1188842327
+        },
+        {
+          "coverage": 0.95,
+          "lower": 7.0118527714,
+          "median": 11.7077136945,
+          "upper": 21.7801733393
+        }
+      ],
+      "f_sat_lpmm": {
+        "coverage": 0.95,
+        "lower": 0.4201652335,
+        "median": 0.4853003558,
+        "upper": 0.6167804281
+      },
+      "g_useful": [
+        {
+          "coverage": 0.95,
+          "lower": 2.3978806475,
+          "median": 4.691568795,
+          "upper": 10.4422092956
+        },
+        {
+          "coverage": 0.95,
+          "lower": 1.0739244907,
+          "median": 2.2245466667,
+          "upper": 5.544845433
+        },
+        {
+          "coverage": 0.95,
+          "lower": 0.4288370521,
+          "median": 1.0461549807,
+          "upper": 2.8134636921
+        },
+        {
+          "coverage": 0.95,
+          "lower": 0.1509666783,
+          "median": 0.4757019846,
+          "upper": 1.3597806405
+        }
+      ],
+      "g_useful_decline": {
+        "coverage": 0.95,
+        "lower": 2.2522523955,
+        "median": 4.3065354689,
+        "upper": 9.0869057041
+      },
+      "kernel": "sharp",
+      "neural_noise_share": {
+        "coverage": 0.95,
+        "lower": 0.2813091218,
+        "median": 0.73383215,
+        "upper": 0.918024001
+      },
+      "r_perceptual": {
+        "coverage": 0.95,
+        "lower": 0.0726061126,
+        "median": 0.1212306656,
+        "upper": 0.2255286541
+      },
+      "saturating": true
+    },
+    {
+      "contrast_hu": 880.0,
+      "diameter_mm": 6.0,
+      "doses_relative": [
+        0.25,
+        0.5,
+        1.0,
+        2.0,
+        4.0
+      ],
+      "dprime_human": [
+        {
+          "coverage": 0.95,
+          "lower": 16.4348819732,
+          "median": 25.1095176923,
+          "upper": 38.9507412754
+        },
+        {
+          "coverage": 0.95,
+          "lower": 17.9889816208,
+          "median": 28.6524751153,
+          "upper": 47.2392293819
+        },
+        {
+          "coverage": 0.95,
+          "lower": 19.1015624471,
+          "median": 31.0628629957,
+          "upper": 55.3580426404
+        },
+        {
+          "coverage": 0.95,
+          "lower": 19.8226266227,
+          "median": 32.78716001,
+          "upper": 63.1839542056
+        },
+        {
+          "coverage": 0.95,
+          "lower": 20.2233994803,
+          "median": 33.9398838805,
+          "upper": 69.9876967428
+        }
+      ],
+      "f_sat_lpmm": {
+        "coverage": 0.95,
+        "lower": 0.2873966076,
+        "median": 0.3029147894,
+        "upper": 0.312715419
+      },
+      "g_useful": [
+        {
+          "coverage": 0.95,
+          "lower": 5.4223815037,
+          "median": 13.2939533463,
+          "upper": 34.4207190368
+        },
+        {
+          "coverage": 0.95,
+          "lower": 1.838074897,
+          "median": 5.3822836385,
+          "upper": 17.634431632
+        },
+        {
+          "coverage": 0.95,
+          "lower": 0.5596377269,
+          "median": 1.9212896805,
+          "upper": 8.1069084007
+        },
+        {
+          "coverage": 0.95,
+          "lower": 0.1569761436,
+          "median": 0.618152373,
+          "upper": 3.4138786777
+        }
+      ],
+      "g_useful_decline": {
+        "coverage": 0.95,
+        "lower": 5.2595351046,
+        "median": 12.6649085417,
+        "upper": 31.0293228381
+      },
+      "kernel": "smooth",
+      "neural_noise_share": {
+        "coverage": 0.95,
+        "lower": 0.8174353285,
+        "median": 0.9656016376,
+        "upper": 0.98939838
+      },
+      "r_perceptual": {
+        "coverage": 0.95,
+        "lower": 0.0594910855,
+        "median": 0.0998408075,
+        "upper": 0.2058825005
+      },
+      "saturating": true
+    },
+    {
+      "contrast_hu": 880.0,
+      "diameter_mm": 6.0,
+      "doses_relative": [
+        0.25,
+        0.5,
+        1.0,
+        2.0,
+        4.0
+      ],
+      "dprime_human": [
+        {
+          "coverage": 0.95,
+          "lower": 17.359544323,
+          "median": 26.1680067389,
+          "upper": 39.5361480994
+        },
+        {
+          "coverage": 0.95,
+          "lower": 19.4583106169,
+          "median": 30.0626632415,
+          "upper": 48.3662968412
+        },
+        {
+          "coverage": 0.95,
+          "lower": 21.3116513863,
+          "median": 33.8442258655,
+          "upper": 57.396457106
+        },
+        {
+          "coverage": 0.95,
+          "lower": 22.5693496056,
+          "median": 36.589705713,
+          "upper": 66.3740562663
+        },
+        {
+          "coverage": 0.95,
+          "lower": 23.1914159333,
+          "median": 38.7993588865,
+          "upper": 75.1221646138
+        }
+      ],
+      "f_sat_lpmm": {
+        "coverage": 0.95,
+        "lower": 0.3313004237,
+        "median": 0.4435468749,
+        "upper": 0.472541404
+      },
+      "g_useful": [
+        {
+          "coverage": 0.95,
+          "lower": 7.549644903,
+          "median": 15.6416596954,
+          "upper": 36.2628008799
+        },
+        {
+          "coverage": 0.95,
+          "lower": 3.0969224815,
+          "median": 7.2423741373,
+          "upper": 19.1034295497
+        },
+        {
+          "coverage": 0.95,
+          "lower": 1.1371985746,
+          "median": 3.1193490264,
+          "upper": 9.4850422553
+        },
+        {
+          "coverage": 0.95,
+          "lower": 0.3691664931,
+          "median": 1.255009964,
+          "upper": 4.4259391253
+        }
+      ],
+      "g_useful_decline": {
+        "coverage": 0.95,
+        "lower": 7.1884679001,
+        "median": 14.5584881349,
+        "upper": 31.8235576093
+      },
+      "kernel": "standard",
+      "neural_noise_share": {
+        "coverage": 0.95,
+        "lower": 0.5179600607,
+        "median": 0.8758704852,
+        "upper": 0.9625011708
+      },
+      "r_perceptual": {
+        "coverage": 0.95,
+        "lower": 0.0682220865,
+        "median": 0.1141359038,
+        "upper": 0.2209865421
+      },
+      "saturating": true
+    },
+    {
+      "contrast_hu": 880.0,
+      "diameter_mm": 6.0,
+      "doses_relative": [
+        0.25,
+        0.5,
+        1.0,
+        2.0,
+        4.0
+      ],
+      "dprime_human": [
+        {
+          "coverage": 0.95,
+          "lower": 17.6600176847,
+          "median": 26.4895935895,
+          "upper": 39.6927247843
+        },
+        {
+          "coverage": 0.95,
+          "lower": 19.9266782911,
+          "median": 30.4649058867,
+          "upper": 48.6742632384
+        },
+        {
+          "coverage": 0.95,
+          "lower": 22.1157664371,
+          "median": 34.6650017876,
+          "upper": 57.9722778122
+        },
+        {
+          "coverage": 0.95,
+          "lower": 23.7566006009,
+          "median": 38.1797310818,
+          "upper": 67.298472499
+        },
+        {
+          "coverage": 0.95,
+          "lower": 24.6817217555,
+          "median": 41.2111522047,
+          "upper": 76.6662101544
+        }
+      ],
+      "f_sat_lpmm": {
+        "coverage": 0.95,
+        "lower": 0.4201652335,
+        "median": 0.4853003558,
+        "upper": 0.6167804281
+      },
+      "g_useful": [
+        {
+          "coverage": 0.95,
+          "lower": 8.4405398793,
+          "median": 16.5143221585,
+          "upper": 36.7565767204
+        },
+        {
+          "coverage": 0.95,
+          "lower": 3.7802142074,
+          "median": 7.830404267,
+          "upper": 19.5178559242
+        },
+        {
+          "coverage": 0.95,
+          "lower": 1.5095064235,
+          "median": 3.682465532,
+          "upper": 9.9033921963
+        },
+        {
+          "coverage": 0.95,
+          "lower": 0.5314027077,
+          "median": 1.674470986,
+          "upper": 4.7864278545
+        }
+      ],
+      "g_useful_decline": {
+        "coverage": 0.95,
+        "lower": 7.9279284321,
+        "median": 15.1590048506,
+        "upper": 31.9859080785
+      },
+      "kernel": "sharp",
+      "neural_noise_share": {
+        "coverage": 0.95,
+        "lower": 0.2813091218,
+        "median": 0.73383215,
+        "upper": 0.918024001
+      },
+      "r_perceptual": {
+        "coverage": 0.95,
+        "lower": 0.0726061126,
+        "median": 0.1212306656,
+        "upper": 0.2255286541
+      },
+      "saturating": true
+    },
+    {
+      "contrast_hu": 250.0,
+      "diameter_mm": 8.0,
+      "doses_relative": [
+        0.25,
+        0.5,
+        1.0,
+        2.0,
+        4.0
+      ],
+      "dprime_human": [
+        {
+          "coverage": 0.95,
+          "lower": 5.5998009704,
+          "median": 8.8164244849,
+          "upper": 14.3535116184
+        },
+        {
+          "coverage": 0.95,
+          "lower": 6.0500217343,
+          "median": 9.7375826873,
+          "upper": 16.8565107403
+        },
+        {
+          "coverage": 0.95,
+          "lower": 6.381350987,
+          "median": 10.4388519353,
+          "upper": 19.315156802
+        },
+        {
+          "coverage": 0.95,
+          "lower": 6.6028031846,
+          "median": 10.9887426967,
+          "upper": 21.6166456866
+        },
+        {
+          "coverage": 0.95,
+          "lower": 6.7370661559,
+          "median": 11.3467815745,
+          "upper": 23.6132950858
+        }
+      ],
+      "f_sat_lpmm": {
+        "coverage": 0.95,
+        "lower": 0.2529580293,
+        "median": 0.3234623506,
+        "upper": 0.3366222696
+      },
+      "g_useful": [
+        {
+          "coverage": 0.95,
+          "lower": 1.5681174667,
+          "median": 3.7846770171,
+          "upper": 10.7625034003
+        },
+        {
+          "coverage": 0.95,
+          "lower": 0.5487937689,
+          "median": 1.5531104782,
+          "upper": 5.1430210427
+        },
+        {
+          "coverage": 0.95,
+          "lower": 0.1701122064,
+          "median": 0.5743691041,
+          "upper": 2.3147291475
+        },
+        {
+          "coverage": 0.95,
+          "lower": 0.0489869782,
+          "median": 0.1910291649,
+          "upper": 0.9813196996
+        }
+      ],
+      "g_useful_decline": {
+        "coverage": 0.95,
+        "lower": 1.5175656095,
+        "median": 3.5918100316,
+        "upper": 9.7272168749
+      },
+      "kernel": "smooth",
+      "neural_noise_share": {
+        "coverage": 0.95,
+        "lower": 0.8174353285,
+        "median": 0.9656016376,
+        "upper": 0.98939838
+      },
+      "r_perceptual": {
+        "coverage": 0.95,
+        "lower": 0.0452258994,
+        "median": 0.0761709014,
+        "upper": 0.1585159597
+      },
+      "saturating": true
+    },
+    {
+      "contrast_hu": 250.0,
+      "diameter_mm": 8.0,
+      "doses_relative": [
+        0.25,
+        0.5,
+        1.0,
+        2.0,
+        4.0
+      ],
+      "dprime_human": [
+        {
+          "coverage": 0.95,
+          "lower": 5.870790887,
+          "median": 9.0610333518,
+          "upper": 14.5489419342
+        },
+        {
+          "coverage": 0.95,
+          "lower": 6.5019557505,
+          "median": 10.258483119,
+          "upper": 17.2125713158
+        },
+        {
+          "coverage": 0.95,
+          "lower": 7.0797485146,
+          "median": 11.321244318,
+          "upper": 19.8819867292
+        },
+        {
+          "coverage": 0.95,
+          "lower": 7.5062666797,
+          "median": 12.1760582787,
+          "upper": 22.5474263626
+        },
+        {
+          "coverage": 0.95,
+          "lower": 7.6994839805,
+          "median": 12.8716051596,
+          "upper": 25.1598055636
+        }
+      ],
+      "f_sat_lpmm": {
+        "coverage": 0.95,
+        "lower": 0.3511463389,
+        "median": 0.4439368491,
+        "upper": 0.4764261898
+      },
+      "g_useful": [
+        {
+          "coverage": 0.95,
+          "lower": 2.2473305811,
+          "median": 4.4888239671,
+          "upper": 11.2447102669
+        },
+        {
+          "coverage": 0.95,
+          "lower": 0.9605936806,
+          "median": 2.1306928932,
+          "upper": 5.6386401697
+        },
+        {
+          "coverage": 0.95,
+          "lower": 0.3612637749,
+          "median": 0.9727428418,
+          "upper": 2.7204277317
+        },
+        {
+          "coverage": 0.95,
+          "lower": 0.1181298962,
+          "median": 0.3986690304,
+          "upper": 1.3090343598
+        }
+      ],
+      "g_useful_decline": {
+        "coverage": 0.95,
+        "lower": 2.1270656587,
+        "median": 4.1495271292,
+        "upper": 9.9222745346
+      },
+      "kernel": "standard",
+      "neural_noise_share": {
+        "coverage": 0.95,
+        "lower": 0.5179600607,
+        "median": 0.8758704852,
+        "upper": 0.9625011708
+      },
+      "r_perceptual": {
+        "coverage": 0.95,
+        "lower": 0.0516866066,
+        "median": 0.0864070363,
+        "upper": 0.1688976787
+      },
+      "saturating": true
+    },
+    {
+      "contrast_hu": 250.0,
+      "diameter_mm": 8.0,
+      "doses_relative": [
+        0.25,
+        0.5,
+        1.0,
+        2.0,
+        4.0
+      ],
+      "dprime_human": [
+        {
+          "coverage": 0.95,
+          "lower": 5.953121454,
+          "median": 9.1430596394,
+          "upper": 14.6027143983
+        },
+        {
+          "coverage": 0.95,
+          "lower": 6.6469828423,
+          "median": 10.3864515801,
+          "upper": 17.3113118945
+        },
+        {
+          "coverage": 0.95,
+          "lower": 7.3357316864,
+          "median": 11.6117166144,
+          "upper": 20.0388335741
+        },
+        {
+          "coverage": 0.95,
+          "lower": 7.8869178188,
+          "median": 12.670757755,
+          "upper": 22.8096387982
+        },
+        {
+          "coverage": 0.95,
+          "lower": 8.1804328873,
+          "median": 13.6502248138,
+          "upper": 25.6345531942
+        }
+      ],
+      "f_sat_lpmm": {
+        "coverage": 0.95,
+        "lower": 0.3699068564,
+        "median": 0.4887591715,
+        "upper": 0.6004224091
+      },
+      "g_useful": [
+        {
+          "coverage": 0.95,
+          "lower": 2.5246057583,
+          "median": 4.7702958455,
+          "upper": 11.3783943505
+        },
+        {
+          "coverage": 0.95,
+          "lower": 1.1805818294,
+          "median": 2.3602498386,
+          "upper": 5.765182406
+        },
+        {
+          "coverage": 0.95,
+          "lower": 0.4817121564,
+          "median": 1.1460522264,
+          "upper": 2.8431664724
+        },
+        {
+          "coverage": 0.95,
+          "lower": 0.1713258895,
+          "median": 0.5311690541,
+          "upper": 1.4211421199
+        }
+      ],
+      "g_useful_decline": {
+        "coverage": 0.95,
+        "lower": 2.3630426077,
+        "median": 4.3254534062,
+        "upper": 9.9654002462
+      },
+      "kernel": "sharp",
+      "neural_noise_share": {
+        "coverage": 0.95,
+        "lower": 0.2813091218,
+        "median": 0.73383215,
+        "upper": 0.918024001
+      },
+      "r_perceptual": {
+        "coverage": 0.95,
+        "lower": 0.0549152147,
+        "median": 0.091633907,
+        "upper": 0.1720846577
+      },
+      "saturating": true
+    },
+    {
+      "contrast_hu": 880.0,
+      "diameter_mm": 8.0,
+      "doses_relative": [
+        0.25,
+        0.5,
+        1.0,
+        2.0,
+        4.0
+      ],
+      "dprime_human": [
+        {
+          "coverage": 0.95,
+          "lower": 19.7112994158,
+          "median": 31.0338141869,
+          "upper": 50.5243608969
+        },
+        {
+          "coverage": 0.95,
+          "lower": 21.2960765046,
+          "median": 34.2762910594,
+          "upper": 59.334917806
+        },
+        {
+          "coverage": 0.95,
+          "lower": 22.4623554744,
+          "median": 36.7447588122,
+          "upper": 67.9893519432
+        },
+        {
+          "coverage": 0.95,
+          "lower": 23.2418672098,
+          "median": 38.6803742925,
+          "upper": 76.0905928168
+        },
+        {
+          "coverage": 0.95,
+          "lower": 23.7144728686,
+          "median": 39.9406711423,
+          "upper": 83.118798702
+        }
+      ],
+      "f_sat_lpmm": {
+        "coverage": 0.95,
+        "lower": 0.2529580293,
+        "median": 0.3234623506,
+        "upper": 0.3366222696
+      },
+      "g_useful": [
+        {
+          "coverage": 0.95,
+          "lower": 5.5197734828,
+          "median": 13.3220631001,
+          "upper": 37.884011969
+        },
+        {
+          "coverage": 0.95,
+          "lower": 1.9317540665,
+          "median": 5.4669488833,
+          "upper": 18.1034340703
+        },
+        {
+          "coverage": 0.95,
+          "lower": 0.5987949664,
+          "median": 2.0217792466,
+          "upper": 8.1478465994
+        },
+        {
+          "coverage": 0.95,
+          "lower": 0.1724341631,
+          "median": 0.6724226604,
+          "upper": 3.4542453427
+        }
+      ],
+      "g_useful_decline": {
+        "coverage": 0.95,
+        "lower": 5.3418309453,
+        "median": 12.6431713113,
+        "upper": 34.2398033997
+      },
+      "kernel": "smooth",
+      "neural_noise_share": {
+        "coverage": 0.95,
+        "lower": 0.8174353285,
+        "median": 0.9656016376,
+        "upper": 0.98939838
+      },
+      "r_perceptual": {
+        "coverage": 0.95,
+        "lower": 0.0452258994,
+        "median": 0.0761709014,
+        "upper": 0.1585159597
+      },
+      "saturating": true
+    },
+    {
+      "contrast_hu": 880.0,
+      "diameter_mm": 8.0,
+      "doses_relative": [
+        0.25,
+        0.5,
+        1.0,
+        2.0,
+        4.0
+      ],
+      "dprime_human": [
+        {
+          "coverage": 0.95,
+          "lower": 20.6651839222,
+          "median": 31.8948373984,
+          "upper": 51.2122756084
+        },
+        {
+          "coverage": 0.95,
+          "lower": 22.8868842418,
+          "median": 36.1098605787,
+          "upper": 60.5882510316
+        },
+        {
+          "coverage": 0.95,
+          "lower": 24.9207147714,
+          "median": 39.8507799993,
+          "upper": 69.9845932867
+        },
+        {
+          "coverage": 0.95,
+          "lower": 26.4220587125,
+          "median": 42.8597251411,
+          "upper": 79.3669407963
+        },
+        {
+          "coverage": 0.95,
+          "lower": 27.1021836114,
+          "median": 45.3080501618,
+          "upper": 88.5625155838
+        }
+      ],
+      "f_sat_lpmm": {
+        "coverage": 0.95,
+        "lower": 0.3511463389,
+        "median": 0.4439368491,
+        "upper": 0.4764261898
+      },
+      "g_useful": [
+        {
+          "coverage": 0.95,
+          "lower": 7.9106036454,
+          "median": 15.8006603642,
+          "upper": 39.5813801395
+        },
+        {
+          "coverage": 0.95,
+          "lower": 3.3812897556,
+          "median": 7.5000389842,
+          "upper": 19.8480133973
+        },
+        {
+          "coverage": 0.95,
+          "lower": 1.2716484876,
+          "median": 3.424054803,
+          "upper": 9.5759056157
+        },
+        {
+          "coverage": 0.95,
+          "lower": 0.4158172347,
+          "median": 1.4033149872,
+          "upper": 4.6078009463
+        }
+      ],
+      "g_useful_decline": {
+        "coverage": 0.95,
+        "lower": 7.4872711187,
+        "median": 14.6063354948,
+        "upper": 34.9264063618
+      },
+      "kernel": "standard",
+      "neural_noise_share": {
+        "coverage": 0.95,
+        "lower": 0.5179600607,
+        "median": 0.8758704852,
+        "upper": 0.9625011708
+      },
+      "r_perceptual": {
+        "coverage": 0.95,
+        "lower": 0.0516866066,
+        "median": 0.0864070363,
+        "upper": 0.1688976787
+      },
+      "saturating": true
+    },
+    {
+      "contrast_hu": 880.0,
+      "diameter_mm": 8.0,
+      "doses_relative": [
+        0.25,
+        0.5,
+        1.0,
+        2.0,
+        4.0
+      ],
+      "dprime_human": [
+        {
+          "coverage": 0.95,
+          "lower": 20.9549875182,
+          "median": 32.1835699308,
+          "upper": 51.4015546819
+        },
+        {
+          "coverage": 0.95,
+          "lower": 23.3973796048,
+          "median": 36.5603095621,
+          "upper": 60.9358178685
+        },
+        {
+          "coverage": 0.95,
+          "lower": 25.821775536,
+          "median": 40.8732424827,
+          "upper": 70.5366941809
+        },
+        {
+          "coverage": 0.95,
+          "lower": 27.7619507221,
+          "median": 44.6010672976,
+          "upper": 80.2899285698
+        },
+        {
+          "coverage": 0.95,
+          "lower": 28.7951237632,
+          "median": 48.0487913446,
+          "upper": 90.2336272436
+        }
+      ],
+      "f_sat_lpmm": {
+        "coverage": 0.95,
+        "lower": 0.3699068564,
+        "median": 0.4887591715,
+        "upper": 0.6004224091
+      },
+      "g_useful": [
+        {
+          "coverage": 0.95,
+          "lower": 8.8866122691,
+          "median": 16.7914413763,
+          "upper": 40.0519481138
+        },
+        {
+          "coverage": 0.95,
+          "lower": 4.1556480395,
+          "median": 8.3080794317,
+          "upper": 20.2934420692
+        },
+        {
+          "coverage": 0.95,
+          "lower": 1.6956267905,
+          "median": 4.0341038369,
+          "upper": 10.0079459829
+        },
+        {
+          "coverage": 0.95,
+          "lower": 0.603067131,
+          "median": 1.8697150706,
+          "upper": 5.0024202619
+        }
+      ],
+      "g_useful_decline": {
+        "coverage": 0.95,
+        "lower": 8.317909979,
+        "median": 15.2255959897,
+        "upper": 35.0782088665
+      },
+      "kernel": "sharp",
+      "neural_noise_share": {
+        "coverage": 0.95,
+        "lower": 0.2813091218,
+        "median": 0.73383215,
+        "upper": 0.918024001
+      },
+      "r_perceptual": {
+        "coverage": 0.95,
+        "lower": 0.0549152147,
+        "median": 0.091633907,
+        "upper": 0.1720846577
+      },
+      "saturating": true
+    }
+  ],
+  "summary": {
+    "f_sat_band_width_lpmm": {
+      "max": 0.2305155527,
+      "median": 0.1252798509,
+      "min": 0.0253188113
+    },
+    "f_sat_median_over_series": {
+      "max": 0.4887591715,
+      "median": 0.4435468749,
+      "min": 0.2747417471
+    },
+    "n_series": 18,
+    "r_perceptual_band": {
+      "highest_upper": 0.3185169034,
+      "lowest_lower": 0.0452258994
+    },
+    "saturating_fraction": 1.0
+  }
+}

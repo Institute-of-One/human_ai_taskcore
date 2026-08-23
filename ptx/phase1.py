@@ -30,24 +30,22 @@ import numpy as np
 from scipy import stats
 
 from . import __version__
-from .chain import (
-    CT_KERNEL_F50_LPMM,
-    ViewingGeometry,
-    assemble_chain,
-    ct_nps,
-    ct_nps_scale_for_variance,
-    ct_ttf,
-    quantum_noise_scaling,
-    radial_band_integral,
+from .chain import CT_KERNEL_F50_LPMM
+from .condition import (
+    Acquisition,
+    Reading,
+    Task,
+    build_chain,
+    evaluate,
+    frequency_grid,
 )
-from .detectability import contribution_density, dprime_squared, f_sat, g_useful
+from .detectability import dprime_squared, g_useful
 from .observer import (
     cho_dprime_squared,
     dog_channels_spanning,
-    ideal_dprime_squared,
     npwe_dprime_squared,
 )
-from .phantom_lung import disk_first_zero_lpmm, nodule_task_spectrum
+from .phantom_lung import disk_first_zero_lpmm
 
 __all__ = ["Phase1Config", "run_phase1", "main"]
 
@@ -116,14 +114,41 @@ def _condition_key(condition):
     )
 
 
+def _acquisition(cfg, kernel, dose, thickness):
+    return Acquisition(
+        kernel=kernel,
+        dose_relative=dose,
+        slice_thickness_mm=thickness,
+        pixel_mm_object=cfg.pixel_mm_object,
+        kernel_sharpness=cfg.kernel_sharpness,
+        ramp_exponent=cfg.ramp_exponent,
+        reference_kernel=cfg.reference_kernel,
+        reference_sd_hu=cfg.reference_sd_hu,
+        reference_slice_mm=cfg.reference_slice_mm,
+    )
+
+
+def _reading(cfg, zoom):
+    return Reading(
+        zoom=zoom,
+        distance_mm=cfg.viewing_distance_mm,
+        luminance_cdm2=cfg.luminance_cdm2,
+        field_deg=cfg.field_deg,
+        display_pitch_mm=cfg.display_pitch_mm,
+        window_width_hu=cfg.window_width_hu,
+        n_grey_levels=cfg.n_grey_levels,
+        kappa=cfg.neural_noise_kappa,
+        eta_cog=cfg.eta_cog,
+    )
+
+
 def run_phase1(config=None):
     """Evaluate the Phase 1 grid and return the results dictionary."""
     cfg = config or Phase1Config()
 
-    nyquist = 0.5 / cfg.pixel_mm_object
-    # the radial measure 2 pi f suppresses f -> 0, so the grid starts one step
-    # above zero, which also keeps N_effective strictly positive there
-    f = np.linspace(nyquist / cfg.n_freq, nyquist, cfg.n_freq)
+    reference = _acquisition(cfg, cfg.reference_kernel, 1.0, cfg.reference_slice_mm)
+    nyquist = reference.nyquist_lpmm
+    f = frequency_grid(reference, cfg.n_freq)
     channels_by_diameter = {
         d: dog_channels_spanning(
             f,
@@ -135,16 +160,6 @@ def run_phase1(config=None):
         for d in cfg.diameters_mm
     }
 
-    # one projection-noise scale, fixed from the reference condition, so that
-    # sharper kernels pay for their resolution in noise
-    reference_scale = ct_nps_scale_for_variance(
-        cfg.reference_sd_hu**2,
-        nyquist,
-        CT_KERNEL_F50_LPMM[cfg.reference_kernel],
-        cfg.kernel_sharpness,
-        cfg.ramp_exponent,
-    )
-
     conditions = []
     for diameter, contrast, dose, thickness, kernel, zoom in product(
         cfg.diameters_mm,
@@ -154,50 +169,18 @@ def run_phase1(config=None):
         cfg.kernels,
         cfg.zooms,
     ):
-        f50 = CT_KERNEL_F50_LPMM[kernel]
-        scale = reference_scale * quantum_noise_scaling(
-            dose, thickness, cfg.reference_slice_mm
-        )
-        h_scanner = ct_ttf(f, f50, cfg.kernel_sharpness)
-        n_image = ct_nps(f, f50, cfg.kernel_sharpness, cfg.ramp_exponent, scale)
+        acquisition = _acquisition(cfg, kernel, dose, thickness)
+        reading = _reading(cfg, zoom)
+        task = Task(diameter_mm=diameter, contrast_hu=contrast)
+        result = evaluate(f, task, acquisition, reading, cfg.fractions)
+        chain = result.chain
 
-        viewing = ViewingGeometry(
-            pixel_mm_object=cfg.pixel_mm_object,
-            display_pitch_mm=cfg.display_pitch_mm,
-            zoom=zoom,
-            distance_mm=cfg.viewing_distance_mm,
-            luminance_cdm2=cfg.luminance_cdm2,
-            field_deg=cfg.field_deg,
-        )
-        chain = assemble_chain(
-            f,
-            h_scanner,
-            n_image,
-            viewing,
-            window_width_hu=cfg.window_width_hu,
-            n_grey_levels=cfg.n_grey_levels,
-            neural_noise_kappa=cfg.neural_noise_kappa,
-        )
-        w_task = nodule_task_spectrum(f, diameter, contrast, thickness)
-        unit = np.ones_like(f)
-
-        density = contribution_density(
-            f, w_task, chain.h_eff, unit, chain.n_eff,
-            eta_cog=cfg.eta_cog, radial=True,
-        )
-        d2_human = dprime_squared(
-            f, w_task, chain.h_eff, unit, chain.n_eff,
-            eta_cog=cfg.eta_cog, radial=True,
-        )
         # superseded v0.3 form, kept as the ideal limit of the appendix
         d2_csf_weight = dprime_squared(
-            f, w_task, chain.h_eff, chain.csf_weight, chain.n_eff,
+            f, result.w_task, chain.h_eff, chain.csf_weight, chain.n_eff,
             eta_cog=cfg.eta_cog, radial=True,
         )
-        d2_ideal = ideal_dprime_squared(
-            f, w_task, chain.n_image, transfer=chain.h_scanner, radial=True
-        )
-        displayed_signal = w_task * chain.h_eff
+        displayed_signal = result.w_task * chain.h_eff
         d2_npwe = npwe_dprime_squared(
             f, displayed_signal, chain.n_eff, eye_filter=chain.csf_weight,
             radial=True,
@@ -207,7 +190,6 @@ def run_phase1(config=None):
             visual_filter=chain.csf_weight,
             channel_noise_fraction=cfg.channel_noise_fraction, radial=True,
         )
-        noise_budget = _noise_budget(f, chain)
 
         record = {
             "diameter_mm": diameter,
@@ -215,28 +197,19 @@ def run_phase1(config=None):
             "dose_relative": dose,
             "slice_thickness_mm": thickness,
             "kernel": kernel,
-            "kernel_f50_lpmm": f50,
+            "kernel_f50_lpmm": acquisition.f50,
             "zoom": zoom,
             "nyquist_lpmm": nyquist,
-            "dprime_human": float(np.sqrt(d2_human)),
             "dprime_human_csf_weight": float(np.sqrt(d2_csf_weight)),
-            "dprime_ideal": float(np.sqrt(d2_ideal)),
-            "r_perceptual": float(np.sqrt(d2_human / d2_ideal)),
             "dprime_npwe": float(np.sqrt(d2_npwe)),
             "dprime_cho": float(np.sqrt(d2_cho)),
-            "neural_noise_share": noise_budget["neural"],
-            "quantisation_noise_share": noise_budget["quantisation"],
         }
-        for fraction in cfg.fractions:
-            key = f"f_sat_{int(round(fraction * 100))}_lpmm"
-            record[key] = f_sat(f, density, fraction=fraction)
+        record.update(result.scalars())
         conditions.append(record)
 
     series = _dose_series(conditions)
     summary = _summary(conditions, series, nyquist)
-    summary["invertible_filter_invariance"] = _invariance_validation(
-        cfg, f, reference_scale
-    )
+    summary["invertible_filter_invariance"] = _invariance_validation(cfg, f)
     return {
         "metadata": _metadata(cfg, nyquist),
         "conditions": conditions,
@@ -245,7 +218,7 @@ def run_phase1(config=None):
     }
 
 
-def _invariance_validation(cfg, f, reference_scale):
+def _invariance_validation(cfg, f):
     """Invertible-filter invariance, kept as a validation result.
 
     With both noise floors switched off the reconstruction kernel filters
@@ -256,33 +229,20 @@ def _invariance_validation(cfg, f, reference_scale):
     kernel sensitivity reported above interpretable: the latter is entirely
     the footprint of the neural noise that bypasses the kernel.
     """
-    viewing = ViewingGeometry(
-        pixel_mm_object=cfg.pixel_mm_object,
-        display_pitch_mm=cfg.display_pitch_mm,
-        zoom=cfg.zooms[0],
-        distance_mm=cfg.viewing_distance_mm,
-        luminance_cdm2=cfg.luminance_cdm2,
-        field_deg=cfg.field_deg,
+    reading = dataclasses.replace(
+        _reading(cfg, cfg.zooms[0]), n_grey_levels=None, kappa=0.0
     )
-    w_task = nodule_task_spectrum(
-        f, cfg.diameters_mm[0], cfg.contrasts_hu[0],
-        cfg.slice_thicknesses_mm[0],
+    task = Task(
+        diameter_mm=cfg.diameters_mm[0], contrast_hu=cfg.contrasts_hu[0]
     )
+    w_task = task.spectrum(f, cfg.slice_thicknesses_mm[0])
     unit = np.ones_like(f)
     primary, weighted = [], []
     for kernel in cfg.kernels:
-        f50 = CT_KERNEL_F50_LPMM[kernel]
-        chain = assemble_chain(
+        chain = build_chain(
             f,
-            ct_ttf(f, f50, cfg.kernel_sharpness),
-            ct_nps(
-                f, f50, cfg.kernel_sharpness, cfg.ramp_exponent,
-                reference_scale,
-            ),
-            viewing,
-            window_width_hu=cfg.window_width_hu,
-            n_grey_levels=None,
-            neural_noise_kappa=0.0,
+            _acquisition(cfg, kernel, 1.0, cfg.reference_slice_mm),
+            reading,
         )
         primary.append(
             dprime_squared(f, w_task, chain.h_eff, unit, chain.n_eff, radial=True)
@@ -309,18 +269,6 @@ def _relative_spread(values):
     if peak <= 0:
         return 0.0
     return float((peak - float(np.min(values))) / peak)
-
-
-def _noise_budget(f, chain):
-    """Share of the band-integrated N_effective held by each floor."""
-    total = radial_band_integral(f, chain.n_eff)
-    return {
-        "neural": float(radial_band_integral(f, chain.n_neural) / total),
-        "quantisation": float(
-            radial_band_integral(f, chain.n_quantisation * chain.h_eye**2)
-            / total
-        ),
-    }
 
 
 def _metadata(cfg, nyquist):

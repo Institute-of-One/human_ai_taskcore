@@ -31,8 +31,16 @@ Milestone **M2** — Phase 1 runs end to end:
 - `ptx.phantom_lung` — HU-calibrated anisotropic parenchyma texture,
   Murray's-law vessel tree, spherical nodules with partial volume, and the
   analytic nodule task function.
+- `ptx.condition` — one reading condition end to end; the single evaluation
+  path shared by the grid, the propagation and the case study.
 - `ptx.phase1` — the section 7 condition grid (540 conditions), written to a
   deterministic `results.json`.
+- `ptx.uncertainty` — Latin-hypercube propagation of the section 5.4 intervals
+  (eta_cog, kappa, viewing distance, luminance, magnification) into 95% bands,
+  and H1's saturation rule.
+- `ptx.case_uhrct` — the H3 case study: a U-HRCT-class chain against a
+  conventional one over a magnification/distance map, with the sufficient
+  magnification M*.
 
 Running the grid forced one formulation change, adopted in protocol v0.4: the
 visual system enters through N<sub>effective</sub> as Barten's own internal
@@ -41,8 +49,8 @@ cancels exactly in a quantum-limited chain — that invariance is kept as a
 validation result, and it is the neural noise floor, which bypasses every
 transfer factor, that makes reconstruction kernel and viewing geometry matter.
 
-Uncertainty propagation, the U-HRCT case study (H3) and the external
-validation against digitized observer studies (H2) land in M3.
+The external validation against digitized observer studies (H2) is the
+remaining M3 item.
 
 ## Install & test
 
@@ -50,6 +58,8 @@ validation against digitized observer studies (H2) land in M3.
 pip install -e ".[dev]"
 pytest
 python -m ptx.phase1 --out results/phase1.json
+python -m ptx.uncertainty --out results/uncertainty.json
+python -m ptx.case_uhrct --out results/case_uhrct.json
 ```
 
 ## Design principles
