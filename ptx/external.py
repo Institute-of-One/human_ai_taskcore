@@ -1,10 +1,10 @@
 """H2 external validation against published observer studies (section 8).
 
 This module is the executable half of the pre-registration
-(``docs/IORN-009A_H2_preregistration_v1.0.md``, amended by ``..._v1.1.md`` and
-``..._v1.2.md``): the inclusion criteria, the schema and the analysis are all
-fixed here so that study selection cannot drift once the literature is in front
-of us. The
+(``docs/IORN-009A_H2_preregistration_v1.0.md``, amended by ``..._v1.1.md``,
+``..._v1.2.md`` and ``..._v1.3.md``): the inclusion criteria, the schema and the
+analysis are all fixed here so that study selection cannot drift once the
+literature is in front of us. The
 registry it validates (``data/h2_studies.json``) is deliberately empty until
 the systematic search runs — the criteria were frozen first, and the commit
 that added them is the evidence.
@@ -46,6 +46,7 @@ __all__ = [
     "qualifies_under_v1_0",
     "qualifies_under_v1_1",
     "pool_partition",
+    "stratify_by_task_congruence",
     "unpredictable_axis_reason",
     "load_registry",
     "ModelPredictor",
@@ -53,7 +54,7 @@ __all__ = [
     "pooled_calibration",
 ]
 
-SCHEMA_VERSION = "1.2"
+SCHEMA_VERSION = "1.3"
 
 # --- C2 condition-axis vocabulary -------------------------------------------
 #
@@ -132,6 +133,16 @@ def unpredictable_axis_reason(axes):
 ALLOWED_MODALITIES = ("ct", "chest_radiography")
 ALLOWED_METRICS = ("auc", "pc_2afc", "dprime")
 ALLOWED_ACQUISITION = ("table", "digitised_figure")
+
+# How the study's task sits relative to the model's signal-known-exactly
+# assumption. Recorded for every study and never used to include or exclude
+# one: the model has no search term, so a study with location uncertainty is a
+# study the model is being asked to predict outside that assumption, which is
+# a thing to stratify by in the heterogeneity analysis (section 5.3) and report,
+# not a reason to drop the study. Selecting on expected fit is the failure mode
+# this field exists to avoid, so validate_study only checks the value is one of
+# these two.
+TASK_CONGRUENCE = ("ske", "search_or_location_uncertain")
 MIN_CONDITION_AXES = 2
 MIN_CONDITIONS_PER_STUDY = 4
 MIN_STUDIES = 3
@@ -212,6 +223,7 @@ class StudyRecord:
     generality_check: bool
     n_readers: int | None
     conditions: tuple
+    task_congruence: str  # no default: every study has to state it
     digitisation_repeat_max_deviation: float = 0.0
     notes: str = ""
 
@@ -262,6 +274,13 @@ def validate_study(study):
         )
     if study.metric not in ALLOWED_METRICS:
         problems.append(f"C5: metric {study.metric!r} not accepted")
+    if study.task_congruence not in TASK_CONGRUENCE:
+        # a schema check, not a criterion: the value has to be one of the two
+        # so the strata are well defined, but neither value excludes anything
+        problems.append(
+            f"schema: task_congruence {study.task_congruence!r} must be one "
+            f"of {TASK_CONGRUENCE}"
+        )
     if study.acquisition not in ALLOWED_ACQUISITION:
         problems.append(f"acquisition {study.acquisition!r} not recognised")
     if study.acquisition == "digitised_figure":
@@ -365,6 +384,22 @@ def pool_partition(registry):
         "admitted_by_v1_2": tuple(
             s.study_id for s in v1_2 if s not in v1_1
         ),
+    }
+
+
+def stratify_by_task_congruence(studies):
+    """Group studies by task congruence for the heterogeneity analysis.
+
+    Both strata are always present, empty ones included, so the report cannot
+    quietly omit a stratum. Stratification is descriptive: the H2 verdict is
+    the one taken on the whole pool, and an SKE-only subset never replaces it.
+    """
+    studies = tuple(studies)
+    return {
+        stratum: tuple(
+            s for s in studies if s.task_congruence == stratum
+        )
+        for stratum in TASK_CONGRUENCE
     }
 
 

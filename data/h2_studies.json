@@ -1,7 +1,7 @@
 {
-  "schema_version": "1.2",
-  "frozen": "2026-08-23",
-  "note": "Registry for the H2 external validation (protocol section 8). The inclusion criteria in docs/IORN-009A_H2_preregistration_v1.0.md were frozen before the literature search began; v1.1 amended C2's condition-axis vocabulary and v1.2 replaced the enumeration with the principle that an axis counts only if it names a declared model input, each with the disclosure its own document carries. This file is still empty, since no performance data has been extracted. Every study looked at is recorded here, either in studies or, with the criterion it failed, in screened.",
+  "schema_version": "1.3",
+  "frozen": "2026-08-24",
+  "note": "Registry for the H2 external validation (protocol section 8). The inclusion criteria in docs/IORN-009A_H2_preregistration_v1.0.md were frozen before the literature search began; v1.1 amended C2's condition-axis vocabulary, v1.2 replaced the enumeration with the principle that an axis counts only if it names a declared model input, and v1.3 added the task_congruence descriptive field and froze the schema, each with the disclosure its own document carries. This file is still empty, since no performance data has been extracted. Every study looked at is recorded here, either in studies or, with the criterion it failed, in screened.",
   "studies": [],
   "screened": []
 }

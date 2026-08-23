@@ -24,6 +24,7 @@ from ptx.external import (
     OBSERVER_EFFICIENCY_FIELDS,
     SCHEMA_VERSION,
     SPEARMAN_SUCCESS,
+    TASK_CONGRUENCE,
     ModelPredictor,
     ObservedCondition,
     Registry,
@@ -37,6 +38,7 @@ from ptx.external import (
     pooled_calibration,
     qualifies_under_v1_0,
     rank_agreement,
+    stratify_by_task_congruence,
     unpredictable_axis_reason,
     validate_registry,
     validate_study,
@@ -73,6 +75,7 @@ def _study(**overrides):
         generality_check=False,
         n_readers=5,
         conditions=_conditions(),
+        task_congruence="ske",
     )
     defaults.update(overrides)
     return StudyRecord(**defaults)
@@ -184,6 +187,28 @@ class TestFrozenCriteria:
         reason = unpredictable_axis_reason(("ambient_light",))
         assert "ambient_light" in reason
         assert "cannot be predicted" in reason
+
+    def test_task_congruence_has_to_be_stated(self):
+        # declared without a default, so a record cannot be built without it
+        fields = {f.name: f for f in dataclasses.fields(StudyRecord)}
+        assert fields["task_congruence"].default is dataclasses.MISSING
+
+    def test_a_search_task_is_recorded_and_not_excluded(self):
+        # the model has no search term, which is a thing to stratify by, not a
+        # reason to drop the study: selecting on expected fit is the failure
+        # mode task_congruence exists to prevent
+        study = _study(task_congruence="search_or_location_uncertain")
+        assert validate_study(study) == []
+
+    def test_an_unknown_congruence_value_is_caught_as_a_schema_problem(self):
+        problems = validate_study(_study(task_congruence="probably fine"))
+        assert any(p.startswith("schema:") for p in problems)
+        # and it is not dressed up as an inclusion criterion
+        assert not any(p.startswith("C") for p in problems)
+
+    def test_task_congruence_is_not_a_condition_axis(self):
+        assert "task_congruence" not in ALLOWED_AXES
+        assert "task_congruence" not in AXIS_TO_MODEL_INPUT
 
     def test_too_few_condition_points_fails_c3(self):
         problems = validate_study(_study(conditions=_conditions(3)))
@@ -318,6 +343,27 @@ class TestPoolRequirements:
         assert len(partition["v1_2"]) == 3
         assert partition["admitted_by_v1_1"] == ("cxr1",)
         assert partition["admitted_by_v1_2"] == ("cxr2",)
+
+    def test_task_congruence_strata_are_split_mechanically(self):
+        studies = (
+            _study(study_id="ske1"),
+            _study(
+                study_id="search1",
+                task_congruence="search_or_location_uncertain",
+            ),
+        )
+        strata = stratify_by_task_congruence(studies)
+        assert [s.study_id for s in strata["ske"]] == ["ske1"]
+        assert [
+            s.study_id for s in strata["search_or_location_uncertain"]
+        ] == ["search1"]
+
+    def test_an_empty_stratum_is_still_reported(self):
+        # a stratum that vanishes has to be visible as empty rather than
+        # dropped from the table
+        strata = stratify_by_task_congruence([_study()])
+        assert set(strata) == set(TASK_CONGRUENCE)
+        assert strata["search_or_location_uncertain"] == ()
 
 
 class TestRegistryFile:

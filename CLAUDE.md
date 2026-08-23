@@ -54,7 +54,9 @@
 - **M3(今ここ):** 不確実性伝播(`ptx/uncertainty.py`, 完了)+U-HRCTケーススタディ(`ptx/case_uhrct.py`, (M,D) マップと M*、完了)+**Phase 2 digitize外部検証(`ptx/external.py`, H2)が残り**
 - **M4:** 原稿執筆(第一候補 Medical Physics)
 
-**Phase 2(H2)の現状:** 包含基準は**性能データを一切抽出しない状態で凍結済み**(`docs/IORN-009A_H2_preregistration_v1.0.md` → `v1.1` → `v1.2`、各々別コミット)。**C2 の現行正本は v1.2 の原則:条件軸として認めるのはモデルの宣言済み入力(`Acquisition`/`Reading`/`Task` のフィールド)に対応する軸のみ**(正本は `ptx/external.py` の `AXIS_TO_MODEL_INPUT`、テストが両方向の網羅を検査)。**語彙追加の改訂は打ち止め**(変更はモデル拡張を伴う v2.0 のみ)。解析は3プール併記(v1.0厳格/v1.1/v1.2)で「3版すべてで結論が同方向」が成功条件。候補表は `docs/h2_candidate_scan_v1.1.md`(v1・v1.1 とも改訂の開示に引用されているため**改変しない**)。次は CAND-01(PMC3618092)・CAND-13(PMC3724792)の PDF から正式判定し、採否とも `data/h2_studies.json` に記録する。
+**Phase 2(H2)の現状:** 基準・スキーマとも**性能データを一切抽出しない状態で凍結済み**(`docs/IORN-009A_H2_preregistration_v1.0.md` → `v1.1` → `v1.2` → `v1.3`、各々別コミット)。**C2 の現行正本は v1.2 の原則:条件軸として認めるのはモデルの宣言済み入力(`Acquisition`/`Reading`/`Task` のフィールド)に対応する軸のみ**(正本は `ptx/external.py` の `AXIS_TO_MODEL_INPUT`、テストが両方向の網羅を検査)。**v1.3 でスキーマ全体を凍結**(記述変数 `task_congruence` を必須追加。除外力なし・§5-3 の層別専用)。**以後の基準・スキーマ変更はモデル拡張を伴う v2.0 のみ。抽出の途中でフィールドを足さない**(必要なら `notes` に自由記述)。解析は3プール併記(v1.0厳格/v1.1/v1.2)で「3版すべてで結論が同方向」が成功条件、層別は記述のみで主判定を置き換えない。候補表は `docs/h2_candidate_scan_v1.1.md`(v1・v1.1 とも改訂の開示に引用されているため**改変しない**)。
+
+**次の作業(抽出フェーズ):** CAND-01(PMC3618092、`task_congruence=ske`)と CAND-13(PMC3724792、`search_or_location_uncertain`、**ROC AUC のみ使用・LROC は使わない**)を `data/h2_studies.json` の `studies` に、CAND-14 を `screened` に転記する(除外理由は `unpredictable_axis_reason` の定型文)。採否は v1.3 §C で機械判定済み。
 
 ### M2 で確定した定式化(v0.4 裁定・変更禁止)
 
