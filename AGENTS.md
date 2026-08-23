@@ -54,6 +54,8 @@
 - **M3(今ここ):** 不確実性伝播(`ptx/uncertainty.py`, 完了)+U-HRCTケーススタディ(`ptx/case_uhrct.py`, (M,D) マップと M*、完了)+**Phase 2 digitize外部検証(`ptx/external.py`, H2)が残り**
 - **M4:** 原稿執筆(第一候補 Medical Physics)
 
+**Phase 2(H2)の現状:** 包含基準は**性能データを一切抽出しない状態で凍結済み**(`docs/IORN-009A_H2_preregistration_v1.0.md` → `v1.1` → `v1.2`、各々別コミット)。**C2 の現行正本は v1.2 の原則:条件軸として認めるのはモデルの宣言済み入力(`Acquisition`/`Reading`/`Task` のフィールド)に対応する軸のみ**(正本は `ptx/external.py` の `AXIS_TO_MODEL_INPUT`、テストが両方向の網羅を検査)。**語彙追加の改訂は打ち止め**(変更はモデル拡張を伴う v2.0 のみ)。解析は3プール併記(v1.0厳格/v1.1/v1.2)で「3版すべてで結論が同方向」が成功条件。候補表は `docs/h2_candidate_scan_v1.1.md`(v1・v1.1 とも改訂の開示に引用されているため**改変しない**)。次は CAND-01(PMC3618092)・CAND-13(PMC3724792)の PDF から正式判定し、採否とも `data/h2_studies.json` に記録する。
+
 ### M2 で確定した定式化(v0.4 裁定・変更禁止)
 
 1. **主形式は CSF 分母形式。** 視覚感度は N_effective の神経内部雑音項 N_neural(f) = κ²(WW·a)²Φ(af) として入る。v0.3 の分子重み形式は「可逆フィルタ不変性が成立する理想極限」として付録に温存し、results.json に `*_csf_weight` として併記する

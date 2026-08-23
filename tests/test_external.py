@@ -1,8 +1,11 @@
 """H2 pre-registration: the frozen criteria and the analysis they license.
 
 These tests exist to keep the criteria from drifting once real studies are in
-front of us: every rule in docs/IORN-009A_H2_preregistration_v1.0.md that can
-be checked mechanically is checked here.
+front of us: every rule in docs/IORN-009A_H2_preregistration_v1.0.md and its
+v1.1 and v1.2 amendments that can be checked mechanically is checked here. The
+v1.2 vocabulary is derived from the model's input schema rather than listed, so
+the check that matters most is the one that closes that mapping in both
+directions.
 """
 
 import dataclasses
@@ -12,8 +15,13 @@ import numpy as np
 import pytest
 from scipy import stats
 
+from ptx.condition import Acquisition, Reading, Task
 from ptx.external import (
+    ALLOWED_AXES,
+    AXIS_TO_MODEL_INPUT,
+    CALIBRATION_FIELDS,
     MIN_CONDITIONS_PER_STUDY,
+    OBSERVER_EFFICIENCY_FIELDS,
     SCHEMA_VERSION,
     SPEARMAN_SUCCESS,
     ModelPredictor,
@@ -29,6 +37,7 @@ from ptx.external import (
     pooled_calibration,
     qualifies_under_v1_0,
     rank_agreement,
+    unpredictable_axis_reason,
     validate_registry,
     validate_study,
 )
@@ -114,12 +123,67 @@ class TestFrozenCriteria:
         )
         assert any(p.startswith("C2") for p in problems)
 
-    def test_the_amendment_admits_pixel_size_as_an_axis(self):
+    def test_the_first_amendment_admits_pixel_size_as_an_axis(self):
         study = _study(condition_axes=("pixel_size", "displayed_matrix"))
         assert validate_study(study) == []
         # ... and the strict pre-amendment reading does not
         assert not qualifies_under_v1_0(study)
         assert qualifies_under_v1_0(_study())
+
+    def test_the_vocabulary_is_derived_from_the_model_input_schema(self):
+        # v1.2 replaced the hand-written list with a principle: an axis counts
+        # only if it names a declared model input. That is only true of the
+        # implementation if the mapping closes in both directions, so check
+        # both -- no axis without a field, and no eligible field without an
+        # axis. This is what stops the vocabulary being widened by taste.
+        owners = {
+            "Acquisition": Acquisition,
+            "Reading": Reading,
+            "Task": Task,
+        }
+        mapped = set()
+        for axis, targets in AXIS_TO_MODEL_INPUT.items():
+            assert axis in ALLOWED_AXES
+            for owner, field in targets:
+                declared = {
+                    f.name for f in dataclasses.fields(owners[owner])
+                }
+                assert field in declared, f"{axis} points at a missing field"
+                mapped.add((owner, field))
+
+        eligible = {
+            (name, f.name)
+            for name, cls in owners.items()
+            for f in dataclasses.fields(cls)
+            if f.name
+            not in OBSERVER_EFFICIENCY_FIELDS + CALIBRATION_FIELDS
+        }
+        assert eligible - mapped == set(), "a model input with no axis"
+
+    def test_the_parameters_we_infer_are_not_condition_axes(self):
+        # kappa and eta_cog are propagated over intervals, not read off a
+        # paper; admitting them would let a study "vary" what we are fitting
+        for field in OBSERVER_EFFICIENCY_FIELDS:
+            assert field not in ALLOWED_AXES
+            problems = validate_study(_study(condition_axes=("dose", field)))
+            assert any(p.startswith("C2") for p in problems)
+
+    def test_luminance_counts_but_ambient_light_does_not(self):
+        # luminance enters the chain through Barten's CSF, so its effect is
+        # predictable; ambient light has no term in the model at all, and an
+        # axis we cannot predict is not validation
+        assert validate_study(
+            _study(condition_axes=("luminance", "displayed_matrix"))
+        ) == []
+        problems = validate_study(
+            _study(condition_axes=("luminance", "ambient_light"))
+        )
+        assert any(p.startswith("C2") for p in problems)
+
+    def test_the_exclusion_wording_is_generated_not_typed(self):
+        reason = unpredictable_axis_reason(("ambient_light",))
+        assert "ambient_light" in reason
+        assert "cannot be predicted" in reason
 
     def test_too_few_condition_points_fails_c3(self):
         problems = validate_study(_study(conditions=_conditions(3)))
@@ -227,9 +291,9 @@ class TestPoolRequirements:
         problems = validate_registry(Registry("0.9", "2026-08-23"))
         assert "schema" in problems
 
-    def test_the_amendment_sensitivity_subset_is_split_mechanically(self):
-        # the v1.0-strict pool has to be derivable without judgement, so that
-        # it cannot be chosen after seeing the correlations
+    def test_the_sensitivity_pools_are_split_mechanically(self):
+        # each frozen reading of C2 has to be derivable without judgement, so
+        # that no pool can be chosen after seeing the correlations
         studies = (
             _study(study_id="ct1", conditions=_conditions(5)),
             _study(
@@ -239,13 +303,21 @@ class TestPoolRequirements:
                 condition_axes=("pixel_size", "displayed_matrix"),
                 conditions=_conditions(5),
             ),
+            _study(
+                study_id="cxr2",
+                modality="chest_radiography",
+                condition_axes=("luminance", "displayed_matrix"),
+                conditions=_conditions(5),
+            ),
         )
         partition = pool_partition(
             Registry(SCHEMA_VERSION, "2026-08-23", studies=studies)
         )
-        assert len(partition["v1_1"]) == 2
         assert [s.study_id for s in partition["v1_0_strict"]] == ["ct1"]
-        assert partition["admitted_by_amendment"] == ("cxr1",)
+        assert [s.study_id for s in partition["v1_1"]] == ["ct1", "cxr1"]
+        assert len(partition["v1_2"]) == 3
+        assert partition["admitted_by_v1_1"] == ("cxr1",)
+        assert partition["admitted_by_v1_2"] == ("cxr2",)
 
 
 class TestRegistryFile:

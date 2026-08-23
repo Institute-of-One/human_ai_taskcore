@@ -1,9 +1,10 @@
 """H2 external validation against published observer studies (section 8).
 
 This module is the executable half of the pre-registration
-(``docs/IORN-009A_H2_preregistration_v1.0.md``, amended by ``..._v1.1.md``):
-the inclusion criteria, the schema and the analysis are all fixed here so that
-study selection cannot drift once the literature is in front of us. The
+(``docs/IORN-009A_H2_preregistration_v1.0.md``, amended by ``..._v1.1.md`` and
+``..._v1.2.md``): the inclusion criteria, the schema and the analysis are all
+fixed here so that study selection cannot drift once the literature is in front
+of us. The
 registry it validates (``data/h2_studies.json``) is deliberately empty until
 the systematic search runs — the criteria were frozen first, and the commit
 that added them is the evidence.
@@ -43,24 +44,90 @@ __all__ = [
     "validate_study",
     "validate_registry",
     "qualifies_under_v1_0",
+    "qualifies_under_v1_1",
     "pool_partition",
+    "unpredictable_axis_reason",
     "load_registry",
     "ModelPredictor",
     "rank_agreement",
     "pooled_calibration",
 ]
 
-SCHEMA_VERSION = "1.1"
+SCHEMA_VERSION = "1.2"
 
-# frozen 2026-08-23; see the pre-registration documents for the rationale.
-# Condition axes are a closed vocabulary so that "two condition axes" cannot be
-# argued into existence with free text. The v1.1 amendment added pixel size and
-# displayed matrix, with the disclosure its own document carries; studies that
-# rely on them are partitioned out by pool_partition so the strict v1.0 reading
-# can be reported alongside the main analysis.
+# --- C2 condition-axis vocabulary -------------------------------------------
+#
+# Frozen 2026-08-23; the pre-registration documents carry the rationale and the
+# disclosures. Axes are a closed vocabulary so that "two condition axes" cannot
+# be argued into existence with free text.
+#
+# v1.0 enumerated the axes by hand and v1.1 bolted two more on, which is how a
+# vocabulary ends up needing an amendment every time an unfamiliar study shows
+# up. v1.2 stops enumerating: an axis is admissible exactly when it names a
+# declared input of the model, because that is the same thing as saying the
+# model can predict what happens when a study varies it. An axis the chain has
+# no term for cannot be predicted, so counting it as validation would be empty.
+#
+# The mapping below is the vocabulary. Every entry points at fields of
+# Acquisition/Reading/Task, and the test suite checks both directions: no axis
+# without a field, and no eligible field without an axis. So the vocabulary is
+# derived from the implementation rather than curated, and it cannot be widened
+# without widening the model itself.
+#
+# Two categories of declared input are deliberately not axes:
+OBSERVER_EFFICIENCY_FIELDS = ("kappa", "eta_cog")  # inferred, never read off a
+# paper: these are propagated over the section 5.4 intervals, so admitting them
+# as conditions would let a study "vary" a quantity we are fitting.
+CALIBRATION_FIELDS = (
+    "reference_kernel",
+    "reference_sd_hu",
+    "reference_slice_mm",
+    "noise_scale_at_reference",
+)  # anchor the noise scale to a stated reference; not conditions of a reading.
+
+AXIS_TO_MODEL_INPUT = {
+    "dose": (("Acquisition", "dose_relative"),),
+    "lesion_size": (("Task", "diameter_mm"),),
+    "contrast": (("Task", "contrast_hu"),),
+    "reconstruction": (
+        ("Acquisition", "kernel"),
+        ("Acquisition", "kernel_sharpness"),
+    ),
+    "processing": (
+        ("Acquisition", "f50_lpmm"),
+        ("Acquisition", "ramp_exponent"),
+    ),
+    "slice_thickness": (("Acquisition", "slice_thickness_mm"),),
+    "pixel_size": (("Acquisition", "pixel_mm_object"),),
+    "displayed_matrix": (("Reading", "display_pitch_mm"),),
+    "magnification": (("Reading", "zoom"),),
+    "luminance": (("Reading", "luminance_cdm2"),),
+    "viewing_distance": (("Reading", "distance_mm"),),
+    "field_of_view": (("Reading", "field_deg"),),
+    "window_width": (("Reading", "window_width_hu"),),
+    "grey_levels": (("Reading", "n_grey_levels"),),
+}
+
 V1_0_AXES = ("dose", "lesion_size", "contrast", "reconstruction", "processing")
-V1_1_ADDED_AXES = ("pixel_size", "displayed_matrix")
-ALLOWED_AXES = V1_0_AXES + V1_1_ADDED_AXES
+V1_1_AXES = V1_0_AXES + ("pixel_size", "displayed_matrix")
+V1_2_AXES = tuple(sorted(AXIS_TO_MODEL_INPUT))
+ALLOWED_AXES = V1_2_AXES
+
+UNPREDICTABLE_AXIS_REASON = (
+    "C2: {axes} correspond to no term in the model, so the effect of varying "
+    "them cannot be predicted; an axis that cannot be predicted is not counted "
+    "as a validation axis (pre-registration v1.2 §A)"
+)
+
+
+def unpredictable_axis_reason(axes):
+    """The frozen wording for excluding a study on unpredictable axes.
+
+    Generated rather than typed per study so that exclusion records state the
+    same reason in the same words, which is what makes them auditable.
+    """
+    listed = ", ".join(f"{axis!r}" for axis in axes)
+    return UNPREDICTABLE_AXIS_REASON.format(axes=listed)
 
 ALLOWED_MODALITIES = ("ct", "chest_radiography")
 ALLOWED_METRICS = ("auc", "pc_2afc", "dprime")
@@ -259,28 +326,44 @@ def validate_registry(registry):
     return problems
 
 
-def qualifies_under_v1_0(study):
-    """Whether the study meets C2 under the stricter pre-amendment reading."""
+def _qualifies_under(study, vocabulary):
     return (
-        sum(1 for axis in study.condition_axes if axis in V1_0_AXES)
+        sum(1 for axis in study.condition_axes if axis in vocabulary)
         >= MIN_CONDITION_AXES
     )
 
 
-def pool_partition(registry):
-    """Split the pool into the v1.1 analysis set and the strict v1.0 subset.
+def qualifies_under_v1_0(study):
+    """Whether the study meets C2 under the original hand-enumerated reading."""
+    return _qualifies_under(study, V1_0_AXES)
 
-    The amendment that widened C2 has to be shown to be harmless, so the
-    sensitivity analysis reports both. Doing the split mechanically leaves no
-    room for choosing the subset after seeing the correlations.
+
+def qualifies_under_v1_1(study):
+    """Whether the study meets C2 under the first amendment's vocabulary."""
+    return _qualifies_under(study, V1_1_AXES)
+
+
+def pool_partition(registry):
+    """Split the pool by the C2 vocabulary of each frozen version.
+
+    Every widening of C2 has to be shown not to have manufactured the
+    conclusion, so the sensitivity analysis reports all three frozen readings
+    and the paper's success condition asks them to agree in direction. Doing
+    the split mechanically leaves no room for choosing a subset after seeing
+    the correlations.
     """
-    v1_1 = tuple(registry.studies)
-    v1_0 = tuple(s for s in v1_1 if qualifies_under_v1_0(s))
+    v1_2 = tuple(registry.studies)
+    v1_1 = tuple(s for s in v1_2 if qualifies_under_v1_1(s))
+    v1_0 = tuple(s for s in v1_2 if qualifies_under_v1_0(s))
     return {
-        "v1_1": v1_1,
         "v1_0_strict": v1_0,
-        "admitted_by_amendment": tuple(
+        "v1_1": v1_1,
+        "v1_2": v1_2,
+        "admitted_by_v1_1": tuple(
             s.study_id for s in v1_1 if s not in v1_0
+        ),
+        "admitted_by_v1_2": tuple(
+            s.study_id for s in v1_2 if s not in v1_1
         ),
     }
 
