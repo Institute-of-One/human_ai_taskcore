@@ -1,6 +1,6 @@
-# CLAUDE.md — human_ai_taskcore (IORN-009)
+# AGENTS.md — human_ai_taskcore (IORN-009)
 
-このリポジトリで作業する Claude への恒久コンテキスト。**毎セッション最初に読むこと。**
+このリポジトリで作業する Codex への恒久コンテキスト。**毎セッション最初に読むこと。**
 
 ## プロジェクト識別
 
@@ -39,7 +39,7 @@
 - git の `user.name` / `user.email` はこの環境では未設定。設定するまでは commit 時に
   `git -c user.name="Shuji Yamamoto" -c user.email="yamamoto@lisit.jp" commit ...` で作者を明示する
 - `review_evidence/` は**絶対にコミットしない**(.gitignore 済み)。査読対応の証拠保全用
-- Cowork(クラウド)セッションからの push は proxy 制限で失敗することがある。push はローカル(Cursor+Claude CLI)から行う
+- Cowork(クラウド)セッションからの push は proxy 制限で失敗することがある。push はローカル(Cursor+Codex CLI)から行う
 
 ## 査読対応プロトコル(IORN-002の経験則)
 

@@ -1,18 +1,26 @@
 ---
-title: "IORN-009A 研究計画書 v0.3 — Physics-to-Perception Framework"
-date: "2026-08-22"
+title: "IORN-009A 研究計画書 v0.4 — Physics-to-Perception Framework"
+date: "2026-08-23"
 geometry: margin=1in
 fontsize: 10.5pt
 papersize: a4
 ---
 
-# IORN-009A 研究計画書 v0.3
+# IORN-009A 研究計画書 v0.4
 
 **プロジェクト:** Institute of One Research Note 009A(LISIT Co., Ltd. オープンリサーチ)
-**作成日:** 2026-08-22 | **ステータス:** ドラフト(着手前)
+**作成日:** 2026-08-22 | **最終改訂:** 2026-08-23 | **ステータス:** M2完了(Phase 1 完走)
 **先行プロジェクト:** IORN-002(radiomics-phantom, *J. Imaging* 2026, 12, 392)
 **v0.1→v0.2 変更点:** §3「先行研究ベンチマーク — シカゴ土井グループ」新設、§2にU-HRCT問題意識と歴史的教訓を追加、Phase 1にU-HRCTケーススタディ追加、リスク登録簿2項目追加。
 **v0.2→v0.3 変更点(スコープ確定):** 「汎用理論+CT主戦」に決定 — 理論をモダリティ非依存に定式化し(§2.1 適用範囲)、CTを主実証・U-HRCTを旗艦ケースに据え、外部検証プールへ胸部X線observer研究を追加(§8)。表題を medical imaging 系に変更、リスク登録簿#9追加。
+
+**v0.3→v0.4 変更点(定式化確定 — M2 の実装で判明した事実に基づく):**
+
+1. **§5.2 の主形式を変更。** v0.3 は CSF² を被積分関数の**分子**に置いていたが、この形では量子雑音律速の FBP チェーン($N_{\mathrm{image}} \propto f\,|\mathrm{TTF}|^2$、$H_{\mathrm{scanner}} = \mathrm{TTF}$)において伝達関数が分子分母で**厳密に約分**され、再構成カーネル・表示MTF・眼球MTFのいずれも $d'$ に影響しなくなることが実装により判明した(機械精度で確認、§7 検証項目)。Barten の CSF はもともと「内部雑音 → 閾値」から導かれているため、CSF を**分母($N_{\mathrm{effective}}$ の神経内部雑音項)**に置く定式化が理論的に一貫する。よって**神経内部雑音形式を主形式に採用**し、v0.3 の重み形式は「可逆フィルタ不変性が成立する理想極限」として付録に温存する。
+2. **§5.1 の $N_{\mathrm{internal}}$ を三分割に確定。** 画像雑音・表示量子化雑音・神経内部雑音を、それぞれ**物理的に注入される場所**に置く(順に、表示+眼球MTFの両方を通る/眼球MTFのみを通る/どのMTFも通らない)。信号と同じ因子をすべて共有する項は比の中で消えるため、床項を $|H_{\mathrm{display}}|^2$ の外に置くことが、画素ピッチ・拡大率が検出能に効く唯一の経路である。
+3. **H3 を書き換え(§4)。** v0.3 の「拡大率を上げるに従い単調に回復する」は $f_{\mathrm{sat}}$ については成立するが、$d'$ については**漸近飽和**であり内点最適は現れない(主形式での実測、§4 参照)。低角周波数では Barten の神経雑音項が $1/u^2$ で増大し、物体参照への換算因子 $a^2$ と相殺するため、**物体参照の神経雑音床が拡大率に依存しなくなる**ことが理由である。H3 は「$f_{\mathrm{sat}}$ の回復」と「**十分拡大率** $Z^{*}$ の同定」の形に改める。
+4. **§7 に視距離感度を追加**(拡大率マップを $(Z, D)$ 2次元に拡張)。$a = D\tan(1^\circ)/M$ が拡大率と視距離の両方に依存するため、両者は独立な設計変数ではない — マップで同時に扱う。
+5. **リスク登録簿に #10(CSF の置き場所)・#11(絶対 $d'$ の未校正)を追加。**
 
 ---
 
@@ -116,29 +124,50 @@ U-HRCT応用を前面に出す場合(ケーススタディの結果次第):
 **H2(外部妥当性仮説):** 本統合モデルの予測は、既報の人間observer実験(条件別AUC・正答率・$d'$)の**条件間順位**を有意に再現する。
 *成功基準(事前設定):* 研究内の条件順位に対する Spearman ρ ≥ 0.7(各研究)、および全研究プールでの予測–実測の単調校正。達しない場合は不一致条件を明示的に報告する(選択的報告をしない)。
 
-**H3(U-HRCT応用仮説・ケーススタディ):** U-HRCT級の撮像系MTF(公表TTF/MTF値で規定)が従来機に対して付加する高周波帯域の $d'^2_{\mathrm{human}}$ への寄与は、標準表示条件(ルーチン表示FOV・GSDF較正モニタ)では小さく、表示拡大率を上げるに従い単調に回復する。
-*提示形:* 「付加帯域の寄与率 × 拡大率」の等高線マップ。**高解像度情報を人間に届けるための表示条件の設計指針**として建設的に提示する。
+**H3(U-HRCT応用仮説・ケーススタディ / v0.4改訂):** U-HRCT級の撮像系MTF(公表TTF/MTF値で規定)が従来機に対して付加する高周波帯域の $d'^2_{\mathrm{human}}$ への寄与は、標準表示条件(ルーチン表示FOV・GSDF較正モニタ)では小さい。表示拡大率 $Z$ と視距離 $D$ を通じて $f_{\mathrm{sat}}$ は単調に回復するが、$d'_{\mathrm{human}}$ は**漸近的に飽和**し、内点最適は持たない。したがって設計量は「最適拡大率」ではなく**十分拡大率** $Z^{*}$(漸近値の95%に達する $Z$)である。
+
+*根拠(v0.4 で追加):* 主形式では低角周波数で神経雑音密度が $\Phi(u) \propto 1/u^2$ となり、物体参照への換算因子 $a^2 = (D\tan 1^\circ / M)^2$ と相殺する。すなわち $N_{\mathrm{neural}}$ は $u \ll u_0$ で拡大率に依存しない床に漸近し、拡大では超えられない。Phase 1 実測(§7)では $Z: 1 \to 16$ で $d'$ の上昇は +5.6%、$f_{\mathrm{sat}}$ は +8% にとどまり、利得のほぼ全部が $Z \lesssim 1.5$ で得られる。
+
+*棄却基準:* $d'_{\mathrm{human}}(Z)$ が検討範囲内で内点最大を持つ、または $Z^{*}$ が画素ピッチ・視距離から予測される値と系統的にずれる場合、$H_3$ の定式化を棄却する。
+
+*提示形:* 「付加帯域の寄与率」を $(Z, D)$ 平面上の等高線マップとして示し、$Z^{*}$ の等値線を重ねる。**高解像度情報を人間に届けるための表示条件の設計指針**として建設的に提示する。U-HRCT級の細かい画素では 1:1 表示が $Z^{*}$ を下回る(=情報が届いていない)ことが予測であり、これが検証対象である。
 
 ## 5. 理論枠組み
 
-### 5.1 有効伝達系と有効雑音
+### 5.1 有効伝達系と有効雑音(v0.4)
 
 $$H_{\mathrm{effective}}(f) = H_{\mathrm{scanner}}(f)\, H_{\mathrm{display}}(f)\, H_{\mathrm{eye}}(f)$$
-$$N_{\mathrm{effective}}(f) = N_{\mathrm{image}}(f)\,|H_{\mathrm{display}}(f)H_{\mathrm{eye}}(f)|^2 + N_{\mathrm{internal}}(f)$$
+
+$$N_{\mathrm{effective}}(f) = \underbrace{N_{\mathrm{image}}(f)\,|H_{\mathrm{display}}H_{\mathrm{eye}}|^2}_{\text{撮像系}} + \underbrace{N_{\mathrm{quant}}\,|H_{\mathrm{eye}}|^2}_{\text{表示量子化}} + \underbrace{N_{\mathrm{neural}}(f)}_{\text{神経内部}}$$
+
+**三項を注入位置で分ける**のが v0.4 の確定事項である。画像雑音は撮像段で生じるので表示MTFと眼球MTFの両方を通り、表示量子化雑音は表示段で生じるので眼球MTFのみを通り、神経内部雑音はどの伝達関数も通らない。信号と完全に同じ因子を持つ雑音項は $|W H_{\mathrm{eff}}|^2 / N_{\mathrm{eff}}$ の比の中で消える(§7 の不変性検証)ため、**床項を $|H_{\mathrm{display}}|^2$ の外に置くことが、画素ピッチ・拡大率・視距離が検出能に効く唯一の経路である。**
+
+各項の具体形:
+
+- $N_{\mathrm{image}}(f) = c\, f\,|H_{\mathrm{scanner}}(f)|^2$、$c \propto 1/(\text{線量} \times \text{スライス厚})$。ランプ因子は2次元FBPの標準結果、$|H_{\mathrm{scanner}}|^2$ は投影の量子雑音が信号と同じ開口・カーネルを通ることによる。$\int N_{\mathrm{image}}\,d^2 f$ が画素分散に一致するよう正規化する。
+- $N_{\mathrm{quant}} = (\mathrm{WW}/n_{\mathrm{grey}})^2/12 \times (\Delta_{\mathrm{obj}}/Z)^2$(一様量子化器の分散 × 表示画素が物体で覆う面積)。DICOM GSDF の階調数とビット深度で決まり、恣意性がない。
+- $N_{\mathrm{neural}}(f) = \kappa^2 (\mathrm{WW}\, a)^2\, \Phi(a f)$、$a = D\tan(1^\circ)/M$ [mm/deg]、$\Phi(u)$ は Barten の光子雑音+側方抑制成形された神経雑音を時間積分時間で割った空間雑音密度。$\Phi(u) = A_{\mathrm{int}}(u)/(2k^2 S_{\mathrm{neural}}^2(u))$ が厳密に成立する — すなわち**この雑音項と CSF は同一モデルの二つの表現**である(実装で機械精度により検証)。HU→変調度の換算はウィンドウ幅 WW を全変調度域とする規約による。$\kappa$ は無次元の範囲パラメータで、$\kappa = 1$ が「Barten標準観察者そのまま」。
 
 認知段は伝達関数ではなく効率パラメータとして分離する(5.3)。
 
-### 5.2 知覚重み付き検出能と派生指標
+### 5.2 知覚検出能と派生指標(v0.4 主形式)
 
-タスク関数 $W_{\mathrm{task}}(f)$(小結節検出:サイズ・コントラストで規定)に対し、
+タスク関数 $W_{\mathrm{task}}(f)$(小結節検出:サイズ・コントラストで規定)に対し、2次元等方形で
 
-$$d'^{2}_{\mathrm{human}} = \eta_{\mathrm{cog}} \int \frac{|W_{\mathrm{task}}(f)|^2\, |H_{\mathrm{effective}}(f)|^2\, \mathrm{CSF}^2(f)}{N_{\mathrm{effective}}(f)}\, df$$
+$$d'^{2}_{\mathrm{human}} = \eta_{\mathrm{cog}} \int \frac{|W_{\mathrm{task}}(f)|^2\, |H_{\mathrm{effective}}(f)|^2}{N_{\mathrm{effective}}(f)}\, 2\pi f\, df$$
+
+**視覚系の感度は分子の重みではなく $N_{\mathrm{effective}}$ の $N_{\mathrm{neural}}$ 項として入る。** これが v0.3 からの最重要変更点である(理由は冒頭の変更履歴 1)。
+
+*付録形式(v0.3 の重み形式・理想極限):* $\mathrm{CSF}^2$ を分子に置いた
+$$d'^{2}_{\mathrm{weight}} = \eta_{\mathrm{cog}} \int \frac{|W_{\mathrm{task}}|^2\,|H_{\mathrm{effective}}|^2\,\widehat{\mathrm{CSF}}^2}{N_{\mathrm{effective}}}\, 2\pi f\, df,\qquad \widehat{\mathrm{CSF}} = \mathrm{CSF}_{\mathrm{neural}}/\max \mathrm{CSF}_{\mathrm{neural}}$$
+は、床項を落とした極限で**任意の可逆線形フィルタに対して不変**になる。この不変性は理論的健全性の検証量として全条件で報告する(§7)。$\widehat{\mathrm{CSF}}$ をピーク正規化するのは、絶対感度スケールを $\eta_{\mathrm{cog}}$ に吸収させ $R_{\mathrm{perceptual}} \le \sqrt{\eta_{\mathrm{cog}}}$ を保証するためである。
 
 派生指標:
 
-- 知覚利用率 $R_{\mathrm{perceptual}} = d'_{\mathrm{human}} / d'_{\mathrm{ideal}}$(idealは表示・視覚段を単位系に置いた理想observer)
+- 知覚利用率 $R_{\mathrm{perceptual}} = d'_{\mathrm{human}} / d'_{\mathrm{ideal}}$(idealは表示・視覚段を単位系に置き床項を除いた prewhitening observer)。主形式では $R_{\mathrm{perceptual}} \le \sqrt{\eta_{\mathrm{cog}}}$ が解析的に成立する
 - 線量あたり知覚情報利得 $G_{\mathrm{useful}} = \Delta d'_{\mathrm{human}} / \Delta D$
-- 知覚利用上限周波数 $f_{\mathrm{sat}}$: 被積分関数(周波数別寄与密度)の累積が全積分の95%に達する周波数、と定義(閾値95%は感度分析で90/99%も併記)
+- 知覚利用上限周波数 $f_{\mathrm{sat}}$: 被積分関数(周波数別寄与密度、2次元測度 $2\pi f\,df$ を含む)の累積が全積分の95%に達する周波数、と定義(閾値95%は感度分析で90/99%も併記)
+- **十分拡大率 $Z^{*}$**(v0.4 追加): $d'_{\mathrm{human}}(Z)$ が $Z\to\infty$ 漸近値の95%に達する最小の $Z$。H3 の設計量
 
 ### 5.3 構成要素のソースと扱い
 
@@ -146,37 +175,61 @@ $$d'^{2}_{\mathrm{human}} = \eta_{\mathrm{cog}} \int \frac{|W_{\mathrm{task}}(f)
 |---|---|---|
 | $H_{\mathrm{scanner}}, N_{\mathrm{image}}$ | IORN-002取得シミュレータのTTF/NPS(+文献実測値での妥当性確認。U-HRCTケーススタディでは公表TTF/MTF・NPSを使用) | 実験変数 |
 | $H_{\mathrm{display}}$ | **DICOM GSDF (PS3.14)** + 画素ピッチ + 視距離・拡大率の幾何 | 標準規格に固定(恣意性排除) |
+| $N_{\mathrm{quant}}$ | GSDF階調数・ビット深度・ウィンドウ幅・拡大率 | 標準規格に固定 |
 | $H_{\mathrm{eye}}$ | 既報の眼球光学系MTF(瞳孔径依存) | 文献モデル固定 |
-| $\mathrm{CSF}(f)$ | Barten型CSF(輝度・視角依存) | 文献モデル固定 |
-| $N_{\mathrm{internal}}$ | 既報の内部ノイズモデル | 文献範囲パラメータ |
+| $N_{\mathrm{neural}}(f)$ | Barten の光子雑音+神経雑音密度 $\Phi(u)$(輝度・視角依存)。CSF と同一モデル | 文献モデル固定+無次元スケール $\kappa$ を**範囲パラメータ** |
+| $\widehat{\mathrm{CSF}}(f)$ | Barten型CSF(付録形式・observerモデルの視覚フィルタとしてのみ使用) | 文献モデル固定 |
 | $\eta_{\mathrm{cog}}$ | 文献レンジ $[\eta_{\min}, \eta_{\max}]$ | **範囲パラメータ(点推定しない)** |
 
 ### 5.4 不確実性の伝播(主結果の単位)
 
-$\eta_{\mathrm{cog}}$、内部ノイズ、視距離、輝度の文献範囲をモンテカルロ(またはグリッド)伝播し、$f_{\mathrm{sat}}$ と $G_{\mathrm{useful}}$ を**「文献で支持された人間知覚限界の不確実性帯(95%帯)」**として提示する。単一のHuman Ceiling点推定は主張しない。IORN-002で確立した「点推定でなく区間を主役にする」方針を踏襲。
+$\eta_{\mathrm{cog}}$、神経内部雑音スケール $\kappa$、視距離 $D$、拡大率 $Z$、輝度の文献範囲をモンテカルロ(またはグリッド)伝播し、$f_{\mathrm{sat}}$・$G_{\mathrm{useful}}$・$Z^{*}$ を**「文献で支持された人間知覚限界の不確実性帯(95%帯)」**として提示する。単一のHuman Ceiling点推定は主張しない。IORN-002で確立した「点推定でなく区間を主役にする」方針を踏襲。
+
+$\kappa$ は主形式では $f_{\mathrm{sat}}$ を直接左右する支配パラメータであるため、伝播の中心に置く($\kappa=1$ を基準、範囲は文献の内部雑音推定から設定し、Methods に根拠を明記)。
 
 ## 6. 実装計画
 
-**リポジトリ(仮称):** `percept-transfer`(IORN-009)。IORN-002の設計原則を継承: 純Python(numpy/scipy)、全段seed付き決定論、`paper/make_figures.py`型のresults.json駆動、独立実装+文献値とのクロスチェックをCIに組込み。
+**リポジトリ:** `human_ai_taskcore`(パッケージ名 `ptx`)。IORN-002の設計原則を継承: 純Python(numpy/scipy)、全段seed付き決定論、`paper/make_figures.py`型のresults.json駆動、独立実装+文献値とのクロスチェックをCIに組込み。
 
-モジュール構成案:
+モジュール構成(M2 時点の実装状況を反映):
 
-- `ptx/phantom_lung.py` — 1/f^β肺野テクスチャ+結節挿入(IORN-002 phantom.pyの拡張)
-- `ptx/chain.py` — GSDF表示モデル、眼球MTF、Barten CSF、内部ノイズ(各々文献式から独立実装、文献の数表と照合するテスト)
-- `ptx/observer.py` — NPWE および channelized CHO(Gabor/DOGチャネル)。**2系統併記でモデル選択依存性を感度分析化**
-- `ptx/detectability.py` — $d'$ 積分、$f_{\mathrm{sat}}$、$R_{\mathrm{perceptual}}$、$G_{\mathrm{useful}}$、不確実性伝播
-- `ptx/external.py` — Phase 2 digitizeデータの取込み・順位相関・校正解析
-- `ptx/case_uhrct.py` — H3ケーススタディ:公表TTF/NPSからのU-HRCT/従来機チェーン構成と寄与率×拡大率マップ
+- `ptx/phantom_lung.py`(実装済) — HU校正済み異方性1/f^β肺野テクスチャ、Murray則の血管樹、部分体積付き球結節、解析的タスク関数 $W_{\mathrm{task}}$(ディスクのFourier変換 × 球の部分体積係数)
+- `ptx/chain.py`(実装済) — CT TTF/NPS 取得段、GSDF表示モデル・表示画素MTF、眼球MTF、Barten CSF と神経雑音密度 $\Phi(u)$、視距離・拡大率の幾何、$H_{\mathrm{eff}}/N_{\mathrm{eff}}$ 組立て(各々文献式から独立実装、文献の数表・解析極限と照合するテスト付き)
+- `ptx/observer.py`(実装済) — NPWE および channelized CHO(DOGチャネル、視覚フィルタ・チャネル内部雑音つき)+ prewhitening ideal observer。**2系統併記でモデル選択依存性を感度分析化**
+- `ptx/detectability.py`(実装済) — $d'$ 積分(1次元/2次元等方)、$f_{\mathrm{sat}}$、$R_{\mathrm{perceptual}}$、$G_{\mathrm{useful}}$
+- `ptx/phase1.py`(実装済) — §7 の条件グリッドを回して results.json を決定論的に生成
+- `ptx/external.py`(M3) — Phase 2 digitizeデータの取込み・順位相関・校正解析
+- `ptx/case_uhrct.py`(M3) — H3ケーススタディ:公表TTF/NPSからのU-HRCT/従来機チェーン構成と、寄与率の $(Z, D)$ マップ・$Z^{*}$ 等値線
+- 不確実性伝播(M3)は `ptx/detectability.py` に追加する
 
 ## 7. 実験計画(Phase 1)
 
-- **タスク:** 小型肺結節検出(径 4/6/8 mm × コントラスト 2水準を基本グリッド)
-- **物理条件:** 線量(≥5水準)× スライス厚(2–3水準)× 再構成カーネル相当のNPS整形(2–3水準)
-- **表示条件:** 診断用モニタ標準(GSDF較正、画素ピッチ・視距離・拡大率を明記)+ 感度分析として拡大率2水準
-- **U-HRCTケーススタディ(H3):** 公表TTF/MTF・NPS値で規定したU-HRCT級/従来級の2チェーンを比較し、付加高周波帯域の寄与率を拡大率の関数として等高線提示
+- **タスク:** 小型肺結節検出(径 4/6/8 mm × コントラスト 2水準 = 擦りガラス相当 250 HU / 充実性相当 880 HU)
+- **物理条件:** 線量(5水準 0.25–4×)× スライス厚(3水準 0.5/1/3 mm)× 再構成カーネル相当のTTF/NPS整形(3水準 $f_{50}$ = 0.30/0.50/0.75 lp/mm)
+- **表示条件:** 診断用モニタ標準(GSDF較正、画素ピッチ 0.2 mm、視距離 500 mm、8bit階調、ウィンドウ幅 1500 HU)+ 拡大率2水準(1.0/2.0)。再構成は 200 mm FOV × 512(画素 0.39 mm、Nyquist 1.28 lp/mm)
+- **U-HRCTケーススタディ(H3, M3):** 公表TTF/MTF・NPS値で規定したU-HRCT級/従来級の2チェーンを比較し、付加高周波帯域の寄与率を**拡大率 $Z$ と視距離 $D$ の2次元マップ**として等高線提示し、$Z^{*}$ の等値線を重ねる。$a = D\tan(1^\circ)/M$ が両者に依存するため $Z$ と $D$ は独立でなく、片方だけを振ると設計指針を誤る(v0.4 追加)
 - **主要評価項目:** $f_{\mathrm{sat}}$ の不確実性帯、および $G_{\mathrm{useful}}$ の線量依存カーブ(飽和領域の同定)
-- **副次評価項目:** $R_{\mathrm{perceptual}}$ の条件マップ、NPWE/CHO間の一致度
+- **副次評価項目:** $R_{\mathrm{perceptual}}$ の条件マップ、NPWE/CHO間の**順位**一致度(絶対値の一致は主張しない、リスク登録簿#11)
+- **検証項目(v0.4 追加):** 床項を落とした極限での**可逆フィルタ不変性** — 主形式・付録形式のいずれにおいても再構成カーネルによる $d'^2$ の相対ばらつきが機械精度に収まることを results.json に記録し、論文の validation 節で報告する。これにより主形式で観測されるカーネル依存性が「神経雑音床の足跡」であると同定できる
 - **再現性:** 全数値はスクリプト再生成、パラメータ・seedはリポジトリに固定
+
+### 7.1 Phase 1 実行結果(M2、v0.4 主形式)
+
+540条件を完走。`results/phase1.json` に全数値を格納(2回実行してハッシュ一致を確認済み)。
+
+| 項目 | 実測 |
+|---|---|
+| $f_{\mathrm{sat}}(95\%)$ | 0.213–0.653 lp/mm(中央値 0.335 = **Nyquist の 26%**) |
+| $R_{\mathrm{perceptual}}$ | 0.055–0.491(中央値 0.226) |
+| $G_{\mathrm{useful}}$ 単調減少 | 108/108 系列(**H1 支持**) |
+| $N_{\mathrm{neural}}$ の帯域積分シェア | 3.6–98.8%(中央値 63%)— 低線量では画像雑音律速、高線量では神経雑音律速の両regimeを跨ぐ |
+| $N_{\mathrm{quant}}$ のシェア | 最大 0.03% — 項として保持するが飽和機構ではない |
+| カーネル間 $d'$ ばらつき(主形式) | 中央値 8.5%、最大 23%。全180組で最も鋭いカーネルが最大 $d'$ |
+| 可逆フィルタ不変性(床項オフ) | 相対ばらつき $\le 1.1\times10^{-16}$(主形式・付録形式とも) |
+| NPWE vs CHO 順位相関 | Spearman $\rho = 0.995$ |
+| 拡大率 $1\to2$ | $d'$ ×1.008–1.135、$f_{\mathrm{sat}}$ ×1.002–1.43 |
+
+**解釈:** 標準表示条件では帯域の約3/4が知覚に届かない($f_{\mathrm{sat}} \approx$ Nyquist の1/4)。ただし**鋭い再構成カーネルは常に有利**であり、本枠組みは「高解像度は無意味」とは述べない(§2.2の主張設計と整合)。届かない原因は再構成でも表示量子化でもなく**神経内部雑音床**であり、拡大では超えられない(H3)。
 
 ## 8. Phase 2 — 既報人間observerデータによる外部検証(論文内に内蔵)
 
@@ -201,12 +254,14 @@ $\eta_{\mathrm{cog}}$、内部ノイズ、視距離、輝度の文献範囲を�
 | 7 | 「U-HRCT否定論文だ」というベンダー・推進派の反発 | 主張は条件付き(標準表示下)かつ建設的(情報を届ける表示設計指針を同じ式で提供)。H3は「拡大すれば回復する」side も定量提示。反解像度ではなく**解像度投資を患者利益に変換する条件の解明**と一貫して表現 |
 | 8 | シカゴ学派系譜の査読者の防衛的反応 | §3の戦術ノート通り「Rossmannプログラムの完成」として敬意ある位置づけ。Rossmann 1969・Metz 1978・Doi 2007 を正引用し、系譜の延長線上に置く。胸部X線の外部検証採用が継承の実体的証明になる |
 | 9 | 「汎用を名乗るなら各モダリティで検証せよ」(スコープクリープ要求) | 適用範囲を§2.1で事前に明示的に境界設定(線形X線系のみ、MRI/US除外)。汎用性の検証は胸部X線1本(§8)に限定し「formulation は一般、validation は CT+胸部X線」と明記。マンモ・トモシンセシスは Future Work に明示的に置く |
+| 10 | 「なぜCSFを分母(内部雑音)に置いたのか。分子の重みにするのが普通では」 | §5.1/§5.2 で理由を明示:分子重み形式は床項を落とすと**任意の可逆線形フィルタに対して不変**になり、再構成カーネル・表示MTFの効果を原理的に記述できない。Barten の CSF 自体が内部雑音から導かれており、$\Phi(u) = A_{\mathrm{int}}/(2k^2S_{\mathrm{neural}}^2)$ という厳密な同値関係を実装で検証済み。両形式の数値を results.json に併記し、不変性を validation 結果として提示する |
+| 11 | 「絶対 $d'$ が閾値域から外れている」「NPWEとCHOで値が違う」 | 主結果は**条件間順位と相対量**($f_{\mathrm{sat}}$、$R_{\mathrm{perceptual}}$、$G_{\mathrm{useful}}$ の形状、$Z^{*}$)であり、絶対 $d'$ の校正は主張しない。$\eta_{\mathrm{cog}}$・$\kappa$ は範囲パラメータで、絶対水準はこの区間内で自由度がある。H2 の外部検証も研究内順位相関を主要指標に設計済み(§8)。図に絶対値を出す場合は閾値コントラストで正規化する |
 
 ## 10. 成果物・マイルストーンと009B接続
 
-1. **M1:** 本計画書確定+リポジトリ骨格+chain.py(GSDF/眼球MTF/CSF、文献照合テスト付き)
-2. **M2:** 肺野ファントム+observer 2系統+$d'$積分(Phase 1完走、飽和の有無を初確認)
-3. **M3:** 不確実性伝播+U-HRCTケーススタディ+Phase 2 文献調査・digitize・検証解析
+1. **M1(完了):** 本計画書確定+リポジトリ骨格+chain.py(GSDF/眼球MTF/CSF、文献照合テスト付き)
+2. **M2(完了):** 肺野ファントム+observer 2系統+$d'$積分(Phase 1完走 540条件、飽和を確認 = §7.1)。実装により定式化の欠陥が判明したため本計画書を v0.4 に改訂
+3. **M3(進行中):** 不確実性伝播($\eta_{\mathrm{cog}}, \kappa, D, Z$, 輝度)+U-HRCTケーススタディ($(Z,D)$マップと$Z^{*}$)+Phase 2 文献調査・digitize・検証解析
 4. **M4:** 原稿(IORN-002の md正本→docx パイプライン転用)
 5. **009Bへの布石:** 009A原稿のIntroに二分岐系(Human/AI branch)構想図を1枚掲示。$S_{AI}(f)$・band-stop intervention・$I_{\mathrm{shared}}/I_{\mathrm{AI-only}}/I_{\mathrm{Human-only}}$ の定義は009Bに温存
 
@@ -229,6 +284,12 @@ $\eta_{\mathrm{cog}}$、内部ノイズ、視距離、輝度の文献範囲を�
 6. The University of Chicago, Department of Radiology. Kurt Rossmann Laboratories(研究室紹介ページ、設立経緯と研究主題)
 7. ICRP Publication 87. Managing Patient Dose in Computed Tomography. *Ann. ICRP* 2000, 30(4).(4列期の線量効率問題;執筆時に該当箇所の引用文を確定)
 
+### v0.4 で定式化に直接使用した一次資料
+
+8. Barten, P.G.J. *Contrast Sensitivity of the Human Eye and Its Effects on Image Quality*; SPIE Press, 1999.(瞳孔径モデル、眼球光学MTF、CSF、光子雑音+神経雑音密度 $\Phi_0$・$u_0$・$k$・$T$・$X_{\max}$・$N_{\max}$ の標準観察者値。$\Phi(u)$ と CSF の同値関係は本書の導出から従う)
+9. DICOM PS3.14: Grayscale Standard Display Function.(表示階調の標準規格。JND索引→輝度の有理多項式と、量子化雑音の階調数)
+10. Abbey, C.K.; Barrett, H.H. Human- and Model-Observer Performance in Ramp-Spectrum Noise: Effects of Regularization and Object Variability. *J. Opt. Soc. Am. A* 2001, 18, 473–488.(dense DOG チャネルの形状パラメータ $\alpha = 1.4$, $q = 1.67$)
+
 ---
 
-*本計画書の全定義式・パラメータは実装時に `results.json` 駆動で固定し、論文本文と乖離させない(IORN-002方式)。*
+*本計画書の全定義式・パラメータは実装時に `results.json` 駆動で固定し、論文本文と乖離させない(IORN-002方式)。v0.3 は git 履歴に保存されている(`docs/IORN-009A_research_protocol_v0.3.md` を v0.4 で置換)。*
