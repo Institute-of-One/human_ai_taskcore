@@ -1,7 +1,14 @@
 {
   "schema_version": "1.3",
   "frozen": "2026-08-24",
-  "note": "Registry for the H2 external validation (protocol section 8). The inclusion criteria in docs/IORN-009A_H2_preregistration_v1.0.md were frozen before the literature search began; v1.1 amended C2's condition-axis vocabulary, v1.2 replaced the enumeration with the principle that an axis counts only if it names a declared model input, and v1.3 added the task_congruence descriptive field and froze the schema, each with the disclosure its own document carries. This file is still empty, since no performance data has been extracted. Every study looked at is recorded here, either in studies or, with the criterion it failed, in screened.",
+  "note": "Registry for the H2 external validation (protocol section 8). The inclusion criteria in docs/IORN-009A_H2_preregistration_v1.0.md were frozen before the literature search began; v1.1 amended C2's condition-axis vocabulary, v1.2 replaced the enumeration with the principle that an axis counts only if it names a declared model input, and v1.3 added the task_congruence descriptive field and froze the schema, each with the disclosure its own document carries. Every study looked at is recorded here, either in studies or, with the criterion it failed, in screened. Studies is still empty: CAND-01 and CAND-13 are admitted by the mechanical judgement recorded in v1.2 section C, but their condition points cannot be entered until the PDFs are in hand, because every value has to carry its page and table. No performance data has been extracted.",
   "studies": [],
-  "screened": []
+  "screened": [
+    {
+      "study_id": "goo2004",
+      "citation": "Goo JM, et al. Effect of monitor luminance and ambient light on observer performance in soft-copy reading of digital chest radiographs. Radiology 2004;232(3). doi:10.1148/radiol.2323030628 (PMID 15273338). Candidate CAND-14 of docs/h2_candidate_scan_v1.1.md; bibliographic detail confirmed at title and abstract level only.",
+      "failed_criterion": "C2",
+      "exclusion_reason": "C2: 'ambient_light' correspond to no term in the model, so the effect of varying them cannot be predicted; an axis that cannot be predicted is not counted as a validation axis (pre-registration v1.2 section A). The study varies monitor luminance and ambient light; 'luminance' is an admissible axis under v1.2 but leaves one effective axis, short of the two C2 requires. Decided on the abstract's stated design, before any performance data was read. A second concern is recorded in the candidate scan and deliberately kept out of this reason so that the exclusion is not retrofitted with stacked justifications: observers were free to adjust window width and level, which the model takes as a fixed input."
+    }
+  ]
 }

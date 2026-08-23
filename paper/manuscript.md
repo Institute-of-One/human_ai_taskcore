@@ -48,22 +48,89 @@ detectability; ultra-high-resolution CT; display conditions
 
 # 1. Introduction
 
-[TODO prose. Structure to keep:]
+When Rossmann established the point spread function and the modulation
+transfer function as the working language of radiographic image quality, he was
+explicit that the object of analysis was not the imaging device but "the entire
+radiological process involving exposing, imaging, and visual detection
+operations" (Rossmann 1969). Visual detection was named as the terminal stage
+of the chain from the beginning. What the era delivered, however, was a
+descriptive cascade of transfer functions: the terminal stage was declared
+rather than carried through, because closing it requires a task, a noise
+spectrum and a statement about the observer's own limitations in the same
+expression as the physics.
 
-- The Rossmann programme measured the physics of the imaging chain (MTF, NPS)
-  and Metz-era ROC analysis measured the observer; what has never been closed
-  in one expression is the path from the physics to what the observer can use.
-- Acquisition resolution and dose keep improving, and the question of where
-  the returns stop is asked device by device rather than from a common
-  formulation.
-- This work closes the chain in a single closed-form expression, and states
-  the answer as a frequency ($f_{\mathrm{sat}}$) and a display condition
-  rather than as a verdict on any scanner.
-- Falsifiable hypotheses: H1 (saturation exists), H2 (the model reproduces the
-  condition ordering of published observer studies), H3 (a U-HRCT-class extra
-  band reaches the reader only under sufficient magnification).
-- Scope: linear X-ray-based systems, near-threshold detection tasks. No claim
-  about diagnosis is made anywhere in this paper.
+The two developments that followed did not close it either, and were never
+meant to. Receiver operating characteristic analysis gave the field a rigorous
+way to *measure* observer performance and to relate it to the costs and
+benefits of diagnostic decisions (Metz 1978), but it measures the observer
+rather than predicting the observer from physical conditions: each new
+acquisition or display condition requires a new reading study. Computer-aided
+diagnosis, developed systematically in the same laboratory from the early
+1980s, positioned the computer as a reader of the same image and a provider of
+a second opinion (Doi 2007), which again leaves the question of what the human
+reader can extract from a given physical condition unaddressed. The physics of
+the chain, the measurement of the observer, and computational assistance all
+exist; a closed-form path from the first to the second does not.
+
+The gap matters more now than it did, because acquisition resolution and dose
+efficiency are still improving and the question of where the returns stop is
+being asked one device at a time. Ultra-high-resolution CT reconstructs detail
+well beyond the sampling of a routine display window (Kakinuma 2015), and each
+such advance is evaluated with its own multireader study, on its own display
+protocol, without a common formulation in which the answers could be compared
+or predicted. Asked device by device, the question also invites the wrong
+answer: that finer acquisition is or is not "worth it", as though the ceiling
+were a property of the scanner.
+
+This work closes the chain in a single closed-form, falsifiable expression. A
+detection task is carried from the reconstruction through display transfer and
+luminance mapping, ocular optics, and the neural internal noise of a published
+contrast-sensitivity model, and integrated into a task-weighted detectability
+$d'^2_{\mathrm{human}}$. The display and visual stages are anchored to current
+standards rather than to period hardware, so that the only free parameters are
+the declared ranges of the observer terms, and results are reported as
+intervals rather than point estimates. From the frequency-resolved integrand we
+define where the delivered information sits (the saturation frequency
+$f_{\mathrm{sat}}$), how much of the available information arrives
+($R_{\mathrm{perceptual}}$), what an increment of dose buys
+($G_{\mathrm{useful}}$), and how much magnification a given acquisition
+requires before its finest band arrives at all (the sufficient magnification
+$M^{*}$).
+
+The structural consequence is worth stating plainly, because it is easily
+misread as an argument against resolution. In this model sharper
+reconstruction never hurts and resolution is never wasted. But the ceiling it
+approaches is not set by the scanner. A reconstruction kernel filters signal
+and image noise by the same factor, so in the absence of any noise the observer
+contributes themselves, it cancels out of the detectability integral exactly —
+an invertible filter cannot change what is detectable. What breaks that
+cancellation is the observer's own noise, which enters after the display and is
+therefore not filtered by anything upstream. The height of the attainable
+ceiling is thus a property of the observer and of the display that feeds them,
+and the same acquisition can sit far below or close to that ceiling depending
+on how it is displayed. Resolution always acts; the limit on what it buys is
+set elsewhere.
+
+Three hypotheses are stated in advance and tested. H1: perceptually weighted
+detectability saturates in acquisition resolution and dose, so that a
+saturation frequency exists; the test is whether the decline of
+$G_{\mathrm{useful}}$ is resolved by its interval, since the sign of
+$G_{\mathrm{useful}}$ itself is uninformative. H2: the model reproduces the
+ordering of conditions in published human observer experiments; inclusion
+criteria, schema and analysis were frozen and committed before the literature
+search began, and the commit is cited in the data availability statement so
+that the ordering of criteria and data is auditable rather than asserted. H3:
+the extra band of a U-HRCT-class acquisition reaches the reader only under
+sufficient magnification, and because detectability rises monotonically towards
+an asymptote, the design quantity is a sufficient magnification and not an
+optimum.
+
+The scope is deliberately narrow. The formulation applies to linear,
+X-ray-based imaging chains and near-threshold detection tasks with the signal
+specified; the validation covers CT and chest radiography. Every statement in
+this paper is conditional on stated display and viewing conditions and concerns
+whether task-relevant information reaches the observer. Nothing here is a claim
+about whether a diagnosis can be made.
 
 # 2. Theory
 
@@ -138,6 +205,13 @@ the sufficient magnification $M^{*}$ and not an optimum.
 
 ## 4.1 Validation
 
+![Left: $d'^2$ across the three reconstruction kernels, relative to the
+standard kernel, with both noise floors switched off and switched on. With the
+floors off the kernel leaves the integral exactly, as an invertible filter
+must. Right: the mechanism — the kernel filters signal and image noise
+together and leaves the neural floor untouched, so all it can move is which of
+the two dominates at a given frequency.](figures/fig1_kernel_invariance.png)
+
 [TODO prose] With the noise floors switched off, the reconstruction kernel
 cancels out of the detectability integral to
 0.0e+00 relative spread, confirming invertible-filter
@@ -150,10 +224,12 @@ noise. NPWE and channelised Hotelling observers rank the conditions alike
 
 ![Contribution density to $d'^2$ against spatial frequency at three dose
 levels, with $f_{\mathrm{sat}}(95\%)$ marked. The reconstruction Nyquist
-frequency is 1.28 lp/mm.](figures/fig1_contribution_density.png)
+frequency is 1.28 lp/mm.](figures/fig2_contribution_density.png)
 
-![Distribution of $f_{\mathrm{sat}}(95\%)$ relative to the reconstruction
-Nyquist frequency over all 540 conditions.](figures/fig2_f_sat_distribution.png)
+![$f_{\mathrm{sat}}(95\%)$ relative to the reconstruction Nyquist frequency.
+Left and centre: against dose for each kernel at both magnifications, with
+bands spanning task diameter, contrast and slice thickness. Right: the
+distribution over all 540 conditions.](figures/fig3_f_sat_atlas.png)
 
 [TODO prose] $f_{\mathrm{sat}}(95\%)$ spans 0.213 to
 0.653 lp/mm with a median of 0.335 lp/mm, that is
@@ -166,7 +242,7 @@ withholds the high frequencies is the observer, not the display's bit depth.
 ## 4.3 The gain per unit dose declines in every condition (H1)
 
 ![$G_{\mathrm{useful}}$ against relative dose with 95% bands, for the standard
-kernel at the lower of the two task contrasts.](figures/fig3_g_useful_bands.png)
+kernel at the lower of the two task contrasts.](figures/fig4_g_useful_bands.png)
 
 [TODO prose] 100% of the 108 dose
 series show a monotonically declining $G_{\mathrm{useful}}$ at the point
@@ -183,11 +259,11 @@ the interval treatment. $R_{\mathrm{perceptual}}$ stays within
 
 ![Share of $d'^2$ arriving from above the conventional Nyquist frequency of
 1.28 lp/mm, over anatomical magnification and viewing
-distance.](figures/fig4_added_band_map.png)
+distance.](figures/fig5_added_band_map.png)
 
 ![Maximum added-band share against task diameter, with the absolute $d'$ of the
 U-HRCT chain at the reference reading condition on the right
-axis.](figures/fig5_added_band_vs_task.png)
+axis.](figures/fig6_added_band_vs_task.png)
 
 [TODO prose] The band above 1.28 lp/mm contributes
 0.33% of $d'^2$ in the median and at most

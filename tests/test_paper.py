@@ -137,10 +137,10 @@ class TestTemplate:
 
 
 class TestFigures:
-    def test_all_five_figures_exist_and_are_referenced(self):
+    def test_every_figure_exists_and_is_referenced(self):
         template = TEMPLATE.read_text(encoding="utf-8")
         figures = sorted(Path("paper/figures").glob("fig*.png"))
-        assert len(figures) == 5
+        assert len(figures) == 6
         for figure in figures:
             assert figure.stat().st_size > 0
             assert f"figures/{figure.name}" in template

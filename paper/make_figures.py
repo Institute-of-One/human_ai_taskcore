@@ -307,23 +307,147 @@ def figure_contribution_density(path):
     plt.close(fig)
 
 
-def figure_f_sat_distribution(path, phase1):
-    """How far below Nyquist the delivered band sits, over the whole grid."""
-    nyquist = phase1["metadata"]["nyquist_lpmm"]
-    ratios = np.array(
-        [c["f_sat_95_lpmm"] / nyquist for c in phase1["conditions"]]
-    )
+def figure_f_sat_atlas(path, phase1):
+    """Where the delivered band sits over the whole grid, and what moves it.
 
-    fig, ax = plt.subplots(figsize=(4.2, 2.8), layout="constrained")
-    ax.hist(ratios, bins=24, color="#3182bd", edgecolor="white")
-    ax.axvline(
-        float(np.median(ratios)), color="#08306b", lw=1.5,
+    The histogram alone says the band is far below Nyquist but not what it
+    responds to, so the atlas puts the structure next to it: dose and
+    magnification raise f_sat, and the kernel barely enters, which is the
+    point of the validation figure that follows.
+    """
+    nyquist = phase1["metadata"]["nyquist_lpmm"]
+    conditions = phase1["conditions"]
+    ratios = np.array([c["f_sat_95_lpmm"] / nyquist for c in conditions])
+    zooms = sorted({c["zoom"] for c in conditions})
+    kernels = ["smooth", "standard", "sharp"]
+    colours = {"smooth": "#9ecae1", "standard": "#3182bd", "sharp": "#08306b"}
+
+    fig, axes = plt.subplots(
+        1, len(zooms) + 1, figsize=(2.5 * (len(zooms) + 1), 2.8),
+        layout="constrained", sharey=True,
+    )
+    for ax, zoom in zip(axes, zooms):
+        for kernel in kernels:
+            rows = [
+                c
+                for c in conditions
+                if c["zoom"] == zoom and c["kernel"] == kernel
+            ]
+            doses = sorted({r["dose_relative"] for r in rows})
+            # the spread across task diameter, contrast and slice thickness is
+            # shown as a band rather than averaged away
+            lower, median, upper = np.transpose(
+                [
+                    np.percentile(
+                        [
+                            r["f_sat_95_lpmm"] / nyquist
+                            for r in rows
+                            if r["dose_relative"] == dose
+                        ],
+                        [0, 50, 100],
+                    )
+                    for dose in doses
+                ]
+            )
+            ax.fill_between(doses, lower, upper, color=colours[kernel], alpha=0.3)
+            ax.plot(
+                doses, median, color=colours[kernel], marker="o", ms=3,
+                label=kernel,
+            )
+        ax.set_xscale("log")
+        ax.set_xticks(doses)
+        ax.set_xticklabels([f"{d:g}" for d in doses])
+        ax.minorticks_off()
+        ax.set_xlabel("relative dose")
+        ax.set_title(f"magnification {zoom:g}x", fontsize=9)
+    axes[0].set_ylabel(r"$f_{\mathrm{sat}}(95\%)$ / Nyquist")
+    axes[0].set_ylim(0, 1)
+    axes[0].legend(loc="upper left", fontsize=8)
+
+    axes[-1].hist(
+        ratios, bins=24, range=(0, 1), color="#3182bd",
+        edgecolor="white", orientation="horizontal",
+    )
+    axes[-1].axhline(
+        float(np.median(ratios)), color="#c1121f", lw=1.4,
         label=f"median {np.median(ratios):.2f}",
     )
-    ax.set_xlabel(r"$f_{\mathrm{sat}}(95\%)$ / Nyquist")
-    ax.set_ylabel(f"conditions (of {len(ratios)})")
-    ax.set_xlim(0, 1)
-    ax.legend(loc="upper right")
+    axes[-1].set_xlabel(f"conditions (of {len(ratios)})")
+    axes[-1].set_title("all conditions", fontsize=9)
+    axes[-1].legend(loc="upper right", fontsize=8)
+    fig.savefig(path)
+    plt.close(fig)
+
+
+def figure_kernel_invariance(path, phase1):
+    """Validation: the kernel only reaches d' through the neural floor.
+
+    With both floors off the kernel filters signal and noise by the same
+    factor, so it has to leave the detectability integral exactly. Recovering
+    that cancellation to machine precision is what makes the sensitivity seen
+    with the floors on interpretable as physics rather than as a numerical
+    artefact -- so the two are drawn together.
+    """
+    kernels = phase1["summary"]["invertible_filter_invariance"]["kernels"]
+    task = Task(4.0, 250.0)
+    reference = Acquisition(slice_thickness_mm=0.5)
+    f = frequency_grid(reference, 2048)
+
+    floors = {
+        "floors off": Reading(n_grey_levels=None, kappa=0.0),
+        "floors on": Reading(),
+    }
+    results = {
+        label: [
+            evaluate(f, task, Acquisition(kernel=k, slice_thickness_mm=0.5), reading)
+            for k in kernels
+        ]
+        for label, reading in floors.items()
+    }
+    f50 = [
+        Acquisition(kernel=k).f50 for k in kernels
+    ]
+
+    fig, (left, right) = plt.subplots(
+        1, 2, figsize=(6.6, 2.9), layout="constrained"
+    )
+    for (label, evaluations), colour, marker in zip(
+        results.items(), ("#3182bd", "#c1121f"), ("o", "s")
+    ):
+        squared = np.array([e.dprime_human for e in evaluations]) ** 2
+        relative = squared / squared[kernels.index("standard")]
+        spread = relative.max() / relative.min() - 1.0
+        left.plot(
+            f50, relative, color=colour, marker=marker, ms=5,
+            label=f"{label} (spread {spread:.1e})"
+            if spread < 1e-9
+            else f"{label} (spread {100 * spread:.1f}%)",
+        )
+    left.axhline(1.0, color="0.5", lw=0.8, ls=":")
+    left.set_xlabel(r"kernel $f_{50}$ [lp/mm]")
+    left.set_ylabel(r"$d'^2$ relative to the standard kernel")
+    left.legend(loc="upper left", fontsize=8)
+
+    # why: the kernel filters signal and image noise together, and leaves the
+    # neural floor alone, so all it can move is the balance between the two
+    for kernel, colour in zip(kernels, ("#9ecae1", "#3182bd", "#08306b")):
+        chain = evaluate(
+            f, task, Acquisition(kernel=kernel, slice_thickness_mm=0.5), Reading()
+        ).chain
+        right.plot(
+            f, chain.n_neural / chain.n_image, color=colour, lw=1.4,
+            label=kernel,
+        )
+    right.axhline(1.0, color="#c1121f", lw=0.9, ls="--")
+    right.annotate(
+        "neural floor takes over", (0.02, 1.0), xytext=(2, 4),
+        textcoords="offset points", color="#c1121f", fontsize=8,
+    )
+    right.set_yscale("log")
+    right.set_xlabel("spatial frequency [lp/mm]")
+    right.set_ylabel("neural floor / image noise")
+    right.set_xlim(0, reference.nyquist_lpmm)
+    right.legend(loc="lower left", fontsize=8, title="kernel", title_fontsize=8)
     fig.savefig(path)
     plt.close(fig)
 
@@ -483,18 +607,21 @@ def main(argv=None):
     figures = args.paper_dir / "figures"
     figures.mkdir(parents=True, exist_ok=True)
     with plt.rc_context(STYLE):
-        figure_contribution_density(figures / "fig1_contribution_density.png")
-        figure_f_sat_distribution(
-            figures / "fig2_f_sat_distribution.png", sources["phase1"]
+        figure_kernel_invariance(
+            figures / "fig1_kernel_invariance.png", sources["phase1"]
+        )
+        figure_contribution_density(figures / "fig2_contribution_density.png")
+        figure_f_sat_atlas(
+            figures / "fig3_f_sat_atlas.png", sources["phase1"]
         )
         figure_g_useful_bands(
-            figures / "fig3_g_useful_bands.png", sources["uncertainty"]
+            figures / "fig4_g_useful_bands.png", sources["uncertainty"]
         )
         figure_added_band_map(
-            figures / "fig4_added_band_map.png", sources["case_uhrct"]
+            figures / "fig5_added_band_map.png", sources["case_uhrct"]
         )
         figure_added_band_vs_task(
-            figures / "fig5_added_band_vs_task.png", sources["case_uhrct"]
+            figures / "fig6_added_band_vs_task.png", sources["case_uhrct"]
         )
 
     (args.paper_dir / "numbers.json").write_text(
@@ -508,7 +635,7 @@ def main(argv=None):
         args.paper_dir / "manuscript.md",
     )
 
-    print(f"wrote 5 figures to {figures}")
+    print(f"wrote 6 figures to {figures}")
     print(
         f"wrote {args.paper_dir / 'numbers.json'} "
         f"({len(numbers.values)} quantities)"

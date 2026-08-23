@@ -10,6 +10,11 @@ dist/
 # review evidence — NEVER commit (IORN-002 protocol)
 review_evidence/
 
+# papers retrieved for the H2 external validation — NEVER commit (copyright).
+# What we extract from them lives in data/h2_studies.json with page and table
+# provenance, which is the part that has to be reproducible.
+data/papers/
+
 # paper build artifacts and submission-only files
 paper/*.tmp
 paper/.~lock*

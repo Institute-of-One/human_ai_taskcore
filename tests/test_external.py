@@ -367,11 +367,25 @@ class TestPoolRequirements:
 
 
 class TestRegistryFile:
-    def test_the_registry_is_frozen_empty_before_the_search(self):
+    def test_no_performance_data_has_been_extracted_yet(self):
+        # screening has started, so the file is no longer empty, but a study
+        # only reaches `studies` once its condition points are transcribed
+        # from the paper with their provenance
         registry = load_registry("data/h2_studies.json")
         assert registry.schema_version == SCHEMA_VERSION
         assert registry.studies == ()
-        assert registry.screened == ()
+
+    def test_every_screened_study_states_a_criterion_and_a_reason(self):
+        registry = load_registry("data/h2_studies.json")
+        assert registry.screened  # the search has begun
+        for screened in registry.screened:
+            assert screened.failed_criterion.strip()
+            assert screened.exclusion_reason.strip()
+            assert screened.citation.strip()
+        assert validate_registry(registry) == {
+            # the only outstanding problem is that the pool is not yet built
+            "pool": validate_registry(registry)["pool"]
+        }
 
     def test_the_registry_file_round_trips(self):
         payload = json.loads(
