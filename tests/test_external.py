@@ -25,7 +25,9 @@ from ptx.external import (
     load_registry,
     metric_to_dprime,
     pc_2afc_to_dprime,
+    pool_partition,
     pooled_calibration,
+    qualifies_under_v1_0,
     rank_agreement,
     validate_registry,
     validate_study,
@@ -104,6 +106,20 @@ class TestFrozenCriteria:
     def test_one_condition_axis_fails_c2(self):
         problems = validate_study(_study(condition_axes=("dose",)))
         assert any(p.startswith("C2") for p in problems)
+
+    def test_condition_axes_come_from_a_closed_vocabulary(self):
+        # free text would let "two condition axes" be argued into existence
+        problems = validate_study(
+            _study(condition_axes=("dose", "something interesting"))
+        )
+        assert any(p.startswith("C2") for p in problems)
+
+    def test_the_amendment_admits_pixel_size_as_an_axis(self):
+        study = _study(condition_axes=("pixel_size", "displayed_matrix"))
+        assert validate_study(study) == []
+        # ... and the strict pre-amendment reading does not
+        assert not qualifies_under_v1_0(study)
+        assert qualifies_under_v1_0(_study())
 
     def test_too_few_condition_points_fails_c3(self):
         problems = validate_study(_study(conditions=_conditions(3)))
@@ -210,6 +226,26 @@ class TestPoolRequirements:
     def test_schema_version_mismatch_is_caught(self):
         problems = validate_registry(Registry("0.9", "2026-08-23"))
         assert "schema" in problems
+
+    def test_the_amendment_sensitivity_subset_is_split_mechanically(self):
+        # the v1.0-strict pool has to be derivable without judgement, so that
+        # it cannot be chosen after seeing the correlations
+        studies = (
+            _study(study_id="ct1", conditions=_conditions(5)),
+            _study(
+                study_id="cxr1",
+                modality="chest_radiography",
+                generality_check=True,
+                condition_axes=("pixel_size", "displayed_matrix"),
+                conditions=_conditions(5),
+            ),
+        )
+        partition = pool_partition(
+            Registry(SCHEMA_VERSION, "2026-08-23", studies=studies)
+        )
+        assert len(partition["v1_1"]) == 2
+        assert [s.study_id for s in partition["v1_0_strict"]] == ["ct1"]
+        assert partition["admitted_by_amendment"] == ("cxr1",)
 
 
 class TestRegistryFile:

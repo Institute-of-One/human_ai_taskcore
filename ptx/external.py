@@ -1,6 +1,7 @@
 """H2 external validation against published observer studies (section 8).
 
-This module is the executable half of ``docs/IORN-009A_H2_preregistration_v1.0.md``:
+This module is the executable half of the pre-registration
+(``docs/IORN-009A_H2_preregistration_v1.0.md``, amended by ``..._v1.1.md``):
 the inclusion criteria, the schema and the analysis are all fixed here so that
 study selection cannot drift once the literature is in front of us. The
 registry it validates (``data/h2_studies.json``) is deliberately empty until
@@ -41,15 +42,26 @@ __all__ = [
     "metric_to_dprime",
     "validate_study",
     "validate_registry",
+    "qualifies_under_v1_0",
+    "pool_partition",
     "load_registry",
     "ModelPredictor",
     "rank_agreement",
     "pooled_calibration",
 ]
 
-SCHEMA_VERSION = "1.0"
+SCHEMA_VERSION = "1.1"
 
-# frozen 2026-08-23; see the pre-registration document for the rationale
+# frozen 2026-08-23; see the pre-registration documents for the rationale.
+# Condition axes are a closed vocabulary so that "two condition axes" cannot be
+# argued into existence with free text. The v1.1 amendment added pixel size and
+# displayed matrix, with the disclosure its own document carries; studies that
+# rely on them are partitioned out by pool_partition so the strict v1.0 reading
+# can be reported alongside the main analysis.
+V1_0_AXES = ("dose", "lesion_size", "contrast", "reconstruction", "processing")
+V1_1_ADDED_AXES = ("pixel_size", "displayed_matrix")
+ALLOWED_AXES = V1_0_AXES + V1_1_ADDED_AXES
+
 ALLOWED_MODALITIES = ("ct", "chest_radiography")
 ALLOWED_METRICS = ("auc", "pc_2afc", "dprime")
 ALLOWED_ACQUISITION = ("table", "digitised_figure")
@@ -166,7 +178,12 @@ def validate_study(study):
     problems = []
     if study.modality not in ALLOWED_MODALITIES:
         problems.append(f"C1: modality {study.modality!r} out of scope")
-    if len(study.condition_axes) < MIN_CONDITION_AXES:
+    unknown = [
+        axis for axis in study.condition_axes if axis not in ALLOWED_AXES
+    ]
+    if unknown:
+        problems.append(f"C2: condition axes outside the vocabulary: {unknown}")
+    elif len(study.condition_axes) < MIN_CONDITION_AXES:
         problems.append(
             f"C2: needs >= {MIN_CONDITION_AXES} condition axes, "
             f"has {len(study.condition_axes)}"
@@ -240,6 +257,32 @@ def validate_registry(registry):
     if pool:
         problems["pool"] = pool
     return problems
+
+
+def qualifies_under_v1_0(study):
+    """Whether the study meets C2 under the stricter pre-amendment reading."""
+    return (
+        sum(1 for axis in study.condition_axes if axis in V1_0_AXES)
+        >= MIN_CONDITION_AXES
+    )
+
+
+def pool_partition(registry):
+    """Split the pool into the v1.1 analysis set and the strict v1.0 subset.
+
+    The amendment that widened C2 has to be shown to be harmless, so the
+    sensitivity analysis reports both. Doing the split mechanically leaves no
+    room for choosing the subset after seeing the correlations.
+    """
+    v1_1 = tuple(registry.studies)
+    v1_0 = tuple(s for s in v1_1 if qualifies_under_v1_0(s))
+    return {
+        "v1_1": v1_1,
+        "v1_0_strict": v1_0,
+        "admitted_by_amendment": tuple(
+            s.study_id for s in v1_1 if s not in v1_0
+        ),
+    }
 
 
 def _study_from_dict(payload):
