@@ -62,6 +62,24 @@ python -m ptx.uncertainty --out results/uncertainty.json
 python -m ptx.case_uhrct --out results/case_uhrct.json
 ```
 
+## Manuscript
+
+Numbers reach the text one way only. `paper/manuscript_template.md` carries
+`{{key}}` placeholders, and `paper/make_figures.py` reads `results/*.json`,
+writes the figures and `paper/numbers.json` (each quantity with the file and
+path it came from), then renders `paper/manuscript.md`. Editing
+`manuscript.md` by hand is pointless: it is generated.
+
+```bash
+pip install -e ".[dev,paper]"
+python paper/make_figures.py
+pandoc -f markdown-implicit_figures paper/manuscript.md \
+  --reference-doc=paper/reference.docx -o paper/manuscript.docx
+```
+
+`-f markdown-implicit_figures` matters: without it pandoc turns each figure's
+alt text into a second caption.
+
 ## Design principles
 
 Inherited from IORN-002
