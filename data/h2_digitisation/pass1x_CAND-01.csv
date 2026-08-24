@@ -1,0 +1,43 @@
+study_id,figure,panel,series,observer_type,recon,dose_label,dose_value,dose_unit,diameter_mm,y_value,y_err_low,y_err_high,pass_id,extractor,method,notes
+yu2013,7,,small,human,FBP,60 mAs,60,mAs,3.0,72.5,,,1x,cursor-agent,visual reading of 1500-2000 dpi crops against the 10-percent gridlines,
+yu2013,7,,small,model_cho,FBP,60 mAs,60,mAs,3.0,74.0,,,1x,cursor-agent,visual reading of 1500-2000 dpi crops against the 10-percent gridlines,
+yu2013,7,,small,human,FBP,120 mAs,120,mAs,3.0,79.8,,,1x,cursor-agent,visual reading of 1500-2000 dpi crops against the 10-percent gridlines,anchor 79.8 in section III.D
+yu2013,7,,small,model_cho,FBP,120 mAs,120,mAs,3.0,78.2,,,1x,cursor-agent,visual reading of 1500-2000 dpi crops against the 10-percent gridlines,anchor 78.3 in section III.D
+yu2013,7,,small,human,FBP,240 mAs,240,mAs,3.0,83.2,,,1x,cursor-agent,visual reading of 1500-2000 dpi crops against the 10-percent gridlines,
+yu2013,7,,small,model_cho,FBP,240 mAs,240,mAs,3.0,86.7,,,1x,cursor-agent,visual reading of 1500-2000 dpi crops against the 10-percent gridlines,
+yu2013,7,,small,human,FBP,360 mAs,360,mAs,3.0,95.8,,,1x,cursor-agent,visual reading of 1500-2000 dpi crops against the 10-percent gridlines,
+yu2013,7,,small,model_cho,FBP,360 mAs,360,mAs,3.0,97.9,,,1x,cursor-agent,visual reading of 1500-2000 dpi crops against the 10-percent gridlines,
+yu2013,7,,small,human,FBP,480 mAs,480,mAs,3.0,98.6,,,1x,cursor-agent,visual reading of 1500-2000 dpi crops against the 10-percent gridlines,crowded: sits inside the saturated cluster
+yu2013,7,,small,model_cho,FBP,480 mAs,480,mAs,3.0,98.3,,,1x,cursor-agent,visual reading of 1500-2000 dpi crops against the 10-percent gridlines,
+yu2013,7,,medium,human,FBP,60 mAs,60,mAs,5.0,88.3,,,1x,cursor-agent,visual reading of 1500-2000 dpi crops against the 10-percent gridlines,anchor 88.3 in section III.D
+yu2013,7,,medium,model_cho,FBP,60 mAs,60,mAs,5.0,86.6,,,1x,cursor-agent,visual reading of 1500-2000 dpi crops against the 10-percent gridlines,anchor 86.5 in section III.D
+yu2013,7,,medium,human,FBP,120 mAs,120,mAs,5.0,92.5,,,1x,cursor-agent,visual reading of 1500-2000 dpi crops against the 10-percent gridlines,anchor 92.5 in section III.D
+yu2013,7,,medium,model_cho,FBP,120 mAs,120,mAs,5.0,92.4,,,1x,cursor-agent,visual reading of 1500-2000 dpi crops against the 10-percent gridlines,anchor 92.4 in section III.D
+yu2013,7,,medium,human,FBP,240 mAs,240,mAs,5.0,97.0,,,1x,cursor-agent,visual reading of 1500-2000 dpi crops against the 10-percent gridlines,
+yu2013,7,,medium,model_cho,FBP,240 mAs,240,mAs,5.0,99.5,,,1x,cursor-agent,visual reading of 1500-2000 dpi crops against the 10-percent gridlines,
+yu2013,7,,medium,human,FBP,360 mAs,360,mAs,5.0,100.0,,,1x,cursor-agent,visual reading of 1500-2000 dpi crops against the 10-percent gridlines,saturated_coincident: marker overlaps the large series
+yu2013,7,,medium,model_cho,FBP,360 mAs,360,mAs,5.0,100.0,,,1x,cursor-agent,visual reading of 1500-2000 dpi crops against the 10-percent gridlines,saturated_coincident
+yu2013,7,,medium,human,FBP,480 mAs,480,mAs,5.0,100.0,,,1x,cursor-agent,visual reading of 1500-2000 dpi crops against the 10-percent gridlines,saturated_coincident
+yu2013,7,,medium,model_cho,FBP,480 mAs,480,mAs,5.0,100.0,,,1x,cursor-agent,visual reading of 1500-2000 dpi crops against the 10-percent gridlines,saturated_coincident
+yu2013,7,,large,human,FBP,60 mAs,60,mAs,9.0,97.3,,,1x,cursor-agent,visual reading of 1500-2000 dpi crops against the 10-percent gridlines,
+yu2013,7,,large,model_cho,FBP,60 mAs,60,mAs,9.0,97.2,,,1x,cursor-agent,visual reading of 1500-2000 dpi crops against the 10-percent gridlines,
+yu2013,7,,large,human,FBP,120 mAs,120,mAs,9.0,99.2,,,1x,cursor-agent,visual reading of 1500-2000 dpi crops against the 10-percent gridlines,
+yu2013,7,,large,model_cho,FBP,120 mAs,120,mAs,9.0,100.0,,,1x,cursor-agent,visual reading of 1500-2000 dpi crops against the 10-percent gridlines,
+yu2013,7,,large,human,FBP,240 mAs,240,mAs,9.0,100.0,,,1x,cursor-agent,visual reading of 1500-2000 dpi crops against the 10-percent gridlines,saturated_coincident
+yu2013,7,,large,model_cho,FBP,240 mAs,240,mAs,9.0,99.8,,,1x,cursor-agent,visual reading of 1500-2000 dpi crops against the 10-percent gridlines,saturated_coincident
+yu2013,7,,large,human,FBP,360 mAs,360,mAs,9.0,100.0,,,1x,cursor-agent,visual reading of 1500-2000 dpi crops against the 10-percent gridlines,saturated_coincident
+yu2013,7,,large,model_cho,FBP,360 mAs,360,mAs,9.0,100.0,,,1x,cursor-agent,visual reading of 1500-2000 dpi crops against the 10-percent gridlines,saturated_coincident
+yu2013,7,,large,human,FBP,480 mAs,480,mAs,9.0,100.0,,,1x,cursor-agent,visual reading of 1500-2000 dpi crops against the 10-percent gridlines,saturated_coincident
+yu2013,7,,large,model_cho,FBP,480 mAs,480,mAs,9.0,100.0,,,1x,cursor-agent,visual reading of 1500-2000 dpi crops against the 10-percent gridlines,saturated_coincident
+yu2013,9,,small,human,IR,60 mAs,60,mAs,3.0,70.9,,,1x,cursor-agent,visual reading of 1300 dpi crop against the 10-percent gridlines,
+yu2013,9,,small,model_cho,IR,60 mAs,60,mAs,3.0,73.4,,,1x,cursor-agent,visual reading of 1300 dpi crop against the 10-percent gridlines,
+yu2013,9,,small,human,IR,120 mAs,120,mAs,3.0,68.8,,,1x,cursor-agent,visual reading of 1300 dpi crop against the 10-percent gridlines,anchor 68.8 in section III.D; the paper's flagged anomaly and it stays in
+yu2013,9,,small,model_cho,IR,120 mAs,120,mAs,3.0,77.3,,,1x,cursor-agent,visual reading of 1300 dpi crop against the 10-percent gridlines,anchor 77.4 in section III.D
+yu2013,9,,medium,human,IR,60 mAs,60,mAs,5.0,91.5,,,1x,cursor-agent,visual reading of 1300 dpi crop against the 10-percent gridlines,anchor 91.5 in section III.D
+yu2013,9,,medium,model_cho,IR,60 mAs,60,mAs,5.0,91.3,,,1x,cursor-agent,visual reading of 1300 dpi crop against the 10-percent gridlines,anchor 91.3 in section III.D
+yu2013,9,,medium,human,IR,120 mAs,120,mAs,5.0,98.3,,,1x,cursor-agent,visual reading of 1300 dpi crop against the 10-percent gridlines,anchor 98.3 in section III.D
+yu2013,9,,medium,model_cho,IR,120 mAs,120,mAs,5.0,97.6,,,1x,cursor-agent,visual reading of 1300 dpi crop against the 10-percent gridlines,anchor 97.6 in section III.D
+yu2013,9,,large,human,IR,60 mAs,60,mAs,9.0,95.5,,,1x,cursor-agent,visual reading of 1300 dpi crop against the 10-percent gridlines,
+yu2013,9,,large,model_cho,IR,60 mAs,60,mAs,9.0,95.5,,,1x,cursor-agent,visual reading of 1300 dpi crop against the 10-percent gridlines,
+yu2013,9,,large,human,IR,120 mAs,120,mAs,9.0,99.5,,,1x,cursor-agent,visual reading of 1300 dpi crop against the 10-percent gridlines,saturated_coincident: overlaps the medium IR pair
+yu2013,9,,large,model_cho,IR,120 mAs,120,mAs,9.0,99.3,,,1x,cursor-agent,visual reading of 1300 dpi crop against the 10-percent gridlines,saturated_coincident

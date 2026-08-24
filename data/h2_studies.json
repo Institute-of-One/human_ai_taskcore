@@ -1,8 +1,1095 @@
 {
   "schema_version": "1.3",
   "frozen": "2026-08-24",
-  "note": "Registry for the H2 external validation (protocol section 8). The inclusion criteria in docs/IORN-009A_H2_preregistration_v1.0.md were frozen before the literature search began; v1.1 amended C2's condition-axis vocabulary, v1.2 replaced the enumeration with the principle that an axis counts only if it names a declared model input, and v1.3 added the task_congruence descriptive field and froze the schema, each with the disclosure its own document carries. Every study looked at is recorded here, either in studies or, with the criterion it failed, in screened. Studies is still empty: Yu 2013 and Paul 2007 pass C1-C5 on their PDFs, but both report their condition-level performance only in figures, so their points wait on the two independent digitisation passes C6 requires. No performance value has been transcribed yet.",
-  "studies": [],
+  "note": "Registry for the H2 external validation (protocol section 8). The inclusion criteria in docs/IORN-009A_H2_preregistration_v1.0.md were frozen before the literature search began; v1.1 amended C2's condition-axis vocabulary, v1.2 replaced the enumeration with the principle that an axis counts only if it names a declared model input, and v1.3 added the task_congruence descriptive field and froze the schema, each with the disclosure its own document carries. Yu 2013 is in studies with its full 21 human points (C6 pass). Paul 2007 is in studies on the reduced separable set recorded in docs/h2_cand04_condition_set_reduction.md (C6 pass by reduction, not a full-set fail). CAND-13 is still waiting on its PDF. No rank agreement has been run: gate_pool still holds.",
+  "studies": [
+    {
+      "study_id": "yu2013",
+      "citation": "Yu L, Leng S, Chen L, Kofler JM, Carter RE, McCollough CH. Prediction of human observer performance in a 2-alternative forced choice low-contrast detection task using channelized Hotelling observer: impact of radiation dose and reconstruction algorithms. Med Phys 2013;40(4):041908. doi:10.1118/1.4794498 (PMID 23556902, PMC3618092). Candidate CAND-01.",
+      "modality": "ct",
+      "task": "2AFC low-contrast rod detection in a uniform water phantom",
+      "condition_axes": [
+        "dose",
+        "reconstruction",
+        "lesion_size"
+      ],
+      "metric": "pc_2afc",
+      "acquisition": "digitised_figure",
+      "reports_display_conditions": false,
+      "reports_reading_conditions": true,
+      "generality_check": false,
+      "n_readers": 4,
+      "task_congruence": "ske",
+      "digitisation_repeat_max_deviation": 0.0048,
+      "conditions": [
+        {
+          "label": "3 mm 60 mAs FBP",
+          "metric_value": 0.725,
+          "parameters": {
+            "diameter_mm": 3.0,
+            "contrast_hu": -15.0,
+            "dose_relative": 0.25,
+            "reconstruction": "FBP",
+            "f50_lpmm": 0.397,
+            "slice_thickness_mm": 5.0,
+            "pixel_mm_object": 0.484375,
+            "distance_mm": 400.0,
+            "window_width_hu": 400.0,
+            "value_source": "pass1x"
+          },
+          "assumed_parameters": {
+            "luminance_cdm2": 100.0,
+            "display_pitch_mm": 0.2,
+            "n_grey_levels": 256,
+            "magnification": 1.0,
+            "reference_sd_hu": 50.0
+          }
+        },
+        {
+          "label": "3 mm 120 mAs FBP",
+          "metric_value": 0.798,
+          "parameters": {
+            "diameter_mm": 3.0,
+            "contrast_hu": -15.0,
+            "dose_relative": 0.5,
+            "reconstruction": "FBP",
+            "f50_lpmm": 0.397,
+            "slice_thickness_mm": 5.0,
+            "pixel_mm_object": 0.484375,
+            "distance_mm": 400.0,
+            "window_width_hu": 400.0,
+            "value_source": "text_III.D"
+          },
+          "assumed_parameters": {
+            "luminance_cdm2": 100.0,
+            "display_pitch_mm": 0.2,
+            "n_grey_levels": 256,
+            "magnification": 1.0,
+            "reference_sd_hu": 50.0
+          }
+        },
+        {
+          "label": "3 mm 240 mAs FBP",
+          "metric_value": 0.832,
+          "parameters": {
+            "diameter_mm": 3.0,
+            "contrast_hu": -15.0,
+            "dose_relative": 1.0,
+            "reconstruction": "FBP",
+            "f50_lpmm": 0.397,
+            "slice_thickness_mm": 5.0,
+            "pixel_mm_object": 0.484375,
+            "distance_mm": 400.0,
+            "window_width_hu": 400.0,
+            "value_source": "pass1x"
+          },
+          "assumed_parameters": {
+            "luminance_cdm2": 100.0,
+            "display_pitch_mm": 0.2,
+            "n_grey_levels": 256,
+            "magnification": 1.0,
+            "reference_sd_hu": 50.0
+          }
+        },
+        {
+          "label": "3 mm 360 mAs FBP",
+          "metric_value": 0.958,
+          "parameters": {
+            "diameter_mm": 3.0,
+            "contrast_hu": -15.0,
+            "dose_relative": 1.5,
+            "reconstruction": "FBP",
+            "f50_lpmm": 0.397,
+            "slice_thickness_mm": 5.0,
+            "pixel_mm_object": 0.484375,
+            "distance_mm": 400.0,
+            "window_width_hu": 400.0,
+            "value_source": "pass1x"
+          },
+          "assumed_parameters": {
+            "luminance_cdm2": 100.0,
+            "display_pitch_mm": 0.2,
+            "n_grey_levels": 256,
+            "magnification": 1.0,
+            "reference_sd_hu": 50.0
+          }
+        },
+        {
+          "label": "3 mm 480 mAs FBP",
+          "metric_value": 0.986,
+          "parameters": {
+            "diameter_mm": 3.0,
+            "contrast_hu": -15.0,
+            "dose_relative": 2.0,
+            "reconstruction": "FBP",
+            "f50_lpmm": 0.397,
+            "slice_thickness_mm": 5.0,
+            "pixel_mm_object": 0.484375,
+            "distance_mm": 400.0,
+            "window_width_hu": 400.0,
+            "value_source": "pass1x"
+          },
+          "assumed_parameters": {
+            "luminance_cdm2": 100.0,
+            "display_pitch_mm": 0.2,
+            "n_grey_levels": 256,
+            "magnification": 1.0,
+            "reference_sd_hu": 50.0
+          }
+        },
+        {
+          "label": "5 mm 60 mAs FBP",
+          "metric_value": 0.883,
+          "parameters": {
+            "diameter_mm": 5.0,
+            "contrast_hu": -15.0,
+            "dose_relative": 0.25,
+            "reconstruction": "FBP",
+            "f50_lpmm": 0.397,
+            "slice_thickness_mm": 5.0,
+            "pixel_mm_object": 0.484375,
+            "distance_mm": 400.0,
+            "window_width_hu": 400.0,
+            "value_source": "text_III.D"
+          },
+          "assumed_parameters": {
+            "luminance_cdm2": 100.0,
+            "display_pitch_mm": 0.2,
+            "n_grey_levels": 256,
+            "magnification": 1.0,
+            "reference_sd_hu": 50.0
+          }
+        },
+        {
+          "label": "5 mm 120 mAs FBP",
+          "metric_value": 0.925,
+          "parameters": {
+            "diameter_mm": 5.0,
+            "contrast_hu": -15.0,
+            "dose_relative": 0.5,
+            "reconstruction": "FBP",
+            "f50_lpmm": 0.397,
+            "slice_thickness_mm": 5.0,
+            "pixel_mm_object": 0.484375,
+            "distance_mm": 400.0,
+            "window_width_hu": 400.0,
+            "value_source": "text_III.D"
+          },
+          "assumed_parameters": {
+            "luminance_cdm2": 100.0,
+            "display_pitch_mm": 0.2,
+            "n_grey_levels": 256,
+            "magnification": 1.0,
+            "reference_sd_hu": 50.0
+          }
+        },
+        {
+          "label": "5 mm 240 mAs FBP",
+          "metric_value": 0.97,
+          "parameters": {
+            "diameter_mm": 5.0,
+            "contrast_hu": -15.0,
+            "dose_relative": 1.0,
+            "reconstruction": "FBP",
+            "f50_lpmm": 0.397,
+            "slice_thickness_mm": 5.0,
+            "pixel_mm_object": 0.484375,
+            "distance_mm": 400.0,
+            "window_width_hu": 400.0,
+            "value_source": "pass1x"
+          },
+          "assumed_parameters": {
+            "luminance_cdm2": 100.0,
+            "display_pitch_mm": 0.2,
+            "n_grey_levels": 256,
+            "magnification": 1.0,
+            "reference_sd_hu": 50.0
+          }
+        },
+        {
+          "label": "5 mm 360 mAs FBP",
+          "metric_value": 1.0,
+          "parameters": {
+            "diameter_mm": 5.0,
+            "contrast_hu": -15.0,
+            "dose_relative": 1.5,
+            "reconstruction": "FBP",
+            "f50_lpmm": 0.397,
+            "slice_thickness_mm": 5.0,
+            "pixel_mm_object": 0.484375,
+            "distance_mm": 400.0,
+            "window_width_hu": 400.0,
+            "value_source": "pass1x"
+          },
+          "assumed_parameters": {
+            "luminance_cdm2": 100.0,
+            "display_pitch_mm": 0.2,
+            "n_grey_levels": 256,
+            "magnification": 1.0,
+            "reference_sd_hu": 50.0
+          }
+        },
+        {
+          "label": "5 mm 480 mAs FBP",
+          "metric_value": 1.0,
+          "parameters": {
+            "diameter_mm": 5.0,
+            "contrast_hu": -15.0,
+            "dose_relative": 2.0,
+            "reconstruction": "FBP",
+            "f50_lpmm": 0.397,
+            "slice_thickness_mm": 5.0,
+            "pixel_mm_object": 0.484375,
+            "distance_mm": 400.0,
+            "window_width_hu": 400.0,
+            "value_source": "pass1x"
+          },
+          "assumed_parameters": {
+            "luminance_cdm2": 100.0,
+            "display_pitch_mm": 0.2,
+            "n_grey_levels": 256,
+            "magnification": 1.0,
+            "reference_sd_hu": 50.0
+          }
+        },
+        {
+          "label": "9 mm 60 mAs FBP",
+          "metric_value": 0.973,
+          "parameters": {
+            "diameter_mm": 9.0,
+            "contrast_hu": -15.0,
+            "dose_relative": 0.25,
+            "reconstruction": "FBP",
+            "f50_lpmm": 0.397,
+            "slice_thickness_mm": 5.0,
+            "pixel_mm_object": 0.484375,
+            "distance_mm": 400.0,
+            "window_width_hu": 400.0,
+            "value_source": "pass1x"
+          },
+          "assumed_parameters": {
+            "luminance_cdm2": 100.0,
+            "display_pitch_mm": 0.2,
+            "n_grey_levels": 256,
+            "magnification": 1.0,
+            "reference_sd_hu": 50.0
+          }
+        },
+        {
+          "label": "9 mm 120 mAs FBP",
+          "metric_value": 0.992,
+          "parameters": {
+            "diameter_mm": 9.0,
+            "contrast_hu": -15.0,
+            "dose_relative": 0.5,
+            "reconstruction": "FBP",
+            "f50_lpmm": 0.397,
+            "slice_thickness_mm": 5.0,
+            "pixel_mm_object": 0.484375,
+            "distance_mm": 400.0,
+            "window_width_hu": 400.0,
+            "value_source": "pass1x"
+          },
+          "assumed_parameters": {
+            "luminance_cdm2": 100.0,
+            "display_pitch_mm": 0.2,
+            "n_grey_levels": 256,
+            "magnification": 1.0,
+            "reference_sd_hu": 50.0
+          }
+        },
+        {
+          "label": "9 mm 240 mAs FBP",
+          "metric_value": 1.0,
+          "parameters": {
+            "diameter_mm": 9.0,
+            "contrast_hu": -15.0,
+            "dose_relative": 1.0,
+            "reconstruction": "FBP",
+            "f50_lpmm": 0.397,
+            "slice_thickness_mm": 5.0,
+            "pixel_mm_object": 0.484375,
+            "distance_mm": 400.0,
+            "window_width_hu": 400.0,
+            "value_source": "pass1x"
+          },
+          "assumed_parameters": {
+            "luminance_cdm2": 100.0,
+            "display_pitch_mm": 0.2,
+            "n_grey_levels": 256,
+            "magnification": 1.0,
+            "reference_sd_hu": 50.0
+          }
+        },
+        {
+          "label": "9 mm 360 mAs FBP",
+          "metric_value": 1.0,
+          "parameters": {
+            "diameter_mm": 9.0,
+            "contrast_hu": -15.0,
+            "dose_relative": 1.5,
+            "reconstruction": "FBP",
+            "f50_lpmm": 0.397,
+            "slice_thickness_mm": 5.0,
+            "pixel_mm_object": 0.484375,
+            "distance_mm": 400.0,
+            "window_width_hu": 400.0,
+            "value_source": "pass1x"
+          },
+          "assumed_parameters": {
+            "luminance_cdm2": 100.0,
+            "display_pitch_mm": 0.2,
+            "n_grey_levels": 256,
+            "magnification": 1.0,
+            "reference_sd_hu": 50.0
+          }
+        },
+        {
+          "label": "9 mm 480 mAs FBP",
+          "metric_value": 1.0,
+          "parameters": {
+            "diameter_mm": 9.0,
+            "contrast_hu": -15.0,
+            "dose_relative": 2.0,
+            "reconstruction": "FBP",
+            "f50_lpmm": 0.397,
+            "slice_thickness_mm": 5.0,
+            "pixel_mm_object": 0.484375,
+            "distance_mm": 400.0,
+            "window_width_hu": 400.0,
+            "value_source": "pass1x"
+          },
+          "assumed_parameters": {
+            "luminance_cdm2": 100.0,
+            "display_pitch_mm": 0.2,
+            "n_grey_levels": 256,
+            "magnification": 1.0,
+            "reference_sd_hu": 50.0
+          }
+        },
+        {
+          "label": "3 mm 60 mAs IR",
+          "metric_value": 0.709,
+          "parameters": {
+            "diameter_mm": 3.0,
+            "contrast_hu": -15.0,
+            "dose_relative": 0.25,
+            "reconstruction": "IR",
+            "f50_lpmm": 0.397,
+            "slice_thickness_mm": 5.0,
+            "pixel_mm_object": 0.484375,
+            "distance_mm": 400.0,
+            "window_width_hu": 400.0,
+            "value_source": "pass1x"
+          },
+          "assumed_parameters": {
+            "luminance_cdm2": 100.0,
+            "display_pitch_mm": 0.2,
+            "n_grey_levels": 256,
+            "magnification": 1.0,
+            "reference_sd_hu": 50.0
+          }
+        },
+        {
+          "label": "3 mm 120 mAs IR",
+          "metric_value": 0.688,
+          "parameters": {
+            "diameter_mm": 3.0,
+            "contrast_hu": -15.0,
+            "dose_relative": 0.5,
+            "reconstruction": "IR",
+            "f50_lpmm": 0.397,
+            "slice_thickness_mm": 5.0,
+            "pixel_mm_object": 0.484375,
+            "distance_mm": 400.0,
+            "window_width_hu": 400.0,
+            "value_source": "text_III.D"
+          },
+          "assumed_parameters": {
+            "luminance_cdm2": 100.0,
+            "display_pitch_mm": 0.2,
+            "n_grey_levels": 256,
+            "magnification": 1.0,
+            "reference_sd_hu": 50.0
+          }
+        },
+        {
+          "label": "5 mm 60 mAs IR",
+          "metric_value": 0.915,
+          "parameters": {
+            "diameter_mm": 5.0,
+            "contrast_hu": -15.0,
+            "dose_relative": 0.25,
+            "reconstruction": "IR",
+            "f50_lpmm": 0.397,
+            "slice_thickness_mm": 5.0,
+            "pixel_mm_object": 0.484375,
+            "distance_mm": 400.0,
+            "window_width_hu": 400.0,
+            "value_source": "text_III.D"
+          },
+          "assumed_parameters": {
+            "luminance_cdm2": 100.0,
+            "display_pitch_mm": 0.2,
+            "n_grey_levels": 256,
+            "magnification": 1.0,
+            "reference_sd_hu": 50.0
+          }
+        },
+        {
+          "label": "5 mm 120 mAs IR",
+          "metric_value": 0.983,
+          "parameters": {
+            "diameter_mm": 5.0,
+            "contrast_hu": -15.0,
+            "dose_relative": 0.5,
+            "reconstruction": "IR",
+            "f50_lpmm": 0.397,
+            "slice_thickness_mm": 5.0,
+            "pixel_mm_object": 0.484375,
+            "distance_mm": 400.0,
+            "window_width_hu": 400.0,
+            "value_source": "text_III.D"
+          },
+          "assumed_parameters": {
+            "luminance_cdm2": 100.0,
+            "display_pitch_mm": 0.2,
+            "n_grey_levels": 256,
+            "magnification": 1.0,
+            "reference_sd_hu": 50.0
+          }
+        },
+        {
+          "label": "9 mm 60 mAs IR",
+          "metric_value": 0.955,
+          "parameters": {
+            "diameter_mm": 9.0,
+            "contrast_hu": -15.0,
+            "dose_relative": 0.25,
+            "reconstruction": "IR",
+            "f50_lpmm": 0.397,
+            "slice_thickness_mm": 5.0,
+            "pixel_mm_object": 0.484375,
+            "distance_mm": 400.0,
+            "window_width_hu": 400.0,
+            "value_source": "pass1x"
+          },
+          "assumed_parameters": {
+            "luminance_cdm2": 100.0,
+            "display_pitch_mm": 0.2,
+            "n_grey_levels": 256,
+            "magnification": 1.0,
+            "reference_sd_hu": 50.0
+          }
+        },
+        {
+          "label": "9 mm 120 mAs IR",
+          "metric_value": 0.995,
+          "parameters": {
+            "diameter_mm": 9.0,
+            "contrast_hu": -15.0,
+            "dose_relative": 0.5,
+            "reconstruction": "IR",
+            "f50_lpmm": 0.397,
+            "slice_thickness_mm": 5.0,
+            "pixel_mm_object": 0.484375,
+            "distance_mm": 400.0,
+            "window_width_hu": 400.0,
+            "value_source": "pass1x"
+          },
+          "assumed_parameters": {
+            "luminance_cdm2": 100.0,
+            "display_pitch_mm": 0.2,
+            "n_grey_levels": 256,
+            "magnification": 1.0,
+            "reference_sd_hu": 50.0
+          }
+        }
+      ],
+      "notes": "C6 pass on the full 21 human points (15 FBP Fig. 7 + 6 IR Fig. 9). Max deviation unsaturated 0.48%, saturated 1.09% (saturated = fraction >= 0.995, reported separately so the ceiling cluster cannot dilute the check). Six values are the printed numbers from section III.D; the rest are the pass-1x reading, never the average of the two passes. Model-observer series were digitised for the Bland-Altman cross-check and are not condition points."
+    },
+    {
+      "study_id": "paul2007",
+      "citation": "Paul NS, Siewerdsen JH, Patsios D, Chung T-B. Investigating the low-dose limits of multidetector CT in lung nodule surveillance. Med Phys 2007;34(9):3587-3595. doi:10.1118/1.2768866. Candidate CAND-04; task 1 only (solid 3.2 mm nodule, signal specified).",
+      "modality": "ct",
+      "task": "2AFC detection of a specified solid 3.2 mm nodule",
+      "condition_axes": [
+        "dose",
+        "slice_thickness"
+      ],
+      "metric": "auc",
+      "acquisition": "digitised_figure",
+      "reports_display_conditions": false,
+      "reports_reading_conditions": false,
+      "generality_check": false,
+      "n_readers": 9,
+      "task_congruence": "ske",
+      "digitisation_repeat_max_deviation": 0.0081,
+      "conditions": [
+        {
+          "label": "task1 0.342 mGy",
+          "metric_value": 0.862,
+          "parameters": {
+            "diameter_mm": 3.2,
+            "contrast_hu": 703.0,
+            "dose_mgy": 0.342,
+            "dose_relative": 0.025909,
+            "value_source": "pass1x"
+          },
+          "assumed_parameters": {
+            "distance_mm": 500.0,
+            "luminance_cdm2": 100.0,
+            "display_pitch_mm": 0.2,
+            "n_grey_levels": 256,
+            "magnification": 1.0,
+            "reference_sd_hu": 50.0,
+            "slice_thickness_mm": 2.5
+          }
+        },
+        {
+          "label": "task1 0.348 mGy",
+          "metric_value": 0.93,
+          "parameters": {
+            "diameter_mm": 3.2,
+            "contrast_hu": 703.0,
+            "dose_mgy": 0.348,
+            "dose_relative": 0.026364,
+            "value_source": "pass1x"
+          },
+          "assumed_parameters": {
+            "distance_mm": 500.0,
+            "luminance_cdm2": 100.0,
+            "display_pitch_mm": 0.2,
+            "n_grey_levels": 256,
+            "magnification": 1.0,
+            "reference_sd_hu": 50.0,
+            "slice_thickness_mm": 2.5
+          }
+        },
+        {
+          "label": "task1 0.664 mGy",
+          "metric_value": 0.993,
+          "parameters": {
+            "diameter_mm": 3.2,
+            "contrast_hu": 703.0,
+            "dose_mgy": 0.664,
+            "dose_relative": 0.050303,
+            "value_source": "pass1x"
+          },
+          "assumed_parameters": {
+            "distance_mm": 500.0,
+            "luminance_cdm2": 100.0,
+            "display_pitch_mm": 0.2,
+            "n_grey_levels": 256,
+            "magnification": 1.0,
+            "reference_sd_hu": 50.0,
+            "slice_thickness_mm": 2.5
+          }
+        },
+        {
+          "label": "task1 0.675 mGy",
+          "metric_value": 0.998,
+          "parameters": {
+            "diameter_mm": 3.2,
+            "contrast_hu": 703.0,
+            "dose_mgy": 0.675,
+            "dose_relative": 0.051136,
+            "value_source": "pass1x"
+          },
+          "assumed_parameters": {
+            "distance_mm": 500.0,
+            "luminance_cdm2": 100.0,
+            "display_pitch_mm": 0.2,
+            "n_grey_levels": 256,
+            "magnification": 1.0,
+            "reference_sd_hu": 50.0,
+            "slice_thickness_mm": 2.5
+          }
+        },
+        {
+          "label": "task1 0.699 mGy",
+          "metric_value": 0.975,
+          "parameters": {
+            "diameter_mm": 3.2,
+            "contrast_hu": 703.0,
+            "dose_mgy": 0.699,
+            "dose_relative": 0.052955,
+            "value_source": "pass1x"
+          },
+          "assumed_parameters": {
+            "distance_mm": 500.0,
+            "luminance_cdm2": 100.0,
+            "display_pitch_mm": 0.2,
+            "n_grey_levels": 256,
+            "magnification": 1.0,
+            "reference_sd_hu": 50.0,
+            "slice_thickness_mm": 2.5
+          }
+        },
+        {
+          "label": "task1 0.804 mGy",
+          "metric_value": 0.989,
+          "parameters": {
+            "diameter_mm": 3.2,
+            "contrast_hu": 703.0,
+            "dose_mgy": 0.804,
+            "dose_relative": 0.060909,
+            "value_source": "pass2"
+          },
+          "assumed_parameters": {
+            "distance_mm": 500.0,
+            "luminance_cdm2": 100.0,
+            "display_pitch_mm": 0.2,
+            "n_grey_levels": 256,
+            "magnification": 1.0,
+            "reference_sd_hu": 50.0,
+            "slice_thickness_mm": 2.5
+          }
+        },
+        {
+          "label": "task1 0.833 mGy",
+          "metric_value": 0.935,
+          "parameters": {
+            "diameter_mm": 3.2,
+            "contrast_hu": 703.0,
+            "dose_mgy": 0.833,
+            "dose_relative": 0.063106,
+            "value_source": "pass1x"
+          },
+          "assumed_parameters": {
+            "distance_mm": 500.0,
+            "luminance_cdm2": 100.0,
+            "display_pitch_mm": 0.2,
+            "n_grey_levels": 256,
+            "magnification": 1.0,
+            "reference_sd_hu": 50.0,
+            "slice_thickness_mm": 2.5
+          }
+        },
+        {
+          "label": "task1 1.110 mGy",
+          "metric_value": 0.998,
+          "parameters": {
+            "diameter_mm": 3.2,
+            "contrast_hu": 703.0,
+            "dose_mgy": 1.11,
+            "dose_relative": 0.084091,
+            "value_source": "pass2"
+          },
+          "assumed_parameters": {
+            "distance_mm": 500.0,
+            "luminance_cdm2": 100.0,
+            "display_pitch_mm": 0.2,
+            "n_grey_levels": 256,
+            "magnification": 1.0,
+            "reference_sd_hu": 50.0,
+            "slice_thickness_mm": 2.5
+          }
+        },
+        {
+          "label": "task1 1.130 mGy",
+          "metric_value": 0.989,
+          "parameters": {
+            "diameter_mm": 3.2,
+            "contrast_hu": 703.0,
+            "dose_mgy": 1.13,
+            "dose_relative": 0.085606,
+            "value_source": "pass2"
+          },
+          "assumed_parameters": {
+            "distance_mm": 500.0,
+            "luminance_cdm2": 100.0,
+            "display_pitch_mm": 0.2,
+            "n_grey_levels": 256,
+            "magnification": 1.0,
+            "reference_sd_hu": 50.0,
+            "slice_thickness_mm": 2.5
+          }
+        },
+        {
+          "label": "task1 1.322 mGy",
+          "metric_value": 0.9996,
+          "parameters": {
+            "diameter_mm": 3.2,
+            "contrast_hu": 703.0,
+            "dose_mgy": 1.322,
+            "dose_relative": 0.100152,
+            "value_source": "pass2"
+          },
+          "assumed_parameters": {
+            "distance_mm": 500.0,
+            "luminance_cdm2": 100.0,
+            "display_pitch_mm": 0.2,
+            "n_grey_levels": 256,
+            "magnification": 1.0,
+            "reference_sd_hu": 50.0,
+            "slice_thickness_mm": 2.5
+          }
+        },
+        {
+          "label": "task1 1.345 mGy",
+          "metric_value": 0.967,
+          "parameters": {
+            "diameter_mm": 3.2,
+            "contrast_hu": 703.0,
+            "dose_mgy": 1.345,
+            "dose_relative": 0.101894,
+            "value_source": "pass1x"
+          },
+          "assumed_parameters": {
+            "distance_mm": 500.0,
+            "luminance_cdm2": 100.0,
+            "display_pitch_mm": 0.2,
+            "n_grey_levels": 256,
+            "magnification": 1.0,
+            "reference_sd_hu": 50.0,
+            "slice_thickness_mm": 2.5
+          }
+        },
+        {
+          "label": "task1 1.602 mGy",
+          "metric_value": 0.9996,
+          "parameters": {
+            "diameter_mm": 3.2,
+            "contrast_hu": 703.0,
+            "dose_mgy": 1.602,
+            "dose_relative": 0.121364,
+            "value_source": "pass2"
+          },
+          "assumed_parameters": {
+            "distance_mm": 500.0,
+            "luminance_cdm2": 100.0,
+            "display_pitch_mm": 0.2,
+            "n_grey_levels": 256,
+            "magnification": 1.0,
+            "reference_sd_hu": 50.0,
+            "slice_thickness_mm": 2.5
+          }
+        },
+        {
+          "label": "task1 1.702 mGy",
+          "metric_value": 0.9996,
+          "parameters": {
+            "diameter_mm": 3.2,
+            "contrast_hu": 703.0,
+            "dose_mgy": 1.702,
+            "dose_relative": 0.128939,
+            "value_source": "pass2"
+          },
+          "assumed_parameters": {
+            "distance_mm": 500.0,
+            "luminance_cdm2": 100.0,
+            "display_pitch_mm": 0.2,
+            "n_grey_levels": 256,
+            "magnification": 1.0,
+            "reference_sd_hu": 50.0,
+            "slice_thickness_mm": 2.5
+          }
+        },
+        {
+          "label": "task1 1.748 mGy",
+          "metric_value": 0.989,
+          "parameters": {
+            "diameter_mm": 3.2,
+            "contrast_hu": 703.0,
+            "dose_mgy": 1.748,
+            "dose_relative": 0.132424,
+            "value_source": "pass2"
+          },
+          "assumed_parameters": {
+            "distance_mm": 500.0,
+            "luminance_cdm2": 100.0,
+            "display_pitch_mm": 0.2,
+            "n_grey_levels": 256,
+            "magnification": 1.0,
+            "reference_sd_hu": 50.0,
+            "slice_thickness_mm": 2.5
+          }
+        },
+        {
+          "label": "task1 2.099 mGy",
+          "metric_value": 0.985,
+          "parameters": {
+            "diameter_mm": 3.2,
+            "contrast_hu": 703.0,
+            "dose_mgy": 2.099,
+            "dose_relative": 0.159015,
+            "value_source": "pass1x"
+          },
+          "assumed_parameters": {
+            "distance_mm": 500.0,
+            "luminance_cdm2": 100.0,
+            "display_pitch_mm": 0.2,
+            "n_grey_levels": 256,
+            "magnification": 1.0,
+            "reference_sd_hu": 50.0,
+            "slice_thickness_mm": 2.5
+          }
+        },
+        {
+          "label": "task1 2.231 mGy",
+          "metric_value": 0.9996,
+          "parameters": {
+            "diameter_mm": 3.2,
+            "contrast_hu": 703.0,
+            "dose_mgy": 2.231,
+            "dose_relative": 0.169015,
+            "value_source": "pass2"
+          },
+          "assumed_parameters": {
+            "distance_mm": 500.0,
+            "luminance_cdm2": 100.0,
+            "display_pitch_mm": 0.2,
+            "n_grey_levels": 256,
+            "magnification": 1.0,
+            "reference_sd_hu": 50.0,
+            "slice_thickness_mm": 2.5
+          }
+        },
+        {
+          "label": "task1 2.679 mGy",
+          "metric_value": 0.9996,
+          "parameters": {
+            "diameter_mm": 3.2,
+            "contrast_hu": 703.0,
+            "dose_mgy": 2.679,
+            "dose_relative": 0.202955,
+            "value_source": "pass2"
+          },
+          "assumed_parameters": {
+            "distance_mm": 500.0,
+            "luminance_cdm2": 100.0,
+            "display_pitch_mm": 0.2,
+            "n_grey_levels": 256,
+            "magnification": 1.0,
+            "reference_sd_hu": 50.0,
+            "slice_thickness_mm": 2.5
+          }
+        },
+        {
+          "label": "task1 3.332 mGy",
+          "metric_value": 0.989,
+          "parameters": {
+            "diameter_mm": 3.2,
+            "contrast_hu": 703.0,
+            "dose_mgy": 3.332,
+            "dose_relative": 0.252424,
+            "value_source": "pass2"
+          },
+          "assumed_parameters": {
+            "distance_mm": 500.0,
+            "luminance_cdm2": 100.0,
+            "display_pitch_mm": 0.2,
+            "n_grey_levels": 256,
+            "magnification": 1.0,
+            "reference_sd_hu": 50.0,
+            "slice_thickness_mm": 2.5
+          }
+        },
+        {
+          "label": "task1 3.450 mGy",
+          "metric_value": 0.9996,
+          "parameters": {
+            "diameter_mm": 3.2,
+            "contrast_hu": 703.0,
+            "dose_mgy": 3.45,
+            "dose_relative": 0.261364,
+            "value_source": "pass2"
+          },
+          "assumed_parameters": {
+            "distance_mm": 500.0,
+            "luminance_cdm2": 100.0,
+            "display_pitch_mm": 0.2,
+            "n_grey_levels": 256,
+            "magnification": 1.0,
+            "reference_sd_hu": 50.0,
+            "slice_thickness_mm": 2.5
+          }
+        },
+        {
+          "label": "task1 4.002 mGy",
+          "metric_value": 0.9996,
+          "parameters": {
+            "diameter_mm": 3.2,
+            "contrast_hu": 703.0,
+            "dose_mgy": 4.002,
+            "dose_relative": 0.303182,
+            "value_source": "pass2"
+          },
+          "assumed_parameters": {
+            "distance_mm": 500.0,
+            "luminance_cdm2": 100.0,
+            "display_pitch_mm": 0.2,
+            "n_grey_levels": 256,
+            "magnification": 1.0,
+            "reference_sd_hu": 50.0,
+            "slice_thickness_mm": 2.5
+          }
+        },
+        {
+          "label": "task1 4.180 mGy",
+          "metric_value": 0.989,
+          "parameters": {
+            "diameter_mm": 3.2,
+            "contrast_hu": 703.0,
+            "dose_mgy": 4.18,
+            "dose_relative": 0.316667,
+            "value_source": "pass2"
+          },
+          "assumed_parameters": {
+            "distance_mm": 500.0,
+            "luminance_cdm2": 100.0,
+            "display_pitch_mm": 0.2,
+            "n_grey_levels": 256,
+            "magnification": 1.0,
+            "reference_sd_hu": 50.0,
+            "slice_thickness_mm": 2.5
+          }
+        },
+        {
+          "label": "task1 5.383 mGy",
+          "metric_value": 0.998,
+          "parameters": {
+            "diameter_mm": 3.2,
+            "contrast_hu": 703.0,
+            "dose_mgy": 5.383,
+            "dose_relative": 0.407803,
+            "value_source": "pass2"
+          },
+          "assumed_parameters": {
+            "distance_mm": 500.0,
+            "luminance_cdm2": 100.0,
+            "display_pitch_mm": 0.2,
+            "n_grey_levels": 256,
+            "magnification": 1.0,
+            "reference_sd_hu": 50.0,
+            "slice_thickness_mm": 2.5
+          }
+        },
+        {
+          "label": "task1 5.431 mGy",
+          "metric_value": 0.9907,
+          "parameters": {
+            "diameter_mm": 3.2,
+            "contrast_hu": 703.0,
+            "dose_mgy": 5.431,
+            "dose_relative": 0.411439,
+            "value_source": "pass2"
+          },
+          "assumed_parameters": {
+            "distance_mm": 500.0,
+            "luminance_cdm2": 100.0,
+            "display_pitch_mm": 0.2,
+            "n_grey_levels": 256,
+            "magnification": 1.0,
+            "reference_sd_hu": 50.0,
+            "slice_thickness_mm": 2.5
+          }
+        },
+        {
+          "label": "task1 6.244 mGy",
+          "metric_value": 0.9996,
+          "parameters": {
+            "diameter_mm": 3.2,
+            "contrast_hu": 703.0,
+            "dose_mgy": 6.244,
+            "dose_relative": 0.47303,
+            "value_source": "pass2"
+          },
+          "assumed_parameters": {
+            "distance_mm": 500.0,
+            "luminance_cdm2": 100.0,
+            "display_pitch_mm": 0.2,
+            "n_grey_levels": 256,
+            "magnification": 1.0,
+            "reference_sd_hu": 50.0,
+            "slice_thickness_mm": 2.5
+          }
+        },
+        {
+          "label": "task1 6.754 mGy",
+          "metric_value": 0.9996,
+          "parameters": {
+            "diameter_mm": 3.2,
+            "contrast_hu": 703.0,
+            "dose_mgy": 6.754,
+            "dose_relative": 0.511667,
+            "value_source": "pass2"
+          },
+          "assumed_parameters": {
+            "distance_mm": 500.0,
+            "luminance_cdm2": 100.0,
+            "display_pitch_mm": 0.2,
+            "n_grey_levels": 256,
+            "magnification": 1.0,
+            "reference_sd_hu": 50.0,
+            "slice_thickness_mm": 2.5
+          }
+        },
+        {
+          "label": "task1 8.182 mGy",
+          "metric_value": 1.0,
+          "parameters": {
+            "diameter_mm": 3.2,
+            "contrast_hu": 703.0,
+            "dose_mgy": 8.182,
+            "dose_relative": 0.619848,
+            "value_source": "pass2"
+          },
+          "assumed_parameters": {
+            "distance_mm": 500.0,
+            "luminance_cdm2": 100.0,
+            "display_pitch_mm": 0.2,
+            "n_grey_levels": 256,
+            "magnification": 1.0,
+            "reference_sd_hu": 50.0,
+            "slice_thickness_mm": 2.5
+          }
+        },
+        {
+          "label": "task1 9.913 mGy",
+          "metric_value": 0.9996,
+          "parameters": {
+            "diameter_mm": 3.2,
+            "contrast_hu": 703.0,
+            "dose_mgy": 9.913,
+            "dose_relative": 0.750985,
+            "value_source": "pass2"
+          },
+          "assumed_parameters": {
+            "distance_mm": 500.0,
+            "luminance_cdm2": 100.0,
+            "display_pitch_mm": 0.2,
+            "n_grey_levels": 256,
+            "magnification": 1.0,
+            "reference_sd_hu": 50.0,
+            "slice_thickness_mm": 2.5
+          }
+        },
+        {
+          "label": "task1 10.817 mGy",
+          "metric_value": 0.9996,
+          "parameters": {
+            "diameter_mm": 3.2,
+            "contrast_hu": 703.0,
+            "dose_mgy": 10.817,
+            "dose_relative": 0.81947,
+            "value_source": "pass2"
+          },
+          "assumed_parameters": {
+            "distance_mm": 500.0,
+            "luminance_cdm2": 100.0,
+            "display_pitch_mm": 0.2,
+            "n_grey_levels": 256,
+            "magnification": 1.0,
+            "reference_sd_hu": 50.0,
+            "slice_thickness_mm": 2.5
+          }
+        }
+      ],
+      "notes": "C6 pass on a reduced condition set, the path the pre-registration explicitly allows (a point is resolved by a third pass or the study's condition set is reduced, and either outcome is recorded). Kept 28 separable points (non-saturated markers plus isolated saturated markers); dropped the eight narrow_occluded_uncertain leftovers (three on panel b, five on panel d) after adjudication against pass 1x. Section III.C's nine measurements below 1 mGy are the paper's count: seven are in the kept set, two remain in the occluded 0.66-0.70 mGy pile whose cardinality cannot be recovered independently of method. Saturated Az=1.000 stacks have no rank information and are not kept as clusters. x (dose) is the pass-2 axis calibration pending Yamamoto WebPlotDigitizer pass 1; y is the pass-1x value where one exists, otherwise pass 2, never the average. Max deviation on the reduced unsaturated matches 0.81%. Full record: docs/h2_cand04_condition_set_reduction.md."
+    }
+  ],
   "screened": [
     {
       "study_id": "goo2004",

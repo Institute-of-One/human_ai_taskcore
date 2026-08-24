@@ -21,6 +21,40 @@ a percentage of the value. Report the maximum, not the mean. If any point
 exceeds 5%, that point is resolved by a third pass or the study's condition set
 is reduced, and either outcome is recorded.
 
+### Addendum, 2026-08-24: pass 1x
+
+A third reading exists, `pass1x_*.csv`, taken by the Cursor session while pass 1
+was outstanding. It **does not stand in for pass 1** — the C6 verdict is between
+passes 1 and 2 as declared above, and pass 1 is still to be done with
+WebPlotDigitizer. Pass 1x is recorded because its error modes are orthogonal to
+pass 2's rather than merely different: the page is rendered at high DPI, cropped
+to one band at a time, and marker heights are read against the printed
+gridlines, with no axis fit and no detection step. It is therefore accurate in y
+to a few tenths of a percent and poor in x, good to only about 15% on a log dose
+axis, while pass 2 is exact in x and can mistake a plotted feature for a marker.
+`pass1x_code/render_pages.py` regenerates the exact crops that were read.
+
+Two conventions came out of running it, both of which apply to the real C6
+verdict as well:
+
+- **Report saturated and unsaturated points separately.** Where several series
+  sit at 100% their markers coincide, so both passes recover the same number for
+  reasons unrelated to either pass's accuracy. Pooling them into one maximum
+  dilutes the check with points that cannot fail it.
+- **Saturated means fraction correct >= 0.995.** `compare_passes.py` flags
+  those points from the value, not from a note, and reports the two groups'
+  maxima separately. CAND-01's C6 verdict is the unsaturated maximum.
+- **CAND-04 uses the second C6 path: the condition set is reduced** to the
+  separable points (unsaturated markers plus isolated saturated markers) and
+  the reduction is recorded in `docs/h2_cand04_condition_set_reduction.md`.
+  That is a pass by reduction, not a full-set fail.
+- **Where several markers share an abscissa, compare the sets, not the points.**
+  Markers at one dose are different techniques that happen to land on the same
+  dose; the model sees only its declared inputs, so they are replicates of one
+  predicted condition. Pairing them individually is impossible from the figure,
+  and pairing them on y would manufacture the agreement the check exists to
+  test.
+
 ## The stronger check: text anchors
 
 Both papers state some of their figure values numerically in the running text.
@@ -129,8 +163,10 @@ the curve instead of fixing single points:
 | 2 | within 99% of maximum down to 5.0 mGy, within 95% down to 1.0 mGy |
 | 3 | mean 98% above 10 mGy; 99% of that level down to 7.0 mGy; 90% at 1.0 mGy |
 
-Nine measurements lie below 1 mGy (section III.C) — that count is a check on
-the low-dose end of the digitised set.
+Nine measurements lie below 1 mGy (section III.C) — that count is the paper's
+and is the truth. Seven of them are separable and enter the reduced condition
+set; two remain in the occluded 0.66-0.70 mGy pile. The reduction is recorded
+in `docs/h2_cand04_condition_set_reduction.md`.
 
 ## CSV schema (both passes, one file per pass)
 
@@ -143,11 +179,13 @@ study_id,figure,panel,series,observer_type,recon,dose_label,dose_value,dose_unit
   no rescaling, no rounding beyond what can be read
 - `y_err_low` / `y_err_high`: as plotted; leave blank if no bar is drawn
 - one row per marker; do not average across markers
-- `pass_id`: `1` or `2`
+- `pass_id`: `1` or `2` (`1x` for the supplementary reading described above)
 
 Deposit as `data/h2_digitisation/pass1_<study_id>.csv` and
 `pass2_<study_id>.csv`. These are extracted coordinates rather than the papers,
 so they are committed — the figures they came from are not.
+`compare_passes.py` runs the deviation check and the pass 2 self-consistency
+check over whichever passes are present.
 
 ## What happens next, and what must not
 

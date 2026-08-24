@@ -96,7 +96,8 @@ STUDY_REPRODUCTIONS = {
             "Yu L, Leng S, Chen L, Kofler JM, Carter RE, McCollough CH. "
             "Med Phys 2013;40(4):041908, sections II.A-II.C, pp. 041908-2 to "
             "041908-4. Scan and reading parameters read from the paper; "
-            "performance values still to be digitised from Figures 7 and 9."
+            "performance values digitised from Figures 7 and 9; see "
+            "data/h2_studies.json yu2013."
         ),
         task_diameters_mm=(3.0, 5.0, 9.0),
         task_contrast_hu=-15.0,
@@ -149,7 +150,8 @@ STUDY_REPRODUCTIONS = {
             "Paul NS, Siewerdsen JH, Patsios D, Chung T-B. Med Phys "
             "2007;34(9):3587-3595, sections II.B-II.C, pp. 3589-3590. Scan "
             "and reading parameters read from the paper; performance values "
-            "still to be digitised from Figure 6."
+            "digitised from Figure 6 on the reduced separable set "
+            "(data/h2_studies.json paul2007)."
         ),
         # task 1 only: the solid 3.2 mm nodule at +23 HU, the one task in which
         # size and contrast are known to the observer. Tasks 2 and 3 vary the

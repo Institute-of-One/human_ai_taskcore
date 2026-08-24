@@ -367,13 +367,19 @@ class TestPoolRequirements:
 
 
 class TestRegistryFile:
-    def test_no_performance_data_has_been_extracted_yet(self):
-        # screening has started, so the file is no longer empty, but a study
-        # only reaches `studies` once its condition points are transcribed
-        # from the paper with their provenance
+    def test_admitted_studies_carry_digitised_condition_points(self):
         registry = load_registry("data/h2_studies.json")
         assert registry.schema_version == SCHEMA_VERSION
-        assert registry.studies == ()
+        ids = {s.study_id: s for s in registry.studies}
+        assert set(ids) == {"yu2013", "paul2007"}
+        assert len(ids["yu2013"].conditions) == 21
+        assert ids["yu2013"].digitisation_repeat_max_deviation <= 0.05
+        assert ids["yu2013"].task_congruence == "ske"
+        assert len(ids["paul2007"].conditions) >= MIN_CONDITIONS_PER_STUDY
+        assert ids["paul2007"].digitisation_repeat_max_deviation <= 0.05
+        assert "reduced" in ids["paul2007"].notes
+        for study in registry.studies:
+            assert validate_study(study) == []
 
     def test_every_screened_study_states_a_criterion_and_a_reason(self):
         registry = load_registry("data/h2_studies.json")

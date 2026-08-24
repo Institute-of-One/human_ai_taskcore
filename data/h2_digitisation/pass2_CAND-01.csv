@@ -1,0 +1,43 @@
+study_id,figure,panel,series,observer_type,recon,dose_label,dose_value,dose_unit,diameter_mm,y_value,y_err_low,y_err_high,pass_id,extractor,method,notes
+CAND-01,Fig7,,human_FBP,human,FBP,60 mAs,60,mAs,9,97.37,0.97,0.81,2,Cowork Claude session,"pixel-template extraction, extract_yu2013.py",
+CAND-01,Fig7,,human_FBP,human,FBP,60 mAs,60,mAs,5,88.29,,2.35,2,Cowork Claude session,"pixel-template extraction, extract_yu2013.py",
+CAND-01,Fig7,,human_FBP,human,FBP,60 mAs,60,mAs,3,72.48,3.0,,2,Cowork Claude session,"pixel-template extraction, extract_yu2013.py",
+CAND-01,Fig7,,model_FBP,model_cho,FBP,60 mAs,60,mAs,9,97.28,1.62,1.46,2,Cowork Claude session,"pixel-template extraction, extract_yu2013.py",
+CAND-01,Fig7,,model_FBP,model_cho,FBP,60 mAs,60,mAs,5,86.59,3.24,3.16,2,Cowork Claude session,"pixel-template extraction, extract_yu2013.py",
+CAND-01,Fig7,,model_FBP,model_cho,FBP,60 mAs,60,mAs,3,73.94,4.05,4.21,2,Cowork Claude session,"pixel-template extraction, extract_yu2013.py",
+CAND-01,Fig7,,human_FBP,human,FBP,120 mAs,120,mAs,9,99.07,,,2,Cowork Claude session,"pixel-template extraction, extract_yu2013.py",
+CAND-01,Fig7,,human_FBP,human,FBP,120 mAs,120,mAs,5,92.5,,,2,Cowork Claude session,"pixel-template extraction, extract_yu2013.py",
+CAND-01,Fig7,,human_FBP,human,FBP,120 mAs,120,mAs,3,79.86,,2.76,2,Cowork Claude session,"pixel-template extraction, extract_yu2013.py",
+CAND-01,Fig7,,model_FBP,model_cho,FBP,120 mAs,120,mAs,9,100.0,,,2,Cowork Claude session,"pixel-template extraction, extract_yu2013.py",
+CAND-01,Fig7,,model_FBP,model_cho,FBP,120 mAs,120,mAs,5,92.58,0.89,,2,Cowork Claude session,"pixel-template extraction, extract_yu2013.py",
+CAND-01,Fig7,,model_FBP,model_cho,FBP,120 mAs,120,mAs,3,78.16,,,2,Cowork Claude session,"pixel-template extraction, extract_yu2013.py",
+CAND-01,Fig7,,human_FBP,human,FBP,240 mAs,240,mAs,5,97.04,0.97,,2,Cowork Claude session,"pixel-template extraction, extract_yu2013.py",
+CAND-01,Fig7,,human_FBP,human,FBP,240 mAs,240,mAs,3,83.26,2.11,,2,Cowork Claude session,"pixel-template extraction, extract_yu2013.py",
+CAND-01,Fig7,,model_FBP,model_cho,FBP,240 mAs,240,mAs,3,86.67,,3.73,2,Cowork Claude session,"pixel-template extraction, extract_yu2013.py",
+CAND-01,Fig7,,human_FBP,human,FBP,360 mAs,360,mAs,3,95.83,1.54,,2,Cowork Claude session,"pixel-template extraction, extract_yu2013.py",
+CAND-01,Fig7,,human_FBP,human,FBP,240 mAs,240,mAs,9,100.04,,,2,Cowork Claude session,"pixel-template extraction, extract_yu2013.py",overlaps model marker on 100% gridline
+CAND-01,Fig7,,model_FBP,model_cho,FBP,240 mAs,240,mAs,9,100.0,1.66,0.77,2,Cowork Claude session,"pixel-template extraction, extract_yu2013.py",overlaps human marker on 100% gridline
+CAND-01,Fig7,,model_FBP,model_cho,FBP,240 mAs,240,mAs,5,99.11,0.77,,2,Cowork Claude session,"pixel-template extraction, extract_yu2013.py",adjacent to 100% cluster
+CAND-01,Fig7,,human_FBP,human,FBP,360 mAs,360,mAs,9,99.96,,,2,Cowork Claude session,"pixel-template extraction, extract_yu2013.py",coincident cluster at 100%
+CAND-01,Fig7,,human_FBP,human,FBP,360 mAs,360,mAs,5,99.96,,,2,Cowork Claude session,"pixel-template extraction, extract_yu2013.py",coincident with human large (hidden)
+CAND-01,Fig7,,model_FBP,model_cho,FBP,360 mAs,360,mAs,9,100.04,2.43,,2,Cowork Claude session,"pixel-template extraction, extract_yu2013.py",coincident cluster at 100%
+CAND-01,Fig7,,model_FBP,model_cho,FBP,360 mAs,360,mAs,5,100.04,2.43,,2,Cowork Claude session,"pixel-template extraction, extract_yu2013.py",coincident with model large (hidden)
+CAND-01,Fig7,,model_FBP,model_cho,FBP,360 mAs,360,mAs,3,98.22,,,2,Cowork Claude session,"pixel-template extraction, extract_yu2013.py",on small-series polyline
+CAND-01,Fig7,,human_FBP,human,FBP,480 mAs,480,mAs,9,100.04,,,2,Cowork Claude session,"pixel-template extraction, extract_yu2013.py","two stacked human markers, upper"
+CAND-01,Fig7,,human_FBP,human,FBP,480 mAs,480,mAs,5,98.91,,1.62,2,Cowork Claude session,"pixel-template extraction, extract_yu2013.py","two stacked human markers, lower; size assignment by monotonic order"
+CAND-01,Fig7,,human_FBP,human,FBP,480 mAs,480,mAs,3,98.91,,1.62,2,Cowork Claude session,"pixel-template extraction, extract_yu2013.py","coincident-ambiguous: third human marker not separable, recorded at lower level"
+CAND-01,Fig7,,model_FBP,model_cho,FBP,480 mAs,480,mAs,9,100.04,2.92,,2,Cowork Claude session,"pixel-template extraction, extract_yu2013.py",upper open marker
+CAND-01,Fig7,,model_FBP,model_cho,FBP,480 mAs,480,mAs,5,100.04,2.92,,2,Cowork Claude session,"pixel-template extraction, extract_yu2013.py",coincident with model large (hidden)
+CAND-01,Fig7,,model_FBP,model_cho,FBP,480 mAs,480,mAs,3,98.34,1.22,,2,Cowork Claude session,"pixel-template extraction, extract_yu2013.py",on small-series polyline
+CAND-01,Fig9,,human_IR,human,IR,60 mAs,60,mAs,9,95.44,,,2,Cowork Claude session,"pixel-template extraction, extract_yu2013.py",
+CAND-01,Fig9,,human_IR,human,IR,60 mAs,60,mAs,5,91.2,,,2,Cowork Claude session,"pixel-template extraction, extract_yu2013.py",
+CAND-01,Fig9,,human_IR,human,IR,60 mAs,60,mAs,3,70.67,2.85,,2,Cowork Claude session,"pixel-template extraction, extract_yu2013.py",
+CAND-01,Fig9,,model_IR,model_cho,IR,60 mAs,60,mAs,9,95.68,,,2,Cowork Claude session,"pixel-template extraction, extract_yu2013.py",
+CAND-01,Fig9,,model_IR,model_cho,IR,60 mAs,60,mAs,5,91.36,,,2,Cowork Claude session,"pixel-template extraction, extract_yu2013.py",
+CAND-01,Fig9,,model_IR,model_cho,IR,60 mAs,60,mAs,3,73.56,,3.79,2,Cowork Claude session,"pixel-template extraction, extract_yu2013.py",
+CAND-01,Fig9,,human_IR,human,IR,120 mAs,120,mAs,3,68.47,2.77,3.34,2,Cowork Claude session,"pixel-template extraction, extract_yu2013.py",
+CAND-01,Fig9,,model_IR,model_cho,IR,120 mAs,120,mAs,3,77.39,3.95,3.79,2,Cowork Claude session,"pixel-template extraction, extract_yu2013.py",
+CAND-01,Fig9,,human_IR,human,IR,120 mAs,120,mAs,9,99.67,1.47,,2,Cowork Claude session,"pixel-template extraction, extract_yu2013.py",filled apex under 100% gridline; bbox rows 60-74
+CAND-01,Fig9,,model_IR,model_cho,IR,120 mAs,120,mAs,9,99.96,3.79,,2,Cowork Claude session,"pixel-template extraction, extract_yu2013.py",open triangle on gridline; apex row 55
+CAND-01,Fig9,,human_IR,human,IR,120 mAs,120,mAs,5,98.21,,,2,Cowork Claude session,"pixel-template extraction, extract_yu2013.py","overlapping pair, filled; bbox rows 76-94"
+CAND-01,Fig9,,model_IR,model_cho,IR,120 mAs,120,mAs,5,97.56,1.38,,2,Cowork Claude session,"pixel-template extraction, extract_yu2013.py","overlapping pair, open; base rows 100-102"
