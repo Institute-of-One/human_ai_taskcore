@@ -420,19 +420,81 @@ a chain limited by the observer rather than by the acquisition should do.
 
 # 5. Discussion
 
-[TODO prose. The claims that are allowed:]
+## 5.1 What the saturation frequency claims, and what it does not
 
-- Under the stated display and viewing conditions, information above
-  $f_{\mathrm{sat}}$ does not reach the observer. Nothing here says whether a
-  diagnosis can be made.
-- Sharper reconstruction always helps in this model; the paper does not argue
-  that resolution is wasted. What it argues is that the *display* decides
-  whether the resolution arrives.
-- The relative value of an extra band and the absolute detectability of the
-  task move in opposite directions. The extra band matters most where nothing
-  is detectable, which is why the U-HRCT result must be phrased as a condition
-  on the reading protocol rather than as a verdict on the scanner.
-- Design guidance: the sufficient magnification, not an optimal one.
+$f_{\mathrm{sat}}$ is a statement about a chain, not about a scanner. Under the
+stated display and viewing conditions, information above it does not reach the
+observer; under a different magnification or viewing distance the same
+reconstruction delivers a different band, and the model says so quantitatively
+rather than as a caveat. The quantity that moves is the reading condition.
+
+Two readings are not available from these results. The first is that a diagnosis
+can or cannot be made: the model addresses near-threshold detection of a specified
+signal, and detection is not diagnosis. Nothing here speaks to whether a finding is
+recognised, characterised or acted upon, and the observer models used are not
+clinical readers.
+
+The second is that resolution beyond $f_{\mathrm{sat}}$ is wasted. In this model
+sharper reconstruction never hurts and generally helps: the detectability integral
+is monotone in the modulation transfer function, so a sharper chain delivers at
+least as much at every frequency. What the results argue is narrower and more
+useful — that whether the extra resolution *arrives* is decided downstream of the
+reconstruction, by the display and the eye, and that this is measurable in advance
+rather than discoverable only in a reading study.
+
+## 5.2 The added band and the detectable task move in opposite directions
+
+The case study makes a point that is easy to state backwards. The share of $d'^2$
+arriving from above the conventional Nyquist frequency is largest for the smallest
+task, and the smallest task is the one that is not detected at either resolution.
+Where detection is actually happening, the added band contributes a fraction of a
+percent.
+
+The two quantities are anti-correlated by construction rather than by accident. A
+task whose detectability is dominated by low frequencies is one the observer
+already performs; a task pushed to the limit of the delivered band is one whose
+signal has been carried into the frequencies the observer is worst at. So the share
+of the total that arrives late rises exactly as the total falls.
+
+The consequence for how a result like this should be reported is direct. A
+maximum added-band share, quoted alone, reads as evidence that the finer chain
+matters most for the hardest tasks. It is the same number that also says the
+hardest tasks are not being performed. Any statement about an ultra-high-resolution
+chain therefore has to carry an absolute detectability beside the relative gain, or
+it will be read as a verdict on the scanner when it is a condition on the reading
+protocol.
+
+## 5.3 Design guidance: sufficiency rather than optimality
+
+The magnification result should be read as a floor and not as a recommendation.
+$M^{*}$ is the magnification at which the delivered band first covers the task; $d'$
+is monotone in magnification, so there is no interior optimum to find and no point
+at which further magnification becomes harmful within the model. The useful
+statement is therefore of the form *this much is enough for this task under these
+conditions*, not *this is the right amount*.
+
+That the finer chain reaches its sufficient magnification at a lower value than the
+conventional one is the expected behaviour of a chain limited by the observer. It
+is also the practical form of the paper's argument: the way to make a finer
+acquisition arrive is to change the reading condition until it does, and the amount
+of change needed is computable from the reconstruction and the display without
+running a reading study first.
+
+## 5.4 What the external validation supports
+
+The validation establishes that the model orders conditions as published human
+observers did, on CT, in a majority of the studies that met criteria frozen before
+the search. It does not establish that the absolute detectability is calibrated,
+and the analysis was deliberately confined to within-study rank for that reason:
+observer panels, decision criteria and task definitions differ between studies in
+ways no rescaling repairs.
+
+Ordering is the right target for the claims above, because each of them is an
+ordering claim — that one reading condition delivers more than another, that a
+band contributes more for one task than another, that one magnification suffices
+where a smaller one does not. None of them requires the absolute level to be
+right. The results that would require it, such as predicting a reader's detection
+rate for a given lesion, are outside what this work supports.
 
 # 6. Limitations
 

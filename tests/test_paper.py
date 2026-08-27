@@ -149,3 +149,49 @@ class TestFigures:
         for figure in figures:
             assert figure.stat().st_size > 0
             assert f"figures/{figure.name}" in template
+
+
+class TestDiscussionScope:
+    """The Discussion was written against a list of claims it was allowed to make.
+
+    The list is the thing that keeps the section from drifting into what the results
+    do not support, and a list that only ever lived in a TODO comment stops working
+    the moment the TODO is replaced by prose. These assert the boundaries directly.
+    """
+
+    def _discussion(self):
+        text = Path("paper/manuscript.md").read_text(encoding="utf-8")
+        start = text.index("# 5. Discussion")
+        return text[start : text.index("# 6. Limitations")]
+
+    def test_it_disclaims_diagnosis(self):
+        body = " ".join(self._discussion().split())
+        assert "detection is not diagnosis" in body, (
+            "the model addresses detection; the section must say it does not "
+            "address diagnosis"
+        )
+
+    def test_it_does_not_argue_that_resolution_is_wasted(self):
+        body = " ".join(self._discussion().split()).lower()
+        assert "sharper reconstruction never hurts" in body
+        for forbidden in (
+            "resolution is wasted",
+            "resolution is unnecessary",
+            "no benefit from higher resolution",
+        ):
+            assert forbidden not in body, f"out-of-scope claim: {forbidden!r}"
+
+    def test_it_pairs_the_added_band_with_absolute_detectability(self):
+        """The one number in this paper that inverts if quoted alone."""
+        body = " ".join(self._discussion().split())
+        assert "absolute detectability beside the relative gain" in body
+
+    def test_it_offers_sufficiency_and_not_an_optimum(self):
+        body = " ".join(self._discussion().split()).lower()
+        assert "no interior optimum" in body
+        assert "is enough for this task" in body
+        assert "optimal magnification" not in body
+
+    def test_it_keeps_the_validation_to_ordering(self):
+        body = " ".join(self._discussion().split()).lower()
+        assert "does not establish that the absolute detectability is calibrated" in body
