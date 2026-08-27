@@ -250,6 +250,12 @@ class Registry:
     frozen: str
     studies: tuple = ()
     screened: tuple = ()
+    #: Set when the non-CT slot could not be filled and the pre-registered
+    #: consequence is taken: the generality claim drops to CT only. It is a field
+    #: rather than a decision made at analysis time because v1.0 fixed the
+    #: consequence before the search began, and a narrowing chosen after seeing how
+    #: the search went would be the thing the pre-registration exists to prevent.
+    generality_narrowed_to_ct: bool = False
 
 
 def validate_study(study):
@@ -335,10 +341,20 @@ def validate_registry(registry):
             f"has {n_points}"
         )
     non_ct = sum(1 for s in registry.studies if s.modality != "ct")
-    if non_ct < MIN_NON_CT_STUDIES:
+    if non_ct < MIN_NON_CT_STUDIES and not registry.generality_narrowed_to_ct:
         pool.append(
             f"pool needs >= {MIN_NON_CT_STUDIES} non-CT study for the "
-            "generality claim; without it the claim drops to CT only"
+            "generality claim; without it the claim drops to CT only. Set "
+            "generality_narrowed_to_ct in the registry to take that consequence, "
+            "which the pre-registration fixed before the search began"
+        )
+    elif non_ct >= MIN_NON_CT_STUDIES and registry.generality_narrowed_to_ct:
+        # The narrowing is a consequence of an empty slot, not a preference. If a
+        # non-CT study is ever admitted, the narrowing has to be withdrawn rather
+        # than left standing as a claim weaker than the evidence supports.
+        pool.append(
+            "the registry declares the generality claim narrowed to CT, but the pool "
+            f"now holds {non_ct} non-CT study; withdraw the narrowing"
         )
     if pool:
         problems["pool"] = pool
@@ -424,6 +440,9 @@ def load_registry(path="data/h2_studies.json"):
         studies=tuple(_study_from_dict(s) for s in payload.get("studies", [])),
         screened=tuple(
             ScreenedStudy(**s) for s in payload.get("screened", [])
+        ),
+        generality_narrowed_to_ct=bool(
+            payload.get("generality_narrowed_to_ct", False)
         ),
     )
 

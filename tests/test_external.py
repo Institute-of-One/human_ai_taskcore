@@ -392,10 +392,9 @@ class TestRegistryFile:
             assert screened.failed_criterion.strip()
             assert screened.exclusion_reason.strip()
             assert screened.citation.strip()
-        assert validate_registry(registry) == {
-            # the only outstanding problem is that the pool is not yet built
-            "pool": validate_registry(registry)["pool"]
-        }
+        # The pool is complete: the non-CT slot could not be filled and the
+        # pre-registered consequence has been taken, so nothing is outstanding.
+        assert validate_registry(registry) == {}
 
     def test_the_registry_file_round_trips(self):
         payload = json.loads(
@@ -407,7 +406,41 @@ class TestRegistryFile:
             "note",
             "studies",
             "screened",
+            "generality_narrowed_to_ct",
+            "generality_narrowing_note",
         }
+
+    def test_the_narrowing_is_declared_with_its_reason(self):
+        """The narrowing is a consequence, and a consequence with no stated cause is
+        indistinguishable from a preference. Seven candidates failed frozen criteria;
+        the registry has to say which, so a reader can check that none was dropped on
+        its values."""
+        payload = json.loads(
+            open("data/h2_studies.json", encoding="utf-8").read()
+        )
+        if not payload.get("generality_narrowed_to_ct"):
+            return
+        note = payload.get("generality_narrowing_note", "")
+        assert note.strip(), "the narrowing must state why the slot could not be filled"
+        registry = load_registry("data/h2_studies.json")
+        for screened in registry.screened:
+            assert screened.study_id in note, (
+                f"{screened.study_id} was screened out but the narrowing note does not "
+                "account for it"
+            )
+
+    def test_a_non_ct_study_would_withdraw_the_narrowing(self):
+        """If the slot is ever filled, a narrowing left standing would understate the
+        evidence. The gate refuses that state rather than trusting anyone to notice."""
+        registry = load_registry("data/h2_studies.json")
+        if not registry.generality_narrowed_to_ct:
+            return
+        chest = dataclasses.replace(registry.studies[0], modality="chest_radiography")
+        widened = dataclasses.replace(
+            registry, studies=(*registry.studies, chest)
+        )
+        problems = validate_registry(widened).get("pool", [])
+        assert any("withdraw the narrowing" in p for p in problems), problems
 
 
 class TestAnalysis:

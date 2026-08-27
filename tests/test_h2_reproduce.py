@@ -1,5 +1,7 @@
 """Per-study reproduction configs, and the gate that keeps H2 a pool result."""
 
+import dataclasses
+
 import pytest
 
 from ptx.external import Registry, load_registry
@@ -74,10 +76,24 @@ class TestConfigs:
 
 class TestPoolGate:
     def test_an_incomplete_pool_refuses_to_be_analysed(self):
+        """Constructed rather than read from the file.
+
+        This test used to assert that the real registry was incomplete, which held
+        while the pool was being built and stopped holding the moment it was
+        finished -- so the test was measuring the state of the work rather than the
+        behaviour of the gate. Dropping a study from the real pool exercises the
+        gate and keeps doing so after the pool is complete.
+        """
         registry = load_registry("data/h2_studies.json")
+        short = dataclasses.replace(registry, studies=registry.studies[:1])
         with pytest.raises(PoolNotReady) as caught:
-            gate_pool(registry)
+            gate_pool(short)
         assert "pool" in str(caught.value)
+
+    def test_the_complete_pool_is_admitted(self):
+        registry = load_registry("data/h2_studies.json")
+        studies = gate_pool(registry)
+        assert len(studies) == len(registry.studies)
 
     def test_the_gate_names_the_generality_requirement(self):
         # the requirement most likely to go unmet quietly
