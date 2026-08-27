@@ -195,3 +195,55 @@ class TestDiscussionScope:
     def test_it_keeps_the_validation_to_ordering(self):
         body = " ".join(self._discussion().split()).lower()
         assert "does not establish that the absolute detectability is calibrated" in body
+
+
+class TestMethodsMatchTheImplementation:
+    """Methods describes what the code does. Where it states a fact about the runs,
+    the fact is checked against the recorded configuration rather than trusted."""
+
+    def _methods(self):
+        text = RENDERED.read_text(encoding="utf-8")
+        return text[text.index("# 3. Methods") : text.index("# 4. Results")]
+
+    def test_the_condition_set_is_the_full_factorial_it_claims(self, sources):
+        config = sources["phase1"]["metadata"]["config"]
+        product = 1
+        for axis in (
+            "diameters_mm",
+            "contrasts_hu",
+            "doses_relative",
+            "slice_thicknesses_mm",
+            "kernels",
+            "zooms",
+        ):
+            product *= len(config[axis])
+        assert product == sources["phase1"]["metadata"]["n_conditions"], (
+            "Methods calls the condition set a full factorial over six axes; the "
+            f"axes multiply to {product} and the run recorded "
+            f"{sources['phase1']['metadata']['n_conditions']}"
+        )
+        assert "full factorial over six axes" in " ".join(self._methods().split())
+
+    def test_the_h1_rule_in_the_text_is_the_rule_the_run_applied(self, sources):
+        recorded = sources["uncertainty"]["metadata"]["h1_rule"]
+        body = " ".join(self._methods().split())
+        assert "lower bound of the 95% band" in body
+        assert "lower bound of the 95% band" in recorded, (
+            "the run records a different H1 rule than the manuscript states"
+        )
+
+    def test_the_h2_threshold_in_the_text_is_the_frozen_one(self, sources):
+        assert sources["h2"]["success_threshold_rho"] == 0.7
+        assert r"\rho \ge 0.7" in self._methods()
+
+    def test_the_propagation_pairing_claim_is_stated(self):
+        """The pairing is the part of the design a reader cannot see in a number."""
+        body = " ".join(self._methods().split())
+        assert "held fixed across the dose axis" in body
+
+    def test_the_superseded_form_is_disclosed(self, sources):
+        """The code carries an earlier detectability form. Methods has to say so, or
+        a reader checking an intermediate value against the older draft concludes the
+        implementation is broken."""
+        assert "superseded" in sources["phase1"]["metadata"]["detectability_form"]
+        assert "superseded" in " ".join(self._methods().split())

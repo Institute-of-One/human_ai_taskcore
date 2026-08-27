@@ -177,35 +177,99 @@ $G_{\mathrm{useful}}$.
 
 ## 3.1 Implementation and reproducibility
 
-[TODO prose] Independent implementation in numpy/scipy, checked against the
-primary sources and standards (DICOM PS3.14 GSDF, Barten's tabulated values).
-Every random draw is seeded; the same configuration reproduces the same
-results file byte for byte.
+The chain is implemented independently in numpy and scipy rather than assembled
+from an existing toolkit, so that each transfer stage could be checked against its
+primary source: the greyscale standard display function against DICOM PS3.14, the
+contrast sensitivity against Barten's tabulated values, and the observer models
+against the closed-form results they reduce to when the noise is white.
+
+Every random draw is seeded and every result file records the configuration that
+produced it, together with the library versions and the protocol section it
+implements. Rerunning a configuration reproduces its result file byte for byte;
+the test suite performs that comparison rather than trusting it, so a change in a
+dependency that moved a number would fail rather than pass quietly.
+
+The reported detectability uses visual sensitivity inside the effective noise. An
+earlier form of the model placed it as a weight on the numerator, and that form is
+retained in the code and identified as superseded rather than deleted, because it
+is the ideal-observer limit the appendix compares against and because a reader
+checking an intermediate quantity against the earlier draft should find out that
+the definition changed rather than conclude the implementation is wrong.
 
 ## 3.2 Conditions
 
-[TODO prose] 540 conditions: task diameter and contrast, dose,
-slice thickness, reconstruction kernel and magnification, at a reconstruction
-Nyquist frequency of 1.28 lp/mm.
+The condition set is a full factorial over six axes: task diameter and task
+contrast, relative dose, slice thickness, reconstruction kernel and magnification,
+giving 540 conditions at a reconstruction Nyquist frequency of
+1.28 lp/mm. It is a grid rather than a sample, so no condition is
+present because it was expected to be interesting, and the axes cross rather than
+vary one at a time, so an interaction between the display and the acquisition
+cannot be hidden by holding one of them fixed.
+
+The axes were chosen for what they separate. Diameter and contrast move the task
+through the frequency band independently, which is what distinguishes a task the
+observer fails from one the chain fails to deliver. Dose and slice thickness move
+the image noise without moving the signal. Kernel moves signal and image noise
+together and leaves the neural floor alone, which is the property Section 4.1.1
+uses as an internal check. Magnification moves the task relative to the observer
+without touching the image at all, and it is the only axis in the set that a
+reading protocol can change after the acquisition exists.
+
+The remaining parameters are held at values stated in the configuration each
+result file carries: viewing distance, luminance, display pitch, grey levels,
+window width and the reference noise level. They are not swept here because they
+are swept in the interval propagation of Section 3.3, where they enter as
+properties of a reader rather than of a protocol.
 
 ## 3.3 Uncertainty propagation
 
-[TODO prose] The observer is not point-estimated. The literature ranges of
-$\eta_{\mathrm{cog}}$ and $\kappa$, together with viewing distance, luminance
-and magnification, are propagated by a seeded Latin hypercube of
-256 samples (23,040 evaluations),
-paired across the dose axis so that each sample is one coherent observer.
-Results are reported as 95% bands.
+The observer is not point-estimated, because the parameters that describe one are
+literature ranges rather than measurements of any particular reader. Reporting a
+single $f_{\mathrm{sat}}$ would state a precision the inputs do not have.
+
+The ranges of the cognitive efficiency $\eta_{\mathrm{cog}}$ and the neural noise
+scale $\kappa$, together with viewing distance, luminance and magnification, are
+propagated by a seeded Latin hypercube of 256 samples,
+23,040 evaluations in all, and results are reported as 95%
+bands.
+
+The pairing matters more than the sample count. Each sample is held fixed across
+the dose axis, so a series is evaluated by one coherent observer rather than by a
+different draw at every dose. Resampling per dose point would let a favourable
+observer appear at one dose and an unfavourable one at the next, which would widen
+the band while also destroying the within-series comparison the hypothesis is
+about: whether the gain per unit dose declines *for a reader*, not whether it
+declines on average over readers who change between measurements.
 
 ## 3.4 Hypothesis tests declared in advance
 
-[TODO prose] H1: a condition saturates when the lower bound of the 95% band on
-the decline of $G_{\mathrm{useful}}$ is positive. The sign of
-$G_{\mathrm{useful}}$ itself carries no information, since more dose always
-means less image noise. H2: within-study Spearman $\rho \geq 0.7$, with
-inclusion criteria frozen before the literature search. H3: $d'$ rises
-monotonically towards an asymptote in magnification, so the design quantity is
-the sufficient magnification $M^{*}$ and not an optimum.
+Each hypothesis was given a rule that decides it before the quantities it decides
+on were computed. The rules are stated here in the form they were frozen in, and
+the protocol sections they come from are named so that the freezing can be checked
+rather than taken on trust.
+
+**H1 — saturation.** A condition saturates when the lower bound of the 95% band on
+the decline of $G_{\mathrm{useful}}$ is positive. The rule is stated on the decline
+and not on $G_{\mathrm{useful}}$ itself for a reason that would otherwise make the
+test vacuous: more dose always means less image noise, so $G_{\mathrm{useful}}$
+cannot change sign, and a test on its sign would be passed by any implementation
+that runs at all. What is at issue is whether the *rate* falls, and whether it
+falls by more than the observer parameters can account for, which is why the rule
+is on the band rather than the point estimate.
+
+**H2 — external agreement.** Within-study Spearman $\rho \ge 0.7$ against
+published human observer performance, with the inclusion criteria, the pool
+requirements and the rejection rule frozen before the literature search began.
+The rule and the criteria are reproduced in Appendix A, and the registry records
+every candidate screened and the criterion it failed.
+
+**H3 — magnification.** $d'$ rises monotonically towards an asymptote in
+magnification, so the quantity a design can be given is the sufficient
+magnification $M^{*}$ at which the delivered band first covers the task, not an
+optimum. This is a prediction about shape and not about level: an interior maximum,
+had one appeared, would have falsified the serial-transfer form of the model rather
+than merely shifting a number, since a chain in which each stage attenuates cannot
+produce one.
 
 # 4. Results
 
