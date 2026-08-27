@@ -1,7 +1,7 @@
 {
   "schema_version": "1.3",
   "frozen": "2026-08-24",
-  "note": "Registry for the H2 external validation (protocol section 8). The inclusion criteria in docs/IORN-009A_H2_preregistration_v1.0.md were frozen before the literature search began; v1.1 amended C2's condition-axis vocabulary, v1.2 replaced the enumeration with the principle that an axis counts only if it names a declared model input, and v1.3 added the task_congruence descriptive field and froze the schema, each with the disclosure its own document carries. Yu 2013 is in studies with its full 21 human points (C6 pass). Paul 2007 is in studies on the reduced separable set recorded in docs/h2_cand04_condition_set_reduction.md (C6 pass by reduction, not a full-set fail). CAND-13 is still waiting on its PDF. No rank agreement has been run: gate_pool still holds.",
+  "note": "Registry for the H2 external validation (protocol section 8). The inclusion criteria in docs/IORN-009A_H2_preregistration_v1.0.md were frozen before the literature search began; v1.1-v1.3 amended C2 and froze the schema, each with its own disclosure. studies holds yu2013 (21 digitised 2AFC points), paul2007 (28 points on the reduced set), and leng2013 (8 ROC AUC points from Tables I and II; LROC unused). CAND-15 (Kimme-Smith 1996) failed C5 and CAND-17 (Kimme-Smith 1995) failed C2; both were the round-2 candidates for the empty non-CT slot, and excluding them leaves that slot empty. No rank agreement has been run: gate_pool still holds.",
   "studies": [
     {
       "study_id": "yu2013",
@@ -1088,6 +1088,211 @@
         }
       ],
       "notes": "C6 pass on a reduced condition set, the path the pre-registration explicitly allows (a point is resolved by a third pass or the study's condition set is reduced, and either outcome is recorded). Kept 28 separable points (non-saturated markers plus isolated saturated markers); dropped the eight narrow_occluded_uncertain leftovers (three on panel b, five on panel d) after adjudication against pass 1x. Section III.C's nine measurements below 1 mGy are the paper's count: seven are in the kept set, two remain in the occluded 0.66-0.70 mGy pile whose cardinality cannot be recovered independently of method. Saturated Az=1.000 stacks have no rank information and are not kept as clusters. x (dose) is the pass-2 axis calibration pending Yamamoto WebPlotDigitizer pass 1; y is the pass-1x value where one exists, otherwise pass 2, never the average. Max deviation on the reduced unsaturated matches 0.81%. Full record: docs/h2_cand04_condition_set_reduction.md."
+    },
+    {
+      "study_id": "leng2013",
+      "citation": "Leng S, Yu L, Zhang Y, Carter R, Toledano AY, McCollough CH. Correlation between model observer and human observer performance in CT imaging when lesion location is uncertain. Med Phys 2013;40(8):081908. doi:10.1118/1.4812430 (PMID 23927322, PMC3724792). Candidate CAND-13. ROC AUC from Tables I and II (All Readers average), page 081908-6; LROC Tables III and IV were not used.",
+      "modality": "ct",
+      "task": "ROC detection of a low-contrast rod at an uncertain location",
+      "condition_axes": [
+        "dose",
+        "lesion_size"
+      ],
+      "metric": "auc",
+      "acquisition": "table",
+      "reports_display_conditions": false,
+      "reports_reading_conditions": true,
+      "generality_check": false,
+      "n_readers": 3,
+      "task_congruence": "search_or_location_uncertain",
+      "digitisation_repeat_max_deviation": 0.0,
+      "conditions": [
+        {
+          "label": "3 mm 5.7 mGy",
+          "metric_value": 0.556,
+          "parameters": {
+            "diameter_mm": 3.0,
+            "contrast_hu": -15.0,
+            "dose_mgy": 5.7,
+            "dose_relative": 0.5,
+            "slice_thickness_mm": 5.0,
+            "pixel_mm_object": 0.5,
+            "distance_mm": 550.0,
+            "window_width_hu": 400.0,
+            "value_source": "table_I"
+          },
+          "assumed_parameters": {
+            "luminance_cdm2": 100.0,
+            "display_pitch_mm": 0.2,
+            "n_grey_levels": 256,
+            "magnification": 1.0,
+            "reference_sd_hu": 50.0,
+            "f50_lpmm": 0.397
+          }
+        },
+        {
+          "label": "3 mm 11.4 mGy",
+          "metric_value": 0.587,
+          "parameters": {
+            "diameter_mm": 3.0,
+            "contrast_hu": -15.0,
+            "dose_mgy": 11.4,
+            "dose_relative": 1.0,
+            "slice_thickness_mm": 5.0,
+            "pixel_mm_object": 0.5,
+            "distance_mm": 550.0,
+            "window_width_hu": 400.0,
+            "value_source": "table_I"
+          },
+          "assumed_parameters": {
+            "luminance_cdm2": 100.0,
+            "display_pitch_mm": 0.2,
+            "n_grey_levels": 256,
+            "magnification": 1.0,
+            "reference_sd_hu": 50.0,
+            "f50_lpmm": 0.397
+          }
+        },
+        {
+          "label": "3 mm 17.1 mGy",
+          "metric_value": 0.906,
+          "parameters": {
+            "diameter_mm": 3.0,
+            "contrast_hu": -15.0,
+            "dose_mgy": 17.1,
+            "dose_relative": 1.5,
+            "slice_thickness_mm": 5.0,
+            "pixel_mm_object": 0.5,
+            "distance_mm": 550.0,
+            "window_width_hu": 400.0,
+            "value_source": "table_I"
+          },
+          "assumed_parameters": {
+            "luminance_cdm2": 100.0,
+            "display_pitch_mm": 0.2,
+            "n_grey_levels": 256,
+            "magnification": 1.0,
+            "reference_sd_hu": 50.0,
+            "f50_lpmm": 0.397
+          }
+        },
+        {
+          "label": "3 mm 22.8 mGy",
+          "metric_value": 0.995,
+          "parameters": {
+            "diameter_mm": 3.0,
+            "contrast_hu": -15.0,
+            "dose_mgy": 22.8,
+            "dose_relative": 2.0,
+            "slice_thickness_mm": 5.0,
+            "pixel_mm_object": 0.5,
+            "distance_mm": 550.0,
+            "window_width_hu": 400.0,
+            "value_source": "table_I"
+          },
+          "assumed_parameters": {
+            "luminance_cdm2": 100.0,
+            "display_pitch_mm": 0.2,
+            "n_grey_levels": 256,
+            "magnification": 1.0,
+            "reference_sd_hu": 50.0,
+            "f50_lpmm": 0.397
+          }
+        },
+        {
+          "label": "5 mm 5.7 mGy",
+          "metric_value": 0.69,
+          "parameters": {
+            "diameter_mm": 5.0,
+            "contrast_hu": -15.0,
+            "dose_mgy": 5.7,
+            "dose_relative": 0.5,
+            "slice_thickness_mm": 5.0,
+            "pixel_mm_object": 0.5,
+            "distance_mm": 550.0,
+            "window_width_hu": 400.0,
+            "value_source": "table_II"
+          },
+          "assumed_parameters": {
+            "luminance_cdm2": 100.0,
+            "display_pitch_mm": 0.2,
+            "n_grey_levels": 256,
+            "magnification": 1.0,
+            "reference_sd_hu": 50.0,
+            "f50_lpmm": 0.397
+          }
+        },
+        {
+          "label": "5 mm 11.4 mGy",
+          "metric_value": 0.907,
+          "parameters": {
+            "diameter_mm": 5.0,
+            "contrast_hu": -15.0,
+            "dose_mgy": 11.4,
+            "dose_relative": 1.0,
+            "slice_thickness_mm": 5.0,
+            "pixel_mm_object": 0.5,
+            "distance_mm": 550.0,
+            "window_width_hu": 400.0,
+            "value_source": "table_II"
+          },
+          "assumed_parameters": {
+            "luminance_cdm2": 100.0,
+            "display_pitch_mm": 0.2,
+            "n_grey_levels": 256,
+            "magnification": 1.0,
+            "reference_sd_hu": 50.0,
+            "f50_lpmm": 0.397
+          }
+        },
+        {
+          "label": "5 mm 17.1 mGy",
+          "metric_value": 0.979,
+          "parameters": {
+            "diameter_mm": 5.0,
+            "contrast_hu": -15.0,
+            "dose_mgy": 17.1,
+            "dose_relative": 1.5,
+            "slice_thickness_mm": 5.0,
+            "pixel_mm_object": 0.5,
+            "distance_mm": 550.0,
+            "window_width_hu": 400.0,
+            "value_source": "table_II"
+          },
+          "assumed_parameters": {
+            "luminance_cdm2": 100.0,
+            "display_pitch_mm": 0.2,
+            "n_grey_levels": 256,
+            "magnification": 1.0,
+            "reference_sd_hu": 50.0,
+            "f50_lpmm": 0.397
+          }
+        },
+        {
+          "label": "5 mm 22.8 mGy",
+          "metric_value": 1.0,
+          "parameters": {
+            "diameter_mm": 5.0,
+            "contrast_hu": -15.0,
+            "dose_mgy": 22.8,
+            "dose_relative": 2.0,
+            "slice_thickness_mm": 5.0,
+            "pixel_mm_object": 0.5,
+            "distance_mm": 550.0,
+            "window_width_hu": 400.0,
+            "value_source": "table_II"
+          },
+          "assumed_parameters": {
+            "luminance_cdm2": 100.0,
+            "display_pitch_mm": 0.2,
+            "n_grey_levels": 256,
+            "magnification": 1.0,
+            "reference_sd_hu": 50.0,
+            "f50_lpmm": 0.397
+          }
+        }
+      ],
+      "notes": "Admitted by the v1.3 mechanical judgement (C1, C2 on dose x lesion_size, C3 eight points, C5 ROC AUC). Location uncertainty is not an exclusion: task_congruence records it for the heterogeneity stratification and never replaces the pool verdict. Only ROC AUC is used. The AUC-to-d' identity is for the equal-variance binormal ROC and does not hold for LROC; Tables III and IV were read and left out. Pixel size is the paper's 'approximately 0.5 mm' (p. 081908-5). Viewing distance is the midpoint of the stated 50-60 cm range. f50_lpmm 0.397 is assumed from Yu 2013 for the same B40 kernel on the same scanner family; Leng 2013 names the kernel but does not state MTF50."
     }
   ],
   "screened": [
@@ -1108,6 +1313,24 @@
       "citation": "Herron JM, Bender TM, Campbell WL, Sumkin JH, Rockette HE, Gur D. Effects of Luminance and Resolution on Observer Performance with Chest Radiographs. Radiology 2000;215(1):169-174. doi:10.1148/radiology.215.1.r00ap34169. Candidate CAND-08; judged on the full text.",
       "failed_criterion": "C3",
       "exclusion_reason": "C3: the study has no fully specified condition points. Its two axes are admissible under v1.2 (luminance at 85, 260 and 770 cd/m2; pixel size at 400, 200 and 100 micrometres) and it states that AUC was computed for all nine modes, but the published tables report only marginals: Table 1 averages over luminance and Table 2 averages over resolution, while Tables 3 to 5 resolve individual readers along luminance alone. A value averaged over an axis is not a point in condition space, and the model predicts detectability at a stated luminance and pixel size rather than at an average over either, so the count of usable condition points is zero against the four C3 requires. Recorded separately and not part of the reason: along the resolution marginal the reported AUC values for the nodule task differ by 0.01 or less, so even the marginals carry almost no ordering. This was the first pick for the generality slot, and v1.2 admitting luminance as an axis is what let it get as far as C3; excluding it empties the non-CT slot, which works against the paper's generality claim rather than for it."
+    },
+    {
+      "study_id": "kimmesmith1996",
+      "citation": "Kimme-Smith C, Hart EM, Goldin JG, Johnson TD, Terwilliger R, Aberle DR. Detection of simulated lung nodules with computed radiography: effects of nodule size, local optical density, global object thickness, and exposure. Acad Radiol 1996;3:735-741. Candidate CAND-15; judged on the full text.",
+      "failed_criterion": "C5",
+      "exclusion_reason": "C5: the reported figure of merit is true-positive fraction (Tables 2 and 3) with false-positive fraction given separately (Table 4, range 0.01-0.03). The accepted metrics are AUC, 2AFC proportion correct, and d'. The authors chose a cell-by-cell yes/no score on a 5 x 5 grid over ROC analysis because several nodules were present on each image (p. 739), so there is no AUC to recover. A true-positive fraction is a sensitivity, not a 2AFC proportion correct, and converting TPF and FPF into an AUC would add assumptions the pre-registration does not licence. Recorded separately and not part of the reason: the design would otherwise have met C1, C2 (dose, lesion_size, and local optical density as a contrast proxy) and C3."
+    },
+    {
+      "study_id": "kimmesmith1995",
+      "citation": "Kimme-Smith C, Aberle DR, Sayre JW, Hart EM, Greaves SM, Brown K, Young DA, Deseran MD, Johnson T, Johnson SL. Effects of reduced exposure on computed radiography: comparison of nodule detection accuracy with conventional and asymmetric screen-film radiographs of a chest phantom. AJR Am J Roentgenol 1995;165:269-276. PMID 7618538. Candidate CAND-17; judged on the full text.",
+      "failed_criterion": "C2",
+      "exclusion_reason": "C2: the study varies exposure and receptor (conventional screen-film, asymmetric screen-film, computed radiography). Dose is an admissible axis. Receptor class is not: the declared input named 'processing' is f50_lpmm and ramp_exponent of the reconstruction, not detector type, and v1.2 closed further vocabulary amendments. That leaves one effective axis, short of the two C2 requires. Nodule size and location are pooled into a single Az per receptor (Tables 2-4) and so are not condition axes. Recorded separately and not part of the reason: the two CR exposures alone are two points, which would also fail C3, and mapping receptor onto 'processing' would have filled the empty non-CT slot."
+    },
+    {
+      "study_id": "kroft2006",
+      "citation": "Kroft LJ, Veldkamp WJ, Mertens BJ, van Delft JP, Geleijns J. Detection of Simulated Nodules on Clinical Radiographs: Dose Reduction at Digital Posteroanterior Chest Radiography. Radiology 2006;241(2):392-398. https://doi.org/10.1148/radiol.2412051326",
+      "failed_criterion": "C5",
+      "exclusion_reason": "C5: each lesion was scored 'detected' or 'not detected' and analysed with a semiparametric logistic regression model, so the reported figure of merit is a detection probability rather than AUC, 2AFC proportion correct or d'. Determined from the published abstract, which states the design and the analysis explicitly; no performance value was extracted. The result -- no effect of dose reduction from 100% to 12% on lung lesion detection -- speaks to the saturation this framework predicts, and is worth citing in the Discussion as supporting evidence that the pool cannot use as validation."
     }
   ]
 }

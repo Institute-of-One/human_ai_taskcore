@@ -23,13 +23,23 @@ class TestConfigs:
     def test_unread_parameters_are_refused_rather_than_defaulted(self):
         # a default standing in for a value the paper states would put an
         # invented number into the validation
-        config = STUDY_REPRODUCTIONS["leng2013"]
+        from ptx.h2_reproduce import StudyReproduction
+
+        config = StudyReproduction(
+            study_id="pending_example",
+            source="test",
+            task_diameters_mm=(3.0,),
+            task_contrast_hu=-15.0,
+            dose_axis={"1": 1.0},
+            dose_reference_label="1",
+            pending_from_pdf=("pixel_mm_object",),
+        )
         with pytest.raises(PoolNotReady) as caught:
             config.build()
-        assert "leng2013" in str(caught.value)
+        assert "pending_example" in str(caught.value)
 
     def test_a_study_that_has_been_read_builds(self):
-        for study_id in ("yu2013", "paul2007"):
+        for study_id in ("yu2013", "paul2007", "leng2013"):
             acquisition, reading = STUDY_REPRODUCTIONS[study_id].build()
             assert acquisition.slice_thickness_mm > 0
             assert reading.window_width_hu > 0
@@ -45,15 +55,20 @@ class TestConfigs:
         assert reading.window_width_hu == 400.0
 
     def test_what_has_to_be_read_is_enumerated(self):
-        outstanding = outstanding_parameters()
-        assert set(outstanding) == {"leng2013"}
-        for pending in outstanding.values():
-            assert pending
+        # every admitted PDF has been read; outstanding is the empty set
+        assert outstanding_parameters() == {}
+
+    def test_leng2013_matches_the_pdf(self):
+        acquisition, reading = STUDY_REPRODUCTIONS["leng2013"].build()
+        assert acquisition.slice_thickness_mm == 5.0
+        assert acquisition.pixel_mm_object == 0.5
+        assert reading.distance_mm == 550.0
+        assert reading.window_width_hu == 400.0
 
     def test_unreported_parameters_are_declared_where_they_apply(self):
         # these take the declared defaults and get published as assumed, which
         # is only honest if the list of them is written down
-        for study_id in ("yu2013", "paul2007"):
+        for study_id in ("yu2013", "paul2007", "leng2013"):
             assert STUDY_REPRODUCTIONS[study_id].unreported
 
 

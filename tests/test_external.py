@@ -371,13 +371,17 @@ class TestRegistryFile:
         registry = load_registry("data/h2_studies.json")
         assert registry.schema_version == SCHEMA_VERSION
         ids = {s.study_id: s for s in registry.studies}
-        assert set(ids) == {"yu2013", "paul2007"}
+        assert set(ids) == {"yu2013", "paul2007", "leng2013"}
         assert len(ids["yu2013"].conditions) == 21
         assert ids["yu2013"].digitisation_repeat_max_deviation <= 0.05
         assert ids["yu2013"].task_congruence == "ske"
         assert len(ids["paul2007"].conditions) >= MIN_CONDITIONS_PER_STUDY
         assert ids["paul2007"].digitisation_repeat_max_deviation <= 0.05
         assert "reduced" in ids["paul2007"].notes
+        assert len(ids["leng2013"].conditions) == 8
+        assert ids["leng2013"].digitisation_repeat_max_deviation == 0.0
+        assert ids["leng2013"].task_congruence == "search_or_location_uncertain"
+        assert ids["leng2013"].acquisition == "table"
         for study in registry.studies:
             assert validate_study(study) == []
 

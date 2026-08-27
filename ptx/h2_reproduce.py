@@ -202,12 +202,12 @@ STUDY_REPRODUCTIONS = {
     "leng2013": StudyReproduction(
         study_id="leng2013",
         source=(
-            "Leng S, et al. Med Phys 2013;40(8):081908 (PMC3724792). "
-            "CAND-13; design from the abstract, PDF not yet in hand."
+            "Leng S, Yu L, Zhang Y, Carter R, Toledano AY, McCollough CH. "
+            "Med Phys 2013;40(8):081908, sections 2.A-2.C, pp. 081908-2 to "
+            "081908-3. Scan and reading parameters read from the PDF."
         ),
         task_diameters_mm=(3.0, 5.0),
         task_contrast_hu=-15.0,
-        # CTDIvol in mGy, normalised to the second level
         dose_axis={
             "5.7 mGy": 0.5,
             "11.4 mGy": 1.0,
@@ -215,17 +215,34 @@ STUDY_REPRODUCTIONS = {
             "22.8 mGy": 2.0,
         },
         dose_reference_label="11.4 mGy",
-        pending_from_pdf=(
-            "pixel_mm_object (the 128 x 128 ROI covers an unstated field)",
-            "kernel and its f50_lpmm",
-            "slice_thickness_mm",
-            "display and reading conditions, if reported",
+        acquisition_overrides={
+            "slice_thickness_mm": 5.0,
+            # paper: "pixel size ~0.5 mm" (p. 081908-5)
+            "pixel_mm_object": 0.5,
+            # B40, MTF50 not stated here; same kernel and scanner family as
+            # Yu 2013, whose 3.97 cm^-1 is recorded as assumed, not as a
+            # Leng-reported number
+            "f50_lpmm": 0.397,
+        },
+        reading_overrides={
+            # "approximately 50-60 cm"; the midpoint is the reported range,
+            # not a default
+            "distance_mm": 550.0,
+            "window_width_hu": 400.0,
+        },
+        unreported=(
+            "f50_lpmm (B40 named, MTF50 not stated; 0.397 taken from Yu "
+            "2013 and listed as assumed)",
+            "luminance_cdm2, display_pitch_mm, n_grey_levels (ACR-calibrated "
+            "monitor, level not stated)",
+            "reference_sd_hu",
         ),
         notes=(
-            "Same phantom family as yu2013. Use ROC AUC only: the AUC-to-d' "
-            "identity holds for the equal-variance binormal ROC and not for "
-            "LROC. Task congruence is search_or_location_uncertain, which is "
-            "recorded and stratified on, never used to include or exclude."
+            "Same phantom family as yu2013, location randomised inside the "
+            "ROI. Use ROC AUC only: the AUC-to-d' identity holds for the "
+            "equal-variance binormal ROC and not for LROC. Task congruence "
+            "is search_or_location_uncertain, which is recorded and "
+            "stratified on, never used to include or exclude."
         ),
     ),
 }
