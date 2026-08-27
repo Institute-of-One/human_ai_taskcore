@@ -1,0 +1,119 @@
+{
+  "what": "H2 external validation, run once over the complete pool under the pre-registration frozen in docs/IORN-009A_H2_preregistration_v1.0.md and amended through v1.3.",
+  "success_threshold_rho": 0.7,
+  "generality_narrowed_to_ct": true,
+  "scope_note": "The non-CT slot could not be filled, so the generality claim is CT only. See generality_narrowing_note in data/h2_studies.json.",
+  "per_study": {
+    "yu2013": {
+      "n_conditions": 21,
+      "metric": "pc_2afc",
+      "task_congruence": "ske",
+      "spearman_rho": 0.8526612184819091,
+      "meets_threshold": true,
+      "assumed_parameters": [
+        "display_pitch_mm",
+        "luminance_cdm2",
+        "magnification",
+        "n_grey_levels",
+        "reference_sd_hu"
+      ]
+    },
+    "paul2007": {
+      "n_conditions": 28,
+      "metric": "auc",
+      "task_congruence": "ske",
+      "spearman_rho": 0.6260814158339864,
+      "meets_threshold": false,
+      "assumed_parameters": [
+        "display_pitch_mm",
+        "distance_mm",
+        "luminance_cdm2",
+        "magnification",
+        "n_grey_levels",
+        "reference_sd_hu",
+        "slice_thickness_mm"
+      ]
+    },
+    "leng2013": {
+      "n_conditions": 8,
+      "metric": "auc",
+      "task_congruence": "search_or_location_uncertain",
+      "spearman_rho": 0.8095238095238096,
+      "meets_threshold": true,
+      "assumed_parameters": [
+        "display_pitch_mm",
+        "f50_lpmm",
+        "luminance_cdm2",
+        "magnification",
+        "n_grey_levels",
+        "reference_sd_hu"
+      ]
+    }
+  },
+  "pools": {
+    "v1_0_strict": {
+      "studies": [
+        "yu2013",
+        "leng2013"
+      ],
+      "n_studies": 2,
+      "n_meeting_threshold": 2,
+      "majority_meet_threshold": true,
+      "pooled_rho": 0.8408710379355787,
+      "pooled_meets_threshold": true,
+      "h2_rejected": false
+    },
+    "v1_1": {
+      "studies": [
+        "yu2013",
+        "leng2013"
+      ],
+      "n_studies": 2,
+      "n_meeting_threshold": 2,
+      "majority_meet_threshold": true,
+      "pooled_rho": 0.8408710379355787,
+      "pooled_meets_threshold": true,
+      "h2_rejected": false
+    },
+    "v1_2": {
+      "studies": [
+        "yu2013",
+        "paul2007",
+        "leng2013"
+      ],
+      "n_studies": 3,
+      "n_meeting_threshold": 2,
+      "majority_meet_threshold": true,
+      "pooled_rho": 0.7244945224288244,
+      "pooled_meets_threshold": true,
+      "h2_rejected": false
+    }
+  },
+  "heterogeneity": {
+    "min_within_study_rho": 0.6260814158339864,
+    "median_within_study_rho": 0.8095238095238096,
+    "max_within_study_rho": 0.8526612184819091
+  },
+  "stratification_by_task_congruence": {
+    "note": "Description only. v1.3 section A.2 keeps this out of the success condition so that a stratum cannot rescue H2. The prediction written in advance was that the SKE stratum's median within-study rho would be at least the search stratum's; a clearly higher search stratum would mean the premise of the stratification was wrong, and that is reported either way.",
+    "strata": {
+      "search_or_location_uncertain": {
+        "studies": [
+          "leng2013"
+        ],
+        "n_studies": 1,
+        "median_within_study_rho": 0.8095238095238096,
+        "pooled_rho": 0.8095238095238096
+      },
+      "ske": {
+        "studies": [
+          "yu2013",
+          "paul2007"
+        ],
+        "n_studies": 2,
+        "median_within_study_rho": 0.7393713171579477,
+        "pooled_rho": 0.7204884656075948
+      }
+    }
+  }
+}

@@ -101,3 +101,60 @@ class TestPoolGate:
         with pytest.raises(PoolNotReady) as caught:
             gate_pool(registry)
         assert "non-CT" in str(caught.value)
+
+
+class TestAnalysisRun:
+    """The recorded H2 result must stay the one the pre-registration produces."""
+
+    def _result(self):
+        import json
+        from pathlib import Path
+
+        path = Path("results/h2.json")
+        if not path.is_file():
+            pytest.skip("run python -m ptx.h2_analysis")
+        return json.loads(path.read_text(encoding="utf-8"))
+
+    def test_the_recorded_result_is_reproducible(self):
+        from ptx.h2_analysis import analyse
+
+        recorded = self._result()
+        fresh = analyse()
+        for study_id, value in recorded["per_study"].items():
+            assert fresh["per_study"][study_id]["spearman_rho"] == pytest.approx(
+                value["spearman_rho"]
+            )
+        for name, value in recorded["pools"].items():
+            if value.get("pooled_rho") is None:
+                continue
+            assert fresh["pools"][name]["pooled_rho"] == pytest.approx(
+                value["pooled_rho"]
+            )
+
+    def test_the_failing_study_is_still_in_the_pool(self):
+        """paul2007 is the one study below threshold. The pre-registration says a
+        discordant study is reported and not dropped, and this is what makes that
+        checkable rather than a promise."""
+        recorded = self._result()
+        assert "paul2007" in recorded["per_study"]
+        assert recorded["per_study"]["paul2007"]["meets_threshold"] is False
+        assert "paul2007" in recorded["pools"]["v1_2"]["studies"]
+
+    def test_all_three_frozen_readings_agree_in_direction(self):
+        """v1.1 section D: a widening of C2 must be shown not to have manufactured
+        the conclusion."""
+        pools = self._result()["pools"]
+        verdicts = {
+            name: pools[name]["h2_rejected"]
+            for name in ("v1_0_strict", "v1_1", "v1_2")
+            if pools[name].get("pooled_rho") is not None
+        }
+        assert len(set(verdicts.values())) == 1, verdicts
+
+    def test_the_stratification_carries_no_verdict(self):
+        """v1.3 section A.2 keeps stratification out of the success condition, so no
+        stratum may carry a pass or fail field."""
+        strata = self._result()["stratification_by_task_congruence"]["strata"]
+        for value in strata.values():
+            assert "meets_threshold" not in value
+            assert "h2_rejected" not in value
