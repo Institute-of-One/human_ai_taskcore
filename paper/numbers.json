@@ -10,6 +10,7 @@
     "f_sat_median_lpmm": "results/phase1.json:summary.f_sat_95_lpmm.median",
     "f_sat_median_percent_of_nyquist": "derived by paper/make_figures.py (median f_sat over Nyquist)",
     "f_sat_min_lpmm": "results/phase1.json:summary.f_sat_95_lpmm.min",
+    "h2_freeze_commit": "results/release.json:h2_criteria_frozen_commit",
     "h2_n_leng2013": "results/h2.json:per_study.leng2013.n_conditions",
     "h2_n_meeting": "results/h2.json:pools.v1_2.n_meeting_threshold",
     "h2_n_paul2007": "results/h2.json:per_study.paul2007.n_conditions",
@@ -24,6 +25,7 @@
     "h2_rho_min": "results/h2.json:heterogeneity.min_within_study_rho",
     "h2_rho_paul2007": "results/h2.json:per_study.paul2007.spearman_rho",
     "h2_rho_yu2013": "results/h2.json:per_study.yu2013.spearman_rho",
+    "h2_search_commit": "results/release.json:h2_first_search_commit",
     "h2_stratum_search": "results/h2.json:stratification_by_task_congruence.strata.search_or_location_uncertain.median_within_study_rho",
     "h2_stratum_ske": "results/h2.json:stratification_by_task_congruence.strata.ske.median_within_study_rho",
     "h2_threshold": "results/h2.json:success_threshold_rho",
@@ -45,13 +47,17 @@
     "r_perceptual_band_high": "results/uncertainty.json:summary.r_perceptual_band.highest_upper",
     "r_perceptual_band_low": "results/uncertainty.json:summary.r_perceptual_band.lowest_lower",
     "r_perceptual_median": "results/phase1.json:summary.r_perceptual.median",
+    "release_commit": "results/release.json:release_commit",
+    "release_tag": "results/release.json:version_tag",
+    "repository_url": "results/release.json:repository",
     "saturating_fraction_bands": "results/uncertainty.json:summary.saturating_fraction",
     "saturating_fraction_phase1": "results/phase1.json:summary.dose_series_saturating_fraction",
     "small_task_added_band_percent": "derived by paper/make_figures.py (case study, 0.5 mm task)",
     "small_task_dprime_gain_percent": "derived by paper/make_figures.py (case study, 0.5 mm task at the reference reading)",
     "small_task_dprime_uhrct": "derived by paper/make_figures.py (case study, 0.5 mm task at the reference reading)",
     "smallest_task_mm": "derived by paper/make_figures.py (case study task set)",
-    "spearman_npwe_cho": "results/phase1.json:summary.observer_agreement.spearman_npwe_cho"
+    "spearman_npwe_cho": "results/phase1.json:summary.observer_agreement.spearman_npwe_cho",
+    "zenodo_version_doi": "results/release.json:zenodo_version_doi"
   },
   "values": {
     "added_band_cutoff_lpmm": "1.28",
@@ -64,6 +70,7 @@
     "f_sat_median_lpmm": "0.335",
     "f_sat_median_percent_of_nyquist": "26",
     "f_sat_min_lpmm": "0.213",
+    "h2_freeze_commit": "6b77ee3",
     "h2_n_leng2013": "8",
     "h2_n_meeting": "2",
     "h2_n_paul2007": "28",
@@ -78,6 +85,7 @@
     "h2_rho_min": "+0.626",
     "h2_rho_paul2007": "+0.626",
     "h2_rho_yu2013": "+0.853",
+    "h2_search_commit": "21d9421",
     "h2_stratum_search": "+0.810",
     "h2_stratum_ske": "+0.739",
     "h2_threshold": "0.7",
@@ -99,12 +107,16 @@
     "r_perceptual_band_high": "0.319",
     "r_perceptual_band_low": "0.045",
     "r_perceptual_median": "0.226",
+    "release_commit": "[UNSET: release_commit -- see results/release.json]",
+    "release_tag": "[UNSET: version_tag -- see results/release.json]",
+    "repository_url": "https://github.com/Institute-of-One/human_ai_taskcore",
     "saturating_fraction_bands": "100",
     "saturating_fraction_phase1": "100",
     "small_task_added_band_percent": "12.3",
     "small_task_dprime_gain_percent": "20.8",
     "small_task_dprime_uhrct": "0.36",
     "smallest_task_mm": "0.5",
-    "spearman_npwe_cho": "1.00"
+    "spearman_npwe_cho": "1.00",
+    "zenodo_version_doi": "[UNSET: zenodo_version_doi -- see results/release.json]"
   }
 }

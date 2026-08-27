@@ -39,8 +39,16 @@ RESULTS = {
     "uncertainty": Path("results/uncertainty.json"),
     "case_uhrct": Path("results/case_uhrct.json"),
     "h2": Path("results/h2.json"),
+    "release": Path("results/release.json"),
 }
 PLACEHOLDER = re.compile(r"\{\{([a-z0-9_]+)\}\}")
+
+#: What an unset release field renders as. It has to be something no reader and
+#: no build step could mistake for a value: IORN-006 shipped a document to an
+#: editor carrying a placeholder that still looked like a template variable, so
+#: the marker is loud and tools/presubmission_check.py refuses to build while one
+#: is present.
+UNSET = "[UNSET: {field} -- see results/release.json]"
 
 STYLE = {
     "figure.dpi": 200,
@@ -306,7 +314,33 @@ def collect_numbers(sources):
         "{:+.3f}",
     )
 
+    _release_numbers(numbers, sources["release"])
     return numbers
+
+
+def _release_numbers(numbers, release):
+    """Repository identity for the availability statement.
+
+    The two commits are known now; the tag and the DOI are not, because they do
+    not exist until the release is cut. An unset field renders as a loud marker
+    rather than as an empty string or a plausible-looking default, so that a
+    document built before the release cannot be mistaken for one built after it.
+    """
+    def field(key, name, transform=str):
+        value = release.get(name)
+        numbers.values[key] = (
+            UNSET.format(field=name) if value is None else transform(value)
+        )
+        numbers.provenance[key] = f"results/release.json:{name}"
+
+    field("repository_url", "repository")
+    field("release_tag", "version_tag")
+    field("release_commit", "release_commit", lambda sha: sha[:7])
+    # Rendered as a resolvable link. Transforming here rather than in the
+    # template keeps the unset marker from being dressed up as a URL.
+    field("zenodo_version_doi", "zenodo_version_doi", lambda doi: f"https://doi.org/{doi}")
+    field("h2_freeze_commit", "h2_criteria_frozen_commit", lambda sha: sha[:7])
+    field("h2_search_commit", "h2_first_search_commit", lambda sha: sha[:7])
 
 
 def figure_contribution_density(path):

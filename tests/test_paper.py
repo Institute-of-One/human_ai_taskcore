@@ -24,7 +24,12 @@ NUMBERS = Path("paper/numbers.json")
 #: it is not read from results/, so requiring it to arrive through a placeholder
 #: would be requiring a provenance it does not have. 5% is the C6 digitisation
 #: tolerance, alongside 0.7 for the rank-agreement threshold.
-DESIGN_CONSTANTS = (r"95\\%", "95%", r"0\.95", r"0\.7", r"5%", r"\$d'=1\$")
+#: 0.90 and 0.99 are the two companion f_sat fractions -- configuration, not
+#: result -- but a constant that may be typed can drift from the run that used
+#: it, so TestDeclaredConstantsMatchTheRuns checks them against the config.
+DESIGN_CONSTANTS = (
+    r"95\\%", "95%", r"0\.95", r"0\.90", r"0\.99", r"0\.7", r"5%", r"\$d'=1\$"
+)
 STRUCTURAL = (
     (re.compile(r"Section \d+(\.\d+)?"), "Section"),
     (re.compile(r"PS3\.14"), "PS"),
@@ -149,6 +154,176 @@ class TestFigures:
         for figure in figures:
             assert figure.stat().st_size > 0
             assert f"figures/{figure.name}" in template
+
+
+BIB = Path("paper/references.bib")
+CITATION = re.compile(r"@([a-z][a-z0-9]*\d{2,4})\b")
+BIB_KEY = re.compile(r"^@\w+\s*\{\s*([^,]+),", re.M)
+
+
+class TestReferences:
+    """A bibliography fails in two directions and only one of them is visible.
+
+    A citation with no entry renders as a bare marker, which anyone would notice.
+    An entry that resolves to somebody else's paper renders perfectly. The DOI
+    resolution check lives in tools/check_references.py because it needs the
+    network; what is asserted here is everything that does not.
+    """
+
+    def _keys(self):
+        return set(BIB_KEY.findall(BIB.read_text(encoding="utf-8")))
+
+    def _cited(self):
+        return set(CITATION.findall(TEMPLATE.read_text(encoding="utf-8")))
+
+    def test_every_citation_has_an_entry(self):
+        missing = sorted(self._cited() - self._keys())
+        assert not missing, f"cited with no entry in references.bib: {missing}"
+
+    def test_every_entry_is_cited(self):
+        """An uncited entry is either a citation that was dropped from the text or
+        padding. Both are worth catching; neither is visible in the rendered PDF."""
+        orphans = sorted(self._keys() - self._cited())
+        assert not orphans, f"in references.bib but never cited: {orphans}"
+
+    def test_no_citation_survives_into_the_rendered_text_as_prose(self):
+        """Author-year written by hand does not become a reference entry, and does
+        not renumber if the journal wants numeric citations."""
+        rendered = RENDERED.read_text(encoding="utf-8")
+        body = rendered[rendered.index("# 1. Introduction") : rendered.index("# References")]
+        stray = re.findall(r"\((?:[A-Z][a-z]+(?:\s+(?:and|&)\s+[A-Z][a-z]+)?)\s+(?:19|20)\d\d\)", body)
+        assert not stray, f"hand-written author-year citations: {set(stray)}"
+
+    def test_the_density_is_that_of_an_original_article(self):
+        """Too few references is the signal that gets a submission reclassified as a
+        note. The band is a floor to notice, not a target to pad towards."""
+        rendered = RENDERED.read_text(encoding="utf-8")
+        body = rendered[
+            rendered.index("# 1. Introduction") : rendered.index(
+                "# Data and code availability"
+            )
+        ]
+        words = len(re.sub(r"\$[^$]*\$|[*_`]", " ", body).split())
+        per_thousand = len(self._keys()) / (words / 1000)
+        assert per_thousand >= 2.0, (
+            f"{len(self._keys())} references over {words} words is "
+            f"{per_thousand:.1f} per 1000 -- low for an original article"
+        )
+
+    def test_entries_carry_a_doi_or_declare_why_not(self):
+        import importlib.util as _util
+
+        spec = _util.spec_from_file_location("check_refs", "tools/check_references.py")
+        module = _util.module_from_spec(spec)
+        spec.loader.exec_module(module)
+        entries = module.parse_bib(BIB.read_text(encoding="utf-8"))
+        assert set(entries) == self._keys()
+        for key, fields in entries.items():
+            if key in module.NO_DOI_EXPECTED:
+                continue
+            assert fields.get("doi"), f"{key} has no DOI and is not declared exempt"
+
+    def test_the_bibliography_is_a_citeproc_target(self):
+        """pandoc fills #refs. Without the div the reference list silently vanishes
+        from the built document while the manuscript still looks complete."""
+        template = TEMPLATE.read_text(encoding="utf-8")
+        assert "::: {#refs}" in template
+        assert "bibliography: references.bib" in template
+
+
+class TestAbstract:
+    """The abstract is the part most often read alone and quoted alone, so the
+    pairing the Discussion is held to matters more here, not less."""
+
+    def _abstract(self):
+        text = RENDERED.read_text(encoding="utf-8")
+        return text[text.index("**Purpose.**") : text.index("**Keywords:**")]
+
+    def test_the_added_band_share_is_not_quoted_without_absolute_detectability(self):
+        body = " ".join(self._abstract().split())
+        numbers = json.loads(NUMBERS.read_text(encoding="utf-8"))["values"]
+        share = numbers["small_task_added_band_percent"]
+        if str(share) not in body:
+            pytest.fail("the abstract no longer quotes the added-band share")
+        assert "absolute detectability is lowest" in body, (
+            "the added-band share inverts when quoted alone: the abstract must "
+            "carry the absolute detectability beside it"
+        )
+        assert str(numbers["small_task_dprime_uhrct"]) in body
+
+    def test_it_does_not_claim_resolution_is_wasted(self):
+        body = " ".join(self._abstract().split()).lower()
+        assert "never lowers" in body
+        for forbidden in ("resolution is wasted", "resolution is unnecessary"):
+            assert forbidden not in body
+
+    def test_it_states_the_ct_narrowing(self, sources):
+        assert sources["h2"]["generality_narrowed_to_ct"] is True
+        assert "CT" in self._abstract()
+
+    def test_it_keeps_the_discordant_study_visible(self):
+        body = " ".join(self._abstract().split()).lower()
+        assert "discordant study is retained" in body
+
+    def test_no_todo_markers_survive(self):
+        assert "TODO" not in self._abstract()
+
+
+class TestLimitations:
+    """The introduction to Limitations makes claims about the rest of the paper --
+    which entries are bold, and that Section 5 carries the scope statement it says
+    was bounded. A cross-reference to text that does not exist is the failure mode
+    this guards, because it reads as true right up until a reader looks."""
+
+    def _limitations(self):
+        text = RENDERED.read_text(encoding="utf-8")
+        return text[text.index("# 6. Limitations") : text.index("# 7. Conclusion")]
+
+    def test_exactly_two_entries_are_marked_as_the_binding_ones(self):
+        bold = re.findall(r"^- \*\*(.*?)\*\*", self._limitations(), re.M)
+        assert len(bold) == 2, (
+            "the introduction says two entries bound the work more than the rest; "
+            f"the list marks {len(bold)}: {bold}"
+        )
+        joined = " ".join(bold).lower()
+        assert "ct only" in joined and "anatomic noise" in joined
+
+    def test_the_two_are_one_of_each_kind(self):
+        body = " ".join(self._limitations().split())
+        assert "a limit on the evidence" in body
+        assert "a limit on the formulation" in body
+
+    def test_the_section_5_scope_statement_it_points_at_exists(self):
+        text = RENDERED.read_text(encoding="utf-8")
+        discussion = " ".join(
+            text[text.index("# 5. Discussion") : text.index("# 6. Limitations")].split()
+        )
+        assert "anatomic" in discussion.lower(), (
+            "Limitations says the anatomic-noise bound narrowed the scope "
+            "statement in Section 5; Section 5 does not make one"
+        )
+        assert "quantum and neural" in discussion
+
+
+class TestDeclaredConstantsMatchTheRuns:
+    """A design constant is exempt from the placeholder rule, which means the one
+    class of number in this manuscript that no build step verifies. Where the
+    constant is also recorded in a run's configuration, check it there."""
+
+    def test_the_f_sat_fractions_named_in_the_text_are_the_ones_computed(
+        self, sources
+    ):
+        recorded = sources["phase1"]["metadata"]["config"]["fractions"]
+        theory = RENDERED.read_text(encoding="utf-8")
+        theory = theory[theory.index("# 2. Theory") : theory.index("# 3. Methods")]
+        named = {float(m) for m in re.findall(r"0\.9\d", theory)}
+        assert named == set(recorded), (
+            f"Theory names f_sat fractions {sorted(named)}; the run computed "
+            f"{sorted(recorded)}"
+        )
+
+    def test_the_primary_fraction_is_the_one_the_results_use(self, sources):
+        assert 0.95 in sources["phase1"]["metadata"]["config"]["fractions"]
 
 
 class TestDiscussionScope:

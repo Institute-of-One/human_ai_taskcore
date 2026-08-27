@@ -17,7 +17,36 @@ Package name: `ptx` (physics-to-perception transfer core).
 
 ## Status
 
-Milestone **M2** — Phase 1 runs end to end:
+Milestone **M4** — all three hypotheses have been run and the manuscript is
+written. H1 and H3 come from the condition grid, the propagation and the case
+study; H2 is the external validation against published human observer studies,
+run once over a pool that was closed before any correlation was computed.
+
+**H2 result.** Three CT studies were admitted under criteria frozen before the
+literature search. The model reproduces the within-study ordering in two of the
+three (Spearman ρ = +0.853, +0.626, +0.810; pooled +0.724 against a threshold of
+0.7 fixed in advance). The discordant study is retained and reported, not
+dropped. **The pool requirement for one non-CT study could not be met** — seven
+chest-radiography candidates were screened across two rounds and every one failed
+a frozen criterion — so the pre-registered consequence was taken and the
+generality claim narrows to CT. The model is formulated generally and validated
+here on CT alone. Every candidate screened, and the criterion each failed, is in
+`data/h2_studies.json`.
+
+That the criteria were frozen *before* the search is checkable rather than
+asserted:
+
+```bash
+git merge-base --is-ancestor 6b77ee3 21d9421   # freeze, then first candidate scan
+```
+
+which succeeds only if the freeze precedes the search. `tests/test_release.py`
+runs that same check, so the repository cannot drift into claiming an order it
+does not have. The pre-registration and its three amendments — each recording
+what changed and why — are in `docs/`, and every frozen reading of the amended
+criteria is analysed and reported rather than only the final one.
+
+Phase 1 components:
 
 - `ptx.chain` — DICOM GSDF display model, display pixel MTF, ocular MTF,
   Barten CSF, CT TTF/NPS acquisition stage, and the assembled
@@ -49,9 +78,6 @@ cancels exactly in a quantum-limited chain — that invariance is kept as a
 validation result, and it is the neural noise floor, which bypasses every
 transfer factor, that makes reconstruction kernel and viewing geometry matter.
 
-The external validation against digitized observer studies (H2) is the
-remaining M3 item.
-
 ## Install & test
 
 ```bash
@@ -60,7 +86,13 @@ pytest
 python -m ptx.phase1 --out results/phase1.json
 python -m ptx.uncertainty --out results/uncertainty.json
 python -m ptx.case_uhrct --out results/case_uhrct.json
+python -m ptx.h2_analysis --out results/h2.json
 ```
+
+`ptx.h2_analysis` refuses to run on an incomplete pool. Computing a correlation
+for one study and then deciding whether to keep searching is the selective
+validation the pre-registration exists to close, so the gate is in the code and
+not in the discipline of whoever runs it.
 
 ## Manuscript
 
@@ -73,12 +105,34 @@ path it came from), then renders `paper/manuscript.md`. Editing
 ```bash
 pip install -e ".[dev,paper]"
 python paper/make_figures.py
-pandoc -f markdown-implicit_figures paper/manuscript.md \
-  --reference-doc=paper/reference.docx -o paper/manuscript.docx
+pandoc -f markdown-implicit_figures --citeproc \
+  --bibliography=paper/references.bib \
+  paper/manuscript.md -o paper/manuscript.docx
 ```
 
 `-f markdown-implicit_figures` matters: without it pandoc turns each figure's
-alt text into a second caption.
+alt text into a second caption. `--citeproc` matters as much: without it the
+citations render as literal `[@key]` markers and the reference list is silently
+empty, in a document that otherwise looks finished.
+
+### Before sending it anywhere
+
+```bash
+python tools/check_references.py      # resolve every DOI against doi.org
+python tools/presubmission_check.py   # refuse while anything is still unset
+```
+
+`check_references.py` asks doi.org what each DOI actually resolves to and
+compares it with the entry that produced it. A DOI written from memory usually
+resolves — to somebody else's paper — so a spot check does not find it. Building
+this file, two of twenty-one entries were wrong that way.
+
+`presubmission_check.py` refuses to call the manuscript ready while any release
+field is unset, any placeholder is unresolved, the version tag names a tag that
+was never cut, or the working tree is dirty. The release tag and the Zenodo
+version DOI live in `results/release.json` and start as `null`; until they are
+filled the built manuscript carries a loud `[UNSET: ...]` marker rather than
+anything that could be mistaken for a value.
 
 ## Design principles
 

@@ -17,37 +17,41 @@ bibliography: references.bib
 
 # Abstract
 
-**Purpose.** [TODO prose] To determine, in closed form, at which spatial
-frequency and under which display conditions further gains in acquisition
-resolution and dose stop contributing to a human observer's detection
-performance.
+**Purpose.** Resolution and dose are specified at the scanner but reach the
+reader only through a display and an eye. This work locates, in closed form, the
+frequency above which further acquisition performance stops reaching a human
+observer's detection task.
 
-**Methods.** [TODO prose] A serial transfer model carries a detection task
-from the reconstruction through display, ocular optics and the neural internal
-noise of a published contrast-sensitivity model, yielding a
-frequency-resolved contribution density to $d'^2$, a perceptual saturation
-frequency $f_{\mathrm{sat}}$, a perceptual utilisation ratio
-$R_{\mathrm{perceptual}}$ and a gain per unit dose $G_{\mathrm{useful}}$.
-{{n_conditions}} conditions were evaluated, and the literature ranges of the
-observer parameters were propagated into 95% bands.
+**Methods.** A serial transfer model carries the task from reconstruction
+through display, ocular optics and the neural internal noise of a published
+contrast-sensitivity model. Sensitivity enters the noise term rather than
+weighting the signal, the placement that lets kernel and display affect the
+result. From the contribution density to $d'^2$ come a saturation frequency
+$f_{\mathrm{sat}}$, a utilisation ratio $R_{\mathrm{perceptual}}$, a gain per
+unit dose $G_{\mathrm{useful}}$ and a sufficient magnification $M^{*}$.
+{{n_conditions}} conditions were evaluated as a full factorial, with
+observer-parameter ranges propagated into 95% bands.
 
-**Results.** [TODO prose] Under standard reading conditions the delivered band
-reaches only {{f_sat_median_lpmm}} lp/mm in the median, or
-{{f_sat_median_percent_of_nyquist}}% of the reconstruction Nyquist frequency of
-{{nyquist_lpmm}} lp/mm, and all {{n_dose_series}} dose series show a declining
-$G_{\mathrm{useful}}$. In a U-HRCT-class case study the band above the
-conventional Nyquist frequency contributes {{added_band_median_percent}}% of
-$d'^2$ in the median. Against published human observer data, admitted by criteria
-frozen before the literature search, the model reproduces the within-study
-ordering of conditions in {{h2_n_meeting}} of {{h2_n_studies}} studies, with a
-pooled rank correlation of {{h2_pooled_v1_2}} against a threshold of
-{{h2_threshold}} set in advance.
+**Results.** The delivered band reaches {{f_sat_median_lpmm}} lp/mm in the
+median, {{f_sat_median_percent_of_nyquist}}% of the reconstruction Nyquist
+frequency, and $R_{\mathrm{perceptual}}$ is {{r_perceptual_median}}. Neural noise
+supplies {{neural_share_median}}% of the effective noise, and all
+{{n_dose_series}} dose series show declining $G_{\mathrm{useful}}$. In a U-HRCT
+case study the band above the conventional Nyquist frequency adds
+{{added_band_median_percent}}% of $d'^2$ in the median; its largest share,
+{{small_task_added_band_percent}}% for the {{smallest_task_mm}} mm task, falls
+where absolute detectability is lowest ($d'={{small_task_dprime_uhrct}}$).
+Against human observer data admitted by criteria frozen before the literature
+search, the model reproduces the within-study ordering in {{h2_n_meeting}} of
+{{h2_n_studies}} studies (pooled $\rho={{h2_pooled_v1_2}}$, threshold
+{{h2_threshold}}); the discordant study is retained.
 
-**Conclusions.** Under the stated display and viewing conditions, information
-above a few tenths of a line pair per millimetre does not reach the observer; the
-model states the display conditions under which it would. The external validation
-covers CT: the pool requirement for a chest-radiography study could not be met
-under the frozen criteria, so the generality claim narrows accordingly.
+**Conclusions.** Under the stated viewing conditions the observer, not the
+imaging chain, is the limiting term. This constrains the reading condition rather
+than the scanner: a sharper reconstruction never lowers $d'$ here, and the same
+analysis names the magnification at which a task becomes sufficiently delivered.
+The model addresses detection, not diagnosis, and its external validation covers
+CT — a narrowing fixed in advance.
 
 **Keywords:** task-based image quality; model observer; contrast sensitivity;
 detectability; ultra-high-resolution CT; display conditions
@@ -58,7 +62,7 @@ When Rossmann established the point spread function and the modulation
 transfer function as the working language of radiographic image quality, he was
 explicit that the object of analysis was not the imaging device but "the entire
 radiological process involving exposing, imaging, and visual detection
-operations" (Rossmann 1969). Visual detection was named as the terminal stage
+operations" [@rossmann1969]. Visual detection was named as the terminal stage
 of the chain from the beginning. What the era delivered, however, was a
 descriptive cascade of transfer functions: the terminal stage was declared
 rather than carried through, because closing it requires a task, a noise
@@ -68,20 +72,22 @@ expression as the physics.
 The two developments that followed did not close it either, and were never
 meant to. Receiver operating characteristic analysis gave the field a rigorous
 way to *measure* observer performance and to relate it to the costs and
-benefits of diagnostic decisions (Metz 1978), but it measures the observer
+benefits of diagnostic decisions [@metz1978], but it measures the observer
 rather than predicting the observer from physical conditions: each new
 acquisition or display condition requires a new reading study. Computer-aided
 diagnosis, developed systematically in the same laboratory from the early
 1980s, positioned the computer as a reader of the same image and a provider of
-a second opinion (Doi 2007), which again leaves the question of what the human
+a second opinion [@doi2007], which again leaves the question of what the human
 reader can extract from a given physical condition unaddressed. The physics of
 the chain, the measurement of the observer, and computational assistance all
-exist; a closed-form path from the first to the second does not.
+exist [@doi2006]; a closed-form path from the first to the second does not.
 
 The gap matters more now than it did, because acquisition resolution and dose
 efficiency are still improving and the question of where the returns stop is
-being asked one device at a time. Ultra-high-resolution CT reconstructs detail
-well beyond the sampling of a routine display window (Kakinuma 2015), and each
+being asked one device at a time. Dose is the half of that question that cannot
+be settled by measuring more: the exposure that would resolve an observer study
+is the exposure the study exists to justify [@icrp87]. Ultra-high-resolution CT reconstructs detail
+well beyond the sampling of a routine display window [@kakinuma2015], and each
 such advance is evaluated with its own multireader study, on its own display
 protocol, without a common formulation in which the answers could be compared
 or predicted. Asked device by device, the question also invites the wrong
@@ -142,36 +148,137 @@ about whether a diagnosis can be made.
 
 ## 2.1 The chain
 
-[TODO prose] Reconstruction TTF and NPS, display transfer and GSDF luminance
-mapping, ocular MTF, and the neural internal noise of Barten's
-contrast-sensitivity model, composed as one effective transfer function
-$H_{\mathrm{eff}}$ and one effective noise $N_{\mathrm{eff}}$.
+A detection task is carried from the reconstructed image to a decision through
+four stages, each of which is a transfer function and a noise source: the
+reconstruction, described by its task transfer function and noise power spectrum;
+the display, described by its pixel aperture, its luminance mapping under the
+greyscale standard display function, and the quantisation its bit depth imposes;
+the eye, described by an optical modulation transfer function that depends on
+pupil diameter and therefore on luminance; and the visual system, described by the
+internal noise of Barten's contrast sensitivity model [@barten1999].
+
+Composing them gives one effective transfer function $H_{\mathrm{eff}}$ and one
+effective noise $N_{\mathrm{eff}}$, and the detectability of a task with
+frequency-domain template $W$ follows as
+
+$$d'^2 = \eta_{\mathrm{cog}} \int |W(f)|^2 \,
+\frac{|H_{\mathrm{eff}}(f)|^2}{N_{\mathrm{eff}}(f)} \, df ,$$
+
+with $\eta_{\mathrm{cog}}$ a scalar efficiency that carries everything the model
+does not represent — attention, experience, the difference between a laboratory
+task and a clinical one.
+
+Two properties of this form matter for what follows. It is *serial*: each stage
+acts on the output of the last, so no stage can restore what an earlier one
+removed. And it is *frequency-resolved*: the integrand is a density, so the
+question of where in the band a task's detectability comes from has an answer
+rather than requiring an assumption. Every derived quantity in Section 2.4 is a
+statement about that density.
+
+The frequency variable is converted between object space and visual angle at the
+point the chain reaches the eye, which is where viewing distance and magnification
+enter. They are the only path by which a reading condition changes the integral,
+and they change it without changing the image.
 
 ## 2.2 Where visual sensitivity enters
 
-[TODO prose] Visual sensitivity enters through $N_{\mathrm{eff}}$ as Barten's
-own internal noise, not as a numerator weight on the signal. The reason is
-structural: with a numerator weight and no noise floors, any invertible linear
-filter cancels out of the detectability integral exactly, so reconstruction
-kernel and display transfer become undescribable in principle. That
-cancellation is retained as a validation result (Section 4.1) rather than
-discarded.
+There are two places to put visual sensitivity in an integral of this shape, and
+the choice is not cosmetic.
+
+The first is as a weight on the numerator: multiply the signal by the contrast
+sensitivity function, leaving the noise as the imaging chain delivered it. This is
+the intuitive placement — the eye is less sensitive at high frequencies, so
+attenuate the signal there — and it is the form an earlier version of this model
+used.
+
+It cannot work, and the reason is structural rather than empirical. Write the
+integral with a numerator weight and no noise floors, and pass the image through
+any invertible linear filter $F$. The filter multiplies the signal by $|F|^2$ and
+the image noise by $|F|^2$, and the two cancel at every frequency. The integral is
+unchanged. That is a correct result about an ideal observer on a noiseless-floor
+chain, and it is fatal here: it says that reconstruction kernel and display
+transfer function cannot affect detectability at all, so a model built this way is
+in principle unable to describe the two things this work is about.
+
+The second placement is the one used. Visual sensitivity enters through
+$N_{\mathrm{eff}}$, as Barten's own internal noise [@barten1999] — a noise the observer adds
+after the display, which no filter upstream of it can attenuate. The cancellation
+then fails, and it fails for the right reason: the filter still scales signal and
+image noise together, but the neural noise sits outside its reach, so what the
+filter changes is which of the two dominates at a given frequency. The visual
+weight $V$ in the implementation is unity in this form; the earlier weight form is
+retained in the code as the ideal limit against which the appendix compares.
+
+The cancellation itself is kept as a check rather than discarded. Switching the
+noise floors off must recover it exactly, and Section 4.1.1 reports that it does.
+A model that failed this would be describing kernel sensitivity that its own
+structure cannot support.
 
 ## 2.3 The internal noise splits three ways
 
-[TODO prose] Image noise, display quantisation noise and neural noise enter at
-different points of the chain, so the display transfer function acts on them
-differently. Placing the floors outside $|H_{\mathrm{display}}|^2$ is the only
-route by which pixel pitch and magnification affect detectability at all.
+$N_{\mathrm{eff}}$ is not one quantity. Three noises enter the chain at three
+different points, and where each enters decides what acts on it.
+
+**Image noise** arrives with the reconstruction, upstream of everything. The
+display transfer function and the eye act on it exactly as they act on the signal.
+
+**Display quantisation noise** is added by the display's finite bit depth, after
+its transfer function has been applied. It is shaped by the eye but not by the
+display aperture.
+
+**Neural noise** is added by the visual system, after the eye's optics. Nothing in
+the imaging chain acts on it at all.
+
+Writing $N_{\mathrm{eff}}$ as a sum in which only the first term carries
+$|H_{\mathrm{display}}|^2$ is what makes pixel pitch and magnification affect
+detectability. If all three were placed inside that factor, the display transfer
+would divide out of the ratio exactly as Section 2.2 describes, and the model
+would again be unable to say that a smaller pixel or a larger magnification
+changes anything. The ordering of the noise terms is therefore not a modelling
+refinement; it is the mechanism by which the display appears in the answer.
+
+It also fixes what can be improved. A component upstream of the neural noise can
+be made better and the improvement will reach the observer, subject to the
+attenuation of every stage between. The neural noise cannot be improved by any
+change to the imaging chain. When it dominates the sum — as Section 4.2 reports it
+does over most of the band — the chain has stopped being the limiting factor, and
+the remaining lever is the reading condition, because magnification and viewing
+distance move the task relative to a noise that is fixed in visual angle.
 
 ## 2.4 Derived quantities
 
-[TODO prose] $f_{\mathrm{sat}}$, $R_{\mathrm{perceptual}}$,
-$G_{\mathrm{useful}}$, and the sufficient magnification $M^{*}$.
-$f_{\mathrm{sat}}$ locates the delivered band; it does not measure how much
-information arrives, and it moves in the opposite direction to $d'$ when the
-internal noise is raised. It is therefore always reported next to $d'$ and
-$G_{\mathrm{useful}}$.
+Four quantities are read off the contribution density.
+
+**The saturation frequency** $f_{\mathrm{sat}}(\alpha)$ is the frequency below
+which a fraction $\alpha$ of $d'^2$ has accumulated; $\alpha = 0.95$ throughout,
+with 0.90 and 0.99 computed alongside so that the choice can be seen not to drive
+the result. It locates the band that is delivered.
+
+**The perceptual utilisation ratio** $R_{\mathrm{perceptual}}$ is the ratio of
+$d'$ under the full chain to $d'$ under the ideal limit, and measures how much of
+the available detectability survives the display and the eye.
+
+**The gain per unit dose** $G_{\mathrm{useful}}$ is the increment in $d'^2$ per
+increment in relative dose, evaluated as a finite difference along the dose axis.
+
+**The sufficient magnification** $M^{*}$ is the magnification at which the
+delivered band first covers the task. Since $d'$ is monotone in magnification
+within this model, $M^{*}$ is a floor and not an optimum, and Section 5.3 says why
+that is the honest form for a design statement.
+
+$f_{\mathrm{sat}}$ needs a warning that the others do not, because it is the
+quantity most likely to be quoted alone. It locates the band; it does not measure
+how much arrives. The two come apart in a specific and predictable way: raising the
+internal noise attenuates the high frequencies preferentially, which *lowers*
+$f_{\mathrm{sat}}$ while also lowering $d'$. A reader comparing two conditions on
+$f_{\mathrm{sat}}$ alone would find the noisier observer's band narrower and could
+read that as a chain delivering less to a better observer, when it is a worse
+observer receiving less from the same chain.
+
+$f_{\mathrm{sat}}$ is therefore reported next to $d'$ and $G_{\mathrm{useful}}$
+everywhere it appears, and never as a figure of merit on its own. The same
+discipline governs the case study in Section 4.4, where a relative share and an
+absolute detectability move in opposite directions for the same reason.
 
 # 3. Methods
 
@@ -179,8 +286,9 @@ $G_{\mathrm{useful}}$.
 
 The chain is implemented independently in numpy and scipy rather than assembled
 from an existing toolkit, so that each transfer stage could be checked against its
-primary source: the greyscale standard display function against DICOM PS3.14, the
-contrast sensitivity against Barten's tabulated values, and the observer models
+primary source: the greyscale standard display function against DICOM PS3.14
+[@dicomps314], the contrast sensitivity against Barten's tabulated values
+[@barten1999], and the observer models [@burgess1994; @myers1987; @abbey2001]
 against the closed-form results they reduce to when the noise is white.
 
 Every random draw is seeded and every result file records the configuration that
@@ -293,7 +401,8 @@ With the noise floors switched off, the reconstruction kernel cancels out of the
 detectability integral to {{invariance_primary}} relative spread, confirming
 invertible-filter invariance and identifying the kernel sensitivity observed with
 the floors on ({{kernel_sensitivity_median}}% median spread) as the footprint of
-the neural noise. NPWE and channelised Hotelling observers rank the conditions
+the neural noise. NPWE [@burgess1994] and channelised Hotelling [@myers1987]
+observers rank the conditions
 alike (Spearman $\rho$ = {{spearman_npwe_cho}}).
 
 Neither result is evidence that the model is right. An invertible filter must
@@ -314,8 +423,9 @@ reproduced in Appendix A. Studies were admitted by mechanical application of tho
 criteria, without regard to how well the model was expected to do on them; the
 registry records every candidate screened and the criterion each failed.
 
-Three studies were admitted, spanning {{h2_n_yu2013}}, {{h2_n_paul2007}} and
-{{h2_n_leng2013}} condition points. Within-study Spearman correlations between
+Three studies were admitted [@yu2013; @paul2007; @leng2013], spanning
+{{h2_n_yu2013}}, {{h2_n_paul2007}} and {{h2_n_leng2013}} condition points.
+Within-study Spearman correlations between
 predicted $d'$ and the reported figure of merit are {{h2_rho_yu2013}},
 {{h2_rho_paul2007}} and {{h2_rho_leng2013}}, against the success threshold of
 {{h2_threshold}} fixed in advance. {{h2_n_meeting}} of {{h2_n_studies}} studies
@@ -363,8 +473,9 @@ H2 had the pool failed.
 Finally, the scope of what this validates is narrower than intended. The frozen
 pool requirements asked for at least one non-CT study, so that the generality of
 the formulation would be supported by evidence rather than by assertion. Seven
-chest-radiography candidates were screened across two search rounds and every one
-failed a frozen criterion — three on the condition-axis requirement, two on the
+chest-radiography candidates [@samei1999; @kroft2006; @macmahon1986; @herron2000;
+@goo2004; @kimmesmith1996; @kimmesmith1995] were screened across two search
+rounds and every one failed a frozen criterion — three on the condition-axis requirement, two on the
 number of condition points, two on the reported figure of merit. The
 pre-registration fixed the consequence of an unfilled slot before the search
 began: **the generality claim narrows to CT**. The model is formulated generally
@@ -506,6 +617,17 @@ useful — that whether the extra resolution *arrives* is decided downstream of 
 reconstruction, by the display and the eye, and that this is measurable in advance
 rather than discoverable only in a reading study.
 
+A third bound is not a misreading but a condition of application. The noise in
+this model is quantum and neural. Anatomic background — the structured,
+patient-derived variability that dominates projection radiography and is present
+in CT wherever a lesion sits against textured parenchyma — has no term in it.
+Where that background is the operative limit, the $f_{\mathrm{sat}}$ computed
+here is not the frequency at which information stops reaching the observer,
+because the noise that bounds the task is not the noise the chain carries. The
+results are stated for tasks in which quantum and neural noise are the limiting
+terms, and Section 6 records what the literature search showed about how large
+the difference can be.
+
 ## 5.2 The added band and the detectable task move in opposite directions
 
 The case study makes a point that is easy to state backwards. The share of $d'^2$
@@ -562,7 +684,27 @@ rate for a given lesion, are outside what this work supports.
 
 # 6. Limitations
 
-[TODO prose]
+Two kinds of limitation are listed here and they do not carry the same weight.
+One kind bounds the model: an assumption in the formulation, which a different
+formulation could relax. The other bounds the evidence: something the validation
+could not settle with the studies that existed and met criteria frozen before the
+search. Reading them as one class would overstate the first and understate the
+second.
+
+The two entries in bold bound this work more than the rest, and there is one of
+each kind. The validation covers CT because a pre-registered pool requirement
+could not be met; that is a limit on the evidence, and a suitable study would
+lift it. The model carries no anatomic-noise term; that is a limit on the
+formulation, and no amount of further evidence would repair it. The second is
+therefore the more serious of the two, and it is stated here at its full strength
+rather than deferred to future work.
+
+Neither was discovered after the results were seen. The narrowing to CT is the
+consequence the pre-registration fixed in advance for exactly this outcome, and
+the anatomic-noise bound was surfaced by a study the screening excluded on a
+frozen criterion — an exclusion that nonetheless carried the most informative
+fact in the search. Both changed what this paper claims: the first narrowed the
+generality statement, the second bounded the scope statement in Section 5.
 
 - Linear serial approximation, near-threshold detection tasks only.
 - Absolute $d'$ is not calibrated; the results are ordering and relative
@@ -576,7 +718,8 @@ rate for a given lesion, are outside what this work supports.
   before the search. The pre-registration fixed the consequence in advance, and it
   is taken here: the model is formulated generally and validated on CT.
 - **Anatomic noise has no term in the model.** The nearest miss in the
-  chest-radiography search was excluded on the number of condition points, but the
+  chest-radiography search [@samei1999] was excluded on the number of condition
+  points, but the
   more informative fact is what it reports: at matched detectability a nodule
   needs roughly four times the diameter on an anatomic background that it needs on
   quantum noise alone. A model whose noise is quantum and neural cannot express
@@ -647,10 +790,41 @@ reading is reported, so that a widening cannot be what produced the conclusion.
 
 # Data and code availability
 
-[TODO] Repository, version tag, and the commit that froze the H2 inclusion
-criteria before the literature search.
+All code, every results file the manuscript quotes, and the pre-registration
+documents are available at {{repository_url}}, released as {{release_tag}}
+(commit `{{release_commit}}`) and archived at {{zenodo_version_doi}}. That is
+the version DOI of the release the
+numbers in this paper were computed from, not the concept DOI: it resolves to
+this snapshot and will continue to, whatever is released later.
+
+The manuscript is built from a template in which every quoted number is a
+placeholder resolved from `results/*.json`, so no result reaches the text by
+being typed. `paper/numbers.json` records each quantity with the file and path
+it was read from.
+
+The claim that the H2 inclusion criteria were frozen before the literature
+search is checkable rather than asserted. Commit `{{h2_freeze_commit}}` froze
+the criteria; commit `{{h2_search_commit}}` recorded the first candidate scan.
+A reader can confirm the order in the released repository with
+
+```
+git merge-base --is-ancestor {{h2_freeze_commit}} {{h2_search_commit}}
+```
+
+which succeeds only if the freeze precedes the search. The three subsequent
+amendments to the pre-registration are separate commits, each carrying what was
+changed and why, and every frozen reading is analysed and reported (Section 4.3).
+
+`data/h2_studies.json` lists every candidate screened, admitted or excluded, with
+the criterion each excluded study failed and the page or table each admitted
+value was read from. The two independent digitisation passes are included. The
+published papers themselves are not redistributed, and no imaging data of any
+kind is included in the repository.
 
 # References
 
-[TODO] Rossmann 1969; Metz 1978; Barten 1999; DICOM PS3.14; Abbey & Barrett;
-Doi 2006/2007; Kakinuma 2015; ICRP 87.
+<!-- Generated by pandoc --citeproc from paper/references.bib. Every DOI in that
+     file resolves to the record it names; run tools/check_references.py. -->
+
+::: {#refs}
+:::
