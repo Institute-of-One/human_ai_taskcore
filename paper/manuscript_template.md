@@ -37,11 +37,17 @@ reaches only {{f_sat_median_lpmm}} lp/mm in the median, or
 {{nyquist_lpmm}} lp/mm, and all {{n_dose_series}} dose series show a declining
 $G_{\mathrm{useful}}$. In a U-HRCT-class case study the band above the
 conventional Nyquist frequency contributes {{added_band_median_percent}}% of
-$d'^2$ in the median.
+$d'^2$ in the median. Against published human observer data, admitted by criteria
+frozen before the literature search, the model reproduces the within-study
+ordering of conditions in {{h2_n_meeting}} of {{h2_n_studies}} studies, with a
+pooled rank correlation of {{h2_pooled_v1_2}} against a threshold of
+{{h2_threshold}} set in advance.
 
-**Conclusions.** [TODO prose] Under the stated display and viewing conditions,
-information above a few tenths of a line pair per millimetre does not reach the
-observer; the model states the display conditions under which it would.
+**Conclusions.** Under the stated display and viewing conditions, information
+above a few tenths of a line pair per millimetre does not reach the observer; the
+model states the display conditions under which it would. The external validation
+covers CT: the pool requirement for a chest-radiography study could not be met
+under the frozen criteria, so the generality claim narrows accordingly.
 
 **Keywords:** task-based image quality; model observer; contrast sensitivity;
 detectability; ultra-high-resolution CT; display conditions
@@ -212,13 +218,93 @@ must. Right: the mechanism — the kernel filters signal and image noise
 together and leaves the neural floor untouched, so all it can move is which of
 the two dominates at a given frequency.](figures/fig1_kernel_invariance.png)
 
-[TODO prose] With the noise floors switched off, the reconstruction kernel
-cancels out of the detectability integral to
-{{invariance_primary}} relative spread, confirming invertible-filter
-invariance and identifying the kernel sensitivity observed with the floors on
-({{kernel_sensitivity_median}}% median spread) as the footprint of the neural
-noise. NPWE and channelised Hotelling observers rank the conditions alike
-(Spearman $\rho$ = {{spearman_npwe_cho}}).
+Two things are checked here, and they are different in kind. The first is that
+the model behaves as its own construction requires. The second is that its
+predictions order published human performance correctly, which is the only test
+the model can fail against evidence it did not produce.
+
+### 4.1.1 Internal consistency
+
+With the noise floors switched off, the reconstruction kernel cancels out of the
+detectability integral to {{invariance_primary}} relative spread, confirming
+invertible-filter invariance and identifying the kernel sensitivity observed with
+the floors on ({{kernel_sensitivity_median}}% median spread) as the footprint of
+the neural noise. NPWE and channelised Hotelling observers rank the conditions
+alike (Spearman $\rho$ = {{spearman_npwe_cho}}).
+
+Neither result is evidence that the model is right. An invertible filter must
+cancel, and two observer models built on the same integral must agree; a failure
+would have meant an implementation error, and its absence means only that there is
+none of that kind.
+
+### 4.1.2 External validation against published human performance
+
+H2 asks whether the model reproduces the *ordering* of conditions in published
+observer experiments. Absolute levels are not compared: observer panels, decision
+criteria and task definitions differ between studies in ways no rescaling repairs,
+so the quantity carried across studies is the within-study rank.
+
+The criteria for admitting a study, the analysis, and the thresholds at which H2
+succeeds or is rejected were frozen before the literature search began, and are
+reproduced in Appendix A. Studies were admitted by mechanical application of those
+criteria, without regard to how well the model was expected to do on them; the
+registry records every candidate screened and the criterion each failed.
+
+Three studies were admitted, spanning {{h2_n_yu2013}}, {{h2_n_paul2007}} and
+{{h2_n_leng2013}} condition points. Within-study Spearman correlations between
+predicted $d'$ and the reported figure of merit are {{h2_rho_yu2013}},
+{{h2_rho_paul2007}} and {{h2_rho_leng2013}}, against the success threshold of
+{{h2_threshold}} fixed in advance. {{h2_n_meeting}} of {{h2_n_studies}} studies
+meet it, and the pooled calibration, formed by standardising ranks within each
+study before combining, is {{h2_pooled_v1_2}}. **H2 is therefore not rejected**:
+the majority condition and the pooled threshold are both met and the calibration
+is monotone.
+
+The pooled value sits close to its threshold, and it is worth being explicit about
+where the margin went. The condition-axis vocabulary was widened twice during
+pre-registration, and each frozen reading was required to be reported so that a
+widening could not be what produced the conclusion. Under the strictest reading
+the pool holds two studies and calibrates at {{h2_pooled_v1_0_strict}}; the
+intermediate reading gives {{h2_pooled_v1_1}}; the full reading admits the third
+study and gives {{h2_pooled_v1_2}}. All three agree in direction, so the widening
+did not manufacture the result — but it did not improve it either, and the
+difference between {{h2_pooled_v1_0_strict}} and {{h2_pooled_v1_2}} is one study
+entering.
+
+That study is the discordant one. Paul *et al* fall below threshold at
+{{h2_rho_paul2007}} and are retained, because the pre-registration requires a
+disagreeing study to be reported rather than dropped. Its first task saturates:
+the reported detectability reaches its ceiling across most of the dose range, so
+the majority of its condition points carry almost no rank information, and the
+region that does is the one where the digitised marker positions are least
+separable. A study whose conditions are mostly tied is one a rank statistic has
+little to work with, and that is the most likely reading of its value. It is a
+reading, not a measurement, and it does not license setting the study aside.
+
+Across the three studies the within-study correlations run from {{h2_rho_min}} to
+{{h2_rho_max}} with a median of {{h2_rho_median}}. No meta-analytic pooled estimate
+is offered: three studies with this much heterogeneity would give a number more
+precise-looking than the evidence supports.
+
+One prediction made in advance was wrong. Because the model has no search term, we
+predicted that studies with a signal-known-exactly task would agree with it at
+least as well as those with location uncertainty. The medians run the other way,
+{{h2_stratum_ske}} for the former against {{h2_stratum_search}} for the latter.
+The stratum on the far side of that comparison holds one study, so this is not
+strong evidence that the premise was wrong; it is reported because the prediction
+was recorded before the analysis and because the stratification was deliberately
+excluded from the success conditions, so that no stratum could be used to rescue
+H2 had the pool failed.
+
+Finally, the scope of what this validates is narrower than intended. The frozen
+pool requirements asked for at least one non-CT study, so that the generality of
+the formulation would be supported by evidence rather than by assertion. Seven
+chest-radiography candidates were screened across two search rounds and every one
+failed a frozen criterion — three on the condition-axis requirement, two on the
+number of condition points, two on the reported figure of merit. The
+pre-registration fixed the consequence of an unfilled slot before the search
+began: **the generality claim narrows to CT**. The model is formulated generally
+and is validated here on CT alone.
 
 ## 4.2 The delivered band sits far below Nyquist (H1)
 
@@ -304,11 +390,80 @@ and {{m_star_uhrct_median}} for the U-HRCT chain in the median.
   absolute level.
 - The external validation rests on published studies whose display conditions
   are often unreported; substituted values are listed per condition and swept.
+- **The validation covers CT only.** The frozen pool required at least one
+  chest-radiography study so that the generality of the formulation would rest on
+  evidence; seven candidates were screened and all failed a criterion frozen
+  before the search. The pre-registration fixed the consequence in advance, and it
+  is taken here: the model is formulated generally and validated on CT.
+- **Anatomic noise has no term in the model.** The nearest miss in the
+  chest-radiography search was excluded on the number of condition points, but the
+  more informative fact is what it reports: at matched detectability a nodule
+  needs roughly four times the diameter on an anatomic background that it needs on
+  quantum noise alone. A model whose noise is quantum and neural cannot express
+  that difference, and on chest radiography it is the dominant one. This bounds
+  where the present formulation can be expected to hold at all, independently of
+  whether a suitable validation study exists.
+- One of three admitted studies falls below the agreement threshold and is
+  retained rather than dropped; its conditions are largely saturated, so a rank
+  statistic has little to separate.
 - Model observers are not clinical performance. A reading study is future work.
 
 # 7. Conclusion
 
-[TODO prose]
+A detection task carried from the reconstruction through display, ocular optics
+and neural internal noise saturates well below the frequencies modern CT delivers.
+Under standard reading conditions the delivered band reaches
+{{f_sat_median_percent_of_nyquist}}% of the reconstruction Nyquist frequency, the
+gain per unit dose declines in every series examined, and in a U-HRCT-class case
+the band above the conventional Nyquist frequency contributes
+{{added_band_median_percent}}% of $d'^2$. These are statements about what reaches
+an observer under stated display conditions, not about what a scanner can resolve;
+the same model says which display conditions would change them.
+
+Tested against published human observer experiments admitted by criteria frozen
+before the search, the model orders conditions correctly in {{h2_n_meeting}} of
+{{h2_n_studies}} studies, pooling at {{h2_pooled_v1_2}}. That is agreement in
+ordering and not in level, on CT, with one discordant study retained and reported.
+The requirement that a chest-radiography study support the generality of the
+formulation could not be met, so the claim is the narrower one the
+pre-registration fixed in advance: the model is formulated generally and validated
+here on CT.
+
+# Appendix A. The frozen H2 protocol
+
+Reproduced so that the criteria can be read without consulting the repository.
+The full documents, their version history and the commit that froze each are in
+`docs/`; every candidate screened and the criterion it failed are in
+`data/h2_studies.json`.
+
+**Inclusion criteria (frozen before the literature search).** A study is admitted
+when: (C1) the modality is CT or chest radiography and the task is detection;
+(C2) human observer performance is reported over at least two condition axes, each
+of which corresponds to a declared input of the model — an axis the model cannot
+predict is not a validation axis; (C3) at least four condition points are
+reported, so that a rank correlation means something; (C4) display and reading
+conditions are recorded where given, and substituted where not, with every
+substitution published per condition — C4 never excludes; (C5) the figure of merit
+is AUC, two-alternative forced-choice proportion correct, or $d'$; (C6) values
+taken from a figure digitise to within 5%, measured as the maximum deviation
+between two independent passes.
+
+**Pool requirements.** At least three studies, at least fifteen condition points,
+and at least one non-CT study. The last supports the generality of the claim; if
+it cannot be met, the claim narrows to CT.
+
+**Analysis and verdict.** Within-study Spearman $\rho$ between predicted $d'$ and
+the reported figure of merit. A study succeeds at $\rho \ge$ {{h2_threshold}}. The
+pool succeeds when a majority of studies succeed and the pooled calibration —
+ranks standardised within each study, then combined — also reaches
+{{h2_threshold}}. H2 is rejected when a majority fall below the threshold, or when
+the pooled calibration is not monotone. No significance test is performed and no
+$p$-value is reported: the comparison is against a threshold fixed in advance.
+
+**Two provisions against selective validation.** The analysis is gated on the pool
+being complete, so that no correlation is seen before deciding whether to keep
+searching. And the condition-axis vocabulary was widened twice; every frozen
+reading is reported, so that a widening cannot be what produced the conclusion.
 
 # Data and code availability
 

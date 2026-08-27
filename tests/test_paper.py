@@ -19,7 +19,12 @@ NUMBERS = Path("paper/numbers.json")
 
 # Numbers fixed by the protocol rather than measured may be typed: the band
 # coverage, H2's rank threshold and the f_sat definition's fraction.
-DESIGN_CONSTANTS = (r"95\\%", "95%", r"0\.95", r"0\.7", r"\$d'=1\$")
+#: Numbers the design fixed rather than the runs produced. A threshold frozen in
+#: the pre-registration is a design constant in the same sense as the 95% band:
+#: it is not read from results/, so requiring it to arrive through a placeholder
+#: would be requiring a provenance it does not have. 5% is the C6 digitisation
+#: tolerance, alongside 0.7 for the rank-agreement threshold.
+DESIGN_CONSTANTS = (r"95\\%", "95%", r"0\.95", r"0\.7", r"5%", r"\$d'=1\$")
 STRUCTURAL = (
     (re.compile(r"Section \d+(\.\d+)?"), "Section"),
     (re.compile(r"PS3\.14"), "PS"),

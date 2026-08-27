@@ -38,6 +38,7 @@ RESULTS = {
     "phase1": Path("results/phase1.json"),
     "uncertainty": Path("results/uncertainty.json"),
     "case_uhrct": Path("results/case_uhrct.json"),
+    "h2": Path("results/h2.json"),
 }
 PLACEHOLDER = re.compile(r"\{\{([a-z0-9_]+)\}\}")
 
@@ -260,6 +261,51 @@ def collect_numbers(sources):
             "{:.1f}",
             note=f"case study, {diameter:g} mm task at the reference reading",
         )
+
+    # -- H2, the external validation --------------------------------------------
+    #
+    # Read rather than derived wherever the analysis already computed it, so the
+    # manuscript and results/h2.json cannot disagree. The analysis runs once, over
+    # the complete pool, under the criteria frozen before the literature search.
+    for study in ("yu2013", "paul2007", "leng2013"):
+        numbers.read(
+            f"h2_rho_{study}", "h2", f"per_study.{study}.spearman_rho", "{:+.3f}"
+        )
+        numbers.read(
+            f"h2_n_{study}", "h2", f"per_study.{study}.n_conditions", "{:.0f}"
+        )
+    for pool in ("v1_0_strict", "v1_1", "v1_2"):
+        numbers.read(
+            f"h2_pooled_{pool}", "h2", f"pools.{pool}.pooled_rho", "{:+.3f}"
+        )
+    numbers.read("h2_threshold", "h2", "success_threshold_rho", "{:.1f}")
+    numbers.read(
+        "h2_n_meeting", "h2", "pools.v1_2.n_meeting_threshold", "{:.0f}"
+    )
+    numbers.read("h2_n_studies", "h2", "pools.v1_2.n_studies", "{:.0f}")
+    numbers.read(
+        "h2_rho_median", "h2", "heterogeneity.median_within_study_rho", "{:+.3f}"
+    )
+    numbers.read(
+        "h2_rho_min", "h2", "heterogeneity.min_within_study_rho", "{:+.3f}"
+    )
+    numbers.read(
+        "h2_rho_max", "h2", "heterogeneity.max_within_study_rho", "{:+.3f}"
+    )
+    numbers.read(
+        "h2_stratum_ske",
+        "h2",
+        "stratification_by_task_congruence.strata.ske.median_within_study_rho",
+        "{:+.3f}",
+    )
+    numbers.read(
+        "h2_stratum_search",
+        "h2",
+        "stratification_by_task_congruence.strata."
+        "search_or_location_uncertain.median_within_study_rho",
+        "{:+.3f}",
+    )
+
     return numbers
 
 
