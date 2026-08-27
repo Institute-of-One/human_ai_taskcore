@@ -317,29 +317,60 @@ Left and centre: against dose for each kernel at both magnifications, with
 bands spanning task diameter, contrast and slice thickness. Right: the
 distribution over all {{n_conditions}} conditions.](figures/fig3_f_sat_atlas.png)
 
-[TODO prose] $f_{\mathrm{sat}}(95\%)$ spans {{f_sat_min_lpmm}} to
-{{f_sat_max_lpmm}} lp/mm with a median of {{f_sat_median_lpmm}} lp/mm, that is
-{{f_sat_median_percent_of_nyquist}}% of Nyquist. The perceptual utilisation
-ratio has a median of {{r_perceptual_median}}. The neural noise holds
-{{neural_share_median}}% of the band-integrated effective noise in the median,
-while display quantisation never exceeds {{quantisation_share_max}}%: what
-withholds the high frequencies is the observer, not the display's bit depth.
+The contribution density to $d'^2$ falls away long before the reconstruction runs
+out of frequencies to deliver. Across the {{n_conditions}} conditions,
+$f_{\mathrm{sat}}(95\%)$ — the frequency below which 95% of $d'^2$ has already
+accumulated — spans {{f_sat_min_lpmm}} to {{f_sat_max_lpmm}} lp/mm with a median
+of {{f_sat_median_lpmm}} lp/mm. Against a reconstruction Nyquist frequency of
+{{nyquist_lpmm}} lp/mm, the median condition delivers detection information over
+{{f_sat_median_percent_of_nyquist}}% of the band the reconstruction supports. The
+perceptual utilisation ratio, which measures the same thing as a fraction of the
+detectability available before the display and the eye, has a median of
+{{r_perceptual_median}}.
+
+The immediate question is what withholds the rest, and the model answers it by
+decomposition rather than by inference. The neural internal noise carries
+{{neural_share_median}}% of the band-integrated effective noise in the median.
+Display quantisation never exceeds {{quantisation_share_max}}% in any condition.
+The high frequencies are therefore not being lost in the display's bit depth,
+which is the component most readily improved and the one most often blamed; they
+are lost in the observer, which is not improvable at all by changing the imaging
+chain.
+
+That distinction is what makes $f_{\mathrm{sat}}$ a statement about a reading
+condition rather than about a scanner. Nothing here says that the frequencies
+above it are absent from the image, and the image is unchanged whether an observer
+uses them or not. What the number says is that under the stated viewing distance,
+luminance and magnification, information above roughly a third of a line pair per
+millimetre arrives at a detector — the visual system — that has already stopped
+contributing it to the decision.
 
 ## 4.3 The gain per unit dose declines in every condition (H1)
 
 ![$G_{\mathrm{useful}}$ against relative dose with 95% bands, for the standard
 kernel at the lower of the two task contrasts.](figures/fig4_g_useful_bands.png)
 
-[TODO prose] {{saturating_fraction_phase1}}% of the {{n_dose_series}} dose
-series show a monotonically declining $G_{\mathrm{useful}}$ at the point
-estimate, and
-{{saturating_fraction_bands}}% of the propagated series satisfy the declared
-rule that the 95% band on the decline excludes zero. The $f_{\mathrm{sat}}$
-band is {{f_sat_band_width_median}} lp/mm wide in the median against a median
-of {{f_sat_band_centre_median}} lp/mm, that is
-{{f_sat_band_width_percent}}% of its own centre, so the conclusion survives
-the interval treatment. $R_{\mathrm{perceptual}}$ stays within
-{{r_perceptual_band_low}} to {{r_perceptual_band_high}} across all series.
+$G_{\mathrm{useful}}$, the increment in $d'^2$ bought by an increment in dose,
+declines monotonically in {{saturating_fraction_phase1}}% of the
+{{n_dose_series}} dose series at the point estimate. The direction is not in
+doubt within this model: added dose lowers the quantum noise and leaves the neural
+floor where it was, so each further increment buys less than the one before it.
+What the calculation supplies is where the decline becomes steep enough to matter,
+and that depends on the reading condition rather than on the acquisition.
+
+A monotone decline at the point estimate would be worth little if the observer
+parameters could move it, since those parameters are literature ranges rather than
+measurements of any particular reader. Propagating them,
+{{saturating_fraction_bands}}% of the series satisfy the rule declared in advance,
+that the 95% band on the decline excludes zero. The bands are not narrow: the
+$f_{\mathrm{sat}}$ band is {{f_sat_band_width_median}} lp/mm wide in the median
+against a median centre of {{f_sat_band_centre_median}} lp/mm, or
+{{f_sat_band_width_percent}}% of its own centre, and $R_{\mathrm{perceptual}}$
+ranges from {{r_perceptual_band_low}} to {{r_perceptual_band_high}} across all
+series. The conclusion survives that width because it is an ordering claim and not
+a level claim: every value inside the band still saturates, and the band is wide
+enough to say that the *position* of $f_{\mathrm{sat}}$ for an individual reader
+should not be quoted to the precision the median suggests.
 
 ## 4.4 The U-HRCT case study (H3)
 
@@ -351,18 +382,41 @@ distance.](figures/fig5_added_band_map.png)
 U-HRCT chain at the reference reading condition on the right
 axis.](figures/fig6_added_band_vs_task.png)
 
-[TODO prose] The band above {{added_band_cutoff_lpmm}} lp/mm contributes
-{{added_band_median_percent}}% of $d'^2$ in the median and at most
-{{added_band_max_percent}}%. The maximum belongs to the
-{{smallest_task_mm}} mm task, which gains {{small_task_dprime_gain_percent}}%
-in $d'$ from the finer chain and reaches
-{{small_task_added_band_percent}}% added-band share — at an absolute $d'$ of
-{{small_task_dprime_uhrct}}. The {{largest_task_mm}} mm task, detectable at
-$d'$ = {{large_task_dprime_uhrct}}, gains
-{{large_task_dprime_gain_percent}}% with an added-band share of
-{{large_task_added_band_percent}}%. $d'$ is monotone in magnification in every
-row, with $M^{*}$ at {{m_star_conventional_median}} for the conventional chain
-and {{m_star_uhrct_median}} for the U-HRCT chain in the median.
+An ultra-high-resolution chain delivers frequencies a conventional one cannot. The
+question H3 puts is not whether those frequencies exist but whether they reach the
+observer, and the model answers it by integrating the contribution density above
+the conventional Nyquist frequency of {{added_band_cutoff_lpmm}} lp/mm.
+
+Across the case study that band contributes {{added_band_median_percent}}% of
+$d'^2$ in the median. The maximum is {{added_band_max_percent}}%, and where it
+occurs is the finding rather than the number itself. It belongs to the
+{{smallest_task_mm}} mm task, whose added-band share is
+{{small_task_added_band_percent}}% and which gains
+{{small_task_dprime_gain_percent}}% in $d'$ from the finer chain — and which sits
+at an absolute $d'$ of {{small_task_dprime_uhrct}}. A detectability of that size is
+not a detection. The
+task that benefits most from the added band is the one the observer does not
+perform at either resolution, so the benefit is a larger share of a quantity that
+is too small to act on.
+
+The {{largest_task_mm}} mm task makes the same point from the other end. It is
+detected comfortably, at $d'$ = {{large_task_dprime_uhrct}}, and it takes
+{{large_task_dprime_gain_percent}}% from the finer chain with an added-band share
+of {{large_task_added_band_percent}}%. Where detection is happening, the added band
+is not what is doing it.
+
+This is the shape of the result and it does not depend on the particular numbers:
+the added band matters most exactly where detectability is lowest, and where
+detectability is adequate the added band is negligible. Reporting the maximum share
+alone would invert the reading, which is why the absolute $d'$ is carried alongside
+it in the figure and in the text.
+
+The magnification behaviour is consistent with the same mechanism. $d'$ is monotone
+in magnification in every row, and the magnification at which the delivered band
+first covers the task, $M^{*}$, is {{m_star_conventional_median}} for the
+conventional chain against {{m_star_uhrct_median}} for the U-HRCT chain in the
+median. The finer chain reaches its own limit at lower magnification, which is what
+a chain limited by the observer rather than by the acquisition should do.
 
 # 5. Discussion
 
