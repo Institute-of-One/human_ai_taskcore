@@ -1,0 +1,36 @@
+{
+  "title": "human-ai-taskcore (ptx): a closed-form physics-to-perception transfer model for task-based medical imaging",
+  "description": "<p>A Python package (MIT) that carries a detection task from a CT reconstruction through display transfer and luminance mapping, ocular optics, and the neural internal noise of a published contrast-sensitivity model, and integrates it into a task-weighted detectability <em>d'</em><sup>2</sup>. From the frequency-resolved integrand it derives a perceptual saturation frequency <em>f</em><sub>sat</sub>, a perceptual utilisation ratio <em>R</em><sub>perceptual</sub>, a gain per unit dose <em>G</em><sub>useful</sub>, and a sufficient magnification <em>M*</em>.</p><p><strong>Where the visual system enters is the design decision.</strong> Sensitivity is placed in the effective noise, as Barten's own internal noise, rather than as a weight on the signal. With a numerator weight and no noise floors, any invertible linear filter cancels exactly out of the detectability integral, so reconstruction kernel and display transfer would be undescribable in principle &mdash; which is fatal for a model about kernel and display. That cancellation is retained as a validation result: switching the noise floors off must recover it, and it does.</p><p><strong>The external validation was pre-registered and covers CT only.</strong> Inclusion criteria, schema and analysis were frozen and committed before the literature search; that the freeze preceded the search is checkable with <code>git merge-base --is-ancestor 6b77ee3 21d9421</code>. The analysis was run once, over a pool closed before any correlation was computed. The model reproduces the within-study ordering in two of the three admitted CT studies, pooled Spearman +0.724 against a threshold of 0.7 fixed in advance; the discordant study is retained and reported rather than dropped. The pool required at least one non-CT study so that generality would rest on evidence &mdash; seven chest-radiography candidates were screened across two rounds and every one failed a frozen criterion, so the pre-registered consequence was taken and the generality claim narrows to CT.</p><p><strong>No imaging data of any kind is redistributed</strong>, and neither are the published papers screened for the validation. What was extracted from them lives in <code>data/h2_studies.json</code> with page and table provenance, alongside two independent digitisation passes.</p>",
+  "upload_type": "software",
+  "license": "MIT",
+  "access_right": "open",
+  "version": "0.1.0",
+  "language": "eng",
+  "creators": [
+    {
+      "name": "Yamamoto, Shuji",
+      "affiliation": "Institute of One, LISIT Co., Ltd., Tokyo, Japan",
+      "orcid": "0000-0001-9211-1071"
+    }
+  ],
+  "keywords": [
+    "task-based image quality",
+    "model observer",
+    "contrast sensitivity",
+    "detectability",
+    "saturation frequency",
+    "ultra-high-resolution CT",
+    "display conditions",
+    "pre-registration",
+    "reproducibility"
+  ],
+  "related_identifiers": [
+    {
+      "identifier": "https://github.com/Institute-of-One/human_ai_taskcore",
+      "relation": "isSupplementTo",
+      "resource_type": "software",
+      "scheme": "url"
+    }
+  ],
+  "notes": "No top-level 'doi' is set: that would tell Zenodo the DOI was assigned elsewhere and stop it minting a version DOI for each release. This is the first deposit, so no concept DOI exists yet; once Zenodo mints one, record it here as an 'isVersionOf' related identifier, as ctsegdose-core does. A result should cite the version DOI of the release that produced it, not the concept DOI, which resolves to whichever release is latest. Add the article DOI as an isSupplementTo relation once the accompanying manuscript is accepted."
+}

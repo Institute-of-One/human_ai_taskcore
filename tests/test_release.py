@@ -303,3 +303,86 @@ class TestTheCitationFileAgreesWithTheRepository:
             assert doi.lower() in verified, (
                 f"CITATION.cff cites {doi}, which is not in the verified bibliography"
             )
+
+
+class TestTheArchiveMetadataIsConsistent:
+    """Zenodo builds the deposit from .zenodo.json when one is present. Everything it
+    says is minted into a record that a DOI makes permanent, so the parts that can
+    disagree with the repository are checked before a release can freeze them.
+
+    ctsegdose-core shipped a release whose .zenodo.json still declared the previous
+    version. The same file in taskiq-core declares 0.3.0 against a published v0.4.0.
+    Neither can be corrected now.
+    """
+
+    def _archive(self):
+        path = Path(".zenodo.json")
+        if not path.is_file():
+            pytest.skip("no Zenodo metadata in this checkout")
+        return json.loads(path.read_text(encoding="utf-8"))
+
+    def _declared_version(self):
+        import re as _re
+
+        found = _re.search(
+            r'^version = "([^"]+)"', Path("pyproject.toml").read_text(encoding="utf-8"), _re.M
+        )
+        assert found, "pyproject.toml declares no version"
+        return found.group(1)
+
+    def test_the_version_agrees_across_all_three_files(self):
+        version = self._declared_version()
+        assert self._archive()["version"] == version, (
+            f".zenodo.json says {self._archive()['version']}, pyproject says {version}"
+        )
+        assert f"version: {version}" in Path("CITATION.cff").read_text(encoding="utf-8")
+
+    def test_no_top_level_doi_stops_zenodo_versioning_the_release(self):
+        """A top-level doi tells Zenodo the identifier came from elsewhere, and it stops
+        minting a version DOI per release. The file's own notes say so."""
+        assert "doi" not in self._archive(), (
+            "a top-level doi in .zenodo.json stops Zenodo versioning this release"
+        )
+
+    def test_the_concept_doi_relation_matches_what_has_been_minted(self):
+        """Before the first deposit there is no concept DOI, and inventing one would
+        point the archive at somebody else's record. After it, the relation must be the
+        one release.json records."""
+        release = json.loads(RELEASE.read_text(encoding="utf-8"))
+        relations = {
+            r["relation"]: r["identifier"]
+            for r in self._archive().get("related_identifiers", [])
+        }
+        concept = release.get("zenodo_concept_doi")
+        if concept is None:
+            assert "isVersionOf" not in relations, (
+                f"the archive claims a concept DOI {relations.get('isVersionOf')} that "
+                "results/release.json does not record"
+            )
+        else:
+            assert relations.get("isVersionOf") == concept
+
+    def test_the_author_and_repository_match_the_rest_of_the_project(self):
+        archive = self._archive()
+        release = json.loads(RELEASE.read_text(encoding="utf-8"))
+        creator = archive["creators"][0]
+        assert creator["orcid"] == "0000-0001-9211-1071"
+        assert creator["name"] == "Yamamoto, Shuji"
+        supplement = [
+            r["identifier"]
+            for r in archive["related_identifiers"]
+            if r["relation"] == "isSupplementTo"
+        ]
+        assert release["repository"] in supplement, (
+            f"the archive points at {supplement}, results/release.json says "
+            f"{release['repository']}"
+        )
+
+    def test_the_description_does_not_overstate_the_validation(self):
+        """The deposit description is read by people who never open the paper, and the
+        CT narrowing is the claim most easily lost when prose is shortened for a
+        landing page."""
+        text = self._archive()["description"]
+        assert "narrows to CT" in text
+        assert "discordant study is retained" in text
+        assert "No imaging data of any kind is redistributed" in text
