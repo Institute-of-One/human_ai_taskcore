@@ -1,0 +1,105 @@
+cff-version: 1.2.0
+title: >-
+  human-ai-taskcore (ptx): a closed-form physics-to-perception transfer model
+  for task-based medical imaging
+message: >-
+  If you use this software, please cite it. A result should cite the version DOI
+  of the release it was produced with, not the concept DOI below.
+type: software
+authors:
+  - family-names: Yamamoto
+    given-names: Shuji
+    email: yamamoto@lisit.jp
+    orcid: 'https://orcid.org/0000-0001-9211-1071'
+    affiliation: Institute of One, LISIT Co., Ltd., Tokyo, Japan
+repository-code: https://github.com/Institute-of-One/human_ai_taskcore
+url: https://github.com/Institute-of-One/human_ai_taskcore
+abstract: >-
+  A Python package that carries a detection task from a CT reconstruction
+  through display transfer and luminance mapping, ocular optics, and the neural
+  internal noise of a published contrast-sensitivity model, and integrates it
+  into a task-weighted detectability. From the frequency-resolved integrand it
+  derives a perceptual saturation frequency f_sat, a perceptual utilisation
+  ratio R_perceptual, a gain per unit dose G_useful, and a sufficient
+  magnification M*. Visual sensitivity enters through the effective noise as
+  Barten's own internal noise rather than as a weight on the signal: with a
+  numerator weight and no noise floors, any invertible linear filter cancels
+  exactly out of the detectability integral, so reconstruction kernel and
+  display transfer would be undescribable in principle. That cancellation is
+  retained as a validation result. The external validation against published
+  human observer studies was run once, over a pool closed before any correlation
+  was computed, under criteria frozen before the literature search; it covers CT
+  only, which is the consequence the pre-registration fixed in advance when the
+  non-CT pool slot could not be filled. No imaging data of any kind, and none of
+  the published papers screened, are redistributed.
+keywords:
+  - task-based image quality
+  - model observer
+  - contrast sensitivity
+  - detectability
+  - saturation frequency
+  - ultra-high-resolution CT
+  - display conditions
+  - pre-registration
+  - reproducibility
+license: MIT
+version: 0.1.0
+# The concept DOI goes here once Zenodo has minted one, and it is deliberately absent
+# rather than guessed: it does not exist until the first deposit. The concept DOI
+# resolves to whichever release is latest, which is what a citation of the *project*
+# should point at; a citation of a *result* must name the version DOI of the release
+# that produced it, which is why results/release.json holds that one separately and the
+# manuscript quotes it from there.
+references:
+  - type: book
+    title: >-
+      Contrast Sensitivity of the Human Eye and Its Effects on Image Quality
+    doi: 10.1117/3.353254
+    year: 1999
+    notes: >-
+      The visual model this software implements: pupil diameter, ocular MTF, the
+      contrast sensitivity function, and the photon-plus-neural internal noise
+      density the effective noise term is built from.
+    authors:
+      - family-names: Barten
+        given-names: Peter G. J.
+  - type: standard
+    title: 'DICOM PS3.14: Grayscale Standard Display Function'
+    year: 2011
+    notes: >-
+      The display luminance mapping, implemented from the rational polynomial of
+      equation 7-1 and checked against its tabulated values.
+    authors:
+      - name: National Electrical Manufacturers Association
+  - type: article
+    title: >-
+      Human- and model-observer performance in ramp-spectrum noise: effects of
+      regularization and object variability
+    doi: 10.1364/JOSAA.18.000473
+    year: 2001
+    notes: The dense difference-of-Gaussian channel form used by the channelised observer.
+    authors:
+      - family-names: Abbey
+        given-names: Craig K.
+      - family-names: Barrett
+        given-names: Harrison H.
+  - type: article
+    title: >-
+      Statistically defined backgrounds: performance of a modified
+      nonprewhitening observer model
+    doi: 10.1364/JOSAA.11.001237
+    year: 1994
+    notes: The non-prewhitening observer with an eye filter.
+    authors:
+      - family-names: Burgess
+        given-names: Arthur E.
+  - type: article
+    title: Addition of a channel mechanism to the ideal-observer model
+    doi: 10.1364/JOSAA.4.002447
+    year: 1987
+    notes: The channelised Hotelling observer.
+    authors:
+      - family-names: Myers
+        given-names: Kyle J.
+      - family-names: Barrett
+        given-names: Harrison H.

@@ -223,3 +223,83 @@ class TestTheDoiGuidanceIsRecorded:
         )
         section = rendered[rendered.index("Data and code availability") :]
         assert "version DOI" in section and "not the concept DOI" in section
+
+
+class TestTheCitationFileAgreesWithTheRepository:
+    """Zenodo reads CITATION.cff to build the archive record. A release freezes it, so
+    an author name, an ORCID or a version that disagrees with the repository is minted
+    into a DOI that cannot be edited afterwards."""
+
+    def _cff(self):
+        path = Path("CITATION.cff")
+        if not path.is_file():
+            pytest.skip("no CITATION.cff in this checkout")
+        return path.read_text(encoding="utf-8")
+
+    def test_the_version_matches_the_package(self):
+        import re as _re
+
+        declared = _re.search(r'^version = "([^"]+)"', Path("pyproject.toml").read_text(
+            encoding="utf-8"
+        ), _re.M)
+        assert declared, "pyproject.toml declares no version"
+        assert f"version: {declared.group(1)}" in self._cff(), (
+            f"pyproject says {declared.group(1)}; CITATION.cff says otherwise"
+        )
+
+    def test_the_author_matches_the_manuscript(self):
+        cff = self._cff()
+        manuscript = Path("paper/manuscript.md").read_text(encoding="utf-8")
+        for field in ("Yamamoto", "Shuji", "0000-0001-9211-1071"):
+            assert field in cff, f"CITATION.cff is missing {field}"
+            assert field in manuscript, f"the manuscript is missing {field}"
+
+    def test_the_repository_url_is_the_one_the_paper_names(self):
+        """Both fields, separately. A substring search over the whole file passes while
+        one of the two points somewhere else, because the other still carries the right
+        URL -- which is exactly the state a careless edit leaves behind."""
+        import re as _re
+
+        release = json.loads(Path("results/release.json").read_text(encoding="utf-8"))
+        cff = self._cff()
+        for field in ("repository-code", "url"):
+            found = _re.search(rf"^{field}: (\S+)", cff, _re.M)
+            assert found, f"CITATION.cff has no {field} field"
+            assert found.group(1).rstrip("/") == release["repository"].rstrip("/"), (
+                f"CITATION.cff {field} is {found.group(1)}; results/release.json says "
+                f"{release['repository']}"
+            )
+
+    def test_no_doi_is_guessed_before_it_exists(self):
+        """The concept DOI does not exist until the first deposit. An invented one
+        resolves to somebody else's record, which is the failure that looks correct."""
+        import re as _re
+
+        cff = self._cff()
+        declared = _re.findall(r"^doi: (\S+)", cff, _re.M)
+        release = json.loads(Path("results/release.json").read_text(encoding="utf-8"))
+        if release.get("zenodo_concept_doi") is None:
+            assert not declared, (
+                f"CITATION.cff carries a top-level DOI {declared} while "
+                "results/release.json has no concept DOI recorded"
+            )
+        else:
+            assert declared == [release["zenodo_concept_doi"]]
+
+    def test_every_reference_doi_is_one_the_bibliography_verified(self):
+        """These DOIs were resolved against doi.org when the manuscript bibliography was
+        built. Reusing the verified strings keeps a second, unchecked copy from drifting."""
+        import re as _re
+
+        bib = Path("paper/references.bib")
+        if not bib.is_file():
+            pytest.skip("no bibliography in this checkout")
+        verified = {
+            d.lower() for d in _re.findall(r"doi\s*=\s*\{([^}]+)\}", bib.read_text(
+                encoding="utf-8"
+            ))
+        }
+        for doi in _re.findall(r"^\s+doi: (\S+)", self._cff(), _re.M):
+            assert doi.lower() in verified, (
+                f"CITATION.cff cites {doi}, which is not in the verified bibliography"
+            )
