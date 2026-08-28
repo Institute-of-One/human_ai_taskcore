@@ -49,15 +49,33 @@ __all__ = [
 
 @dataclasses.dataclass(frozen=True)
 class Acquisition:
-    """Scanner and reconstruction condition.
+    """Acquisition and reconstruction condition.
 
-    ``f50_lpmm`` overrides the kernel table, which is how the U-HRCT case
-    study feeds published TTF values in without inventing a kernel name.
+    Two ways in. The CT path builds the transfer and noise from a reconstruction
+    kernel, as the whole of phase 1 does; ``f50_lpmm`` overrides the kernel table,
+    which is how the U-HRCT case study feeds published TTF values in without
+    inventing a kernel name.
+
+    The measured path takes tabulated MTF and NPS directly, for a system that is
+    not a CT reconstruction. The formulation is stated for any linear system
+    characterisable by MTF and NPS (protocol section 2.1), and until this path
+    existed the code did not support that claim: every route in went through a CT
+    kernel name. H2 pre-registration v2.0 section 7 requires it, because the
+    second-round pool admits non-CT studies.
+
+    Nothing downstream changes. ``build_chain`` asks this object for an MTF and an
+    NPS on the working grid and hands them to the same ``assemble_chain``; the
+    detectability formulation is untouched, and the CT path returns exactly what
+    it returned before.
+
+    ``slice_thickness_mm`` may be ``None``, meaning a projection: the task then
+    carries no partial-volume loss, which is what a lesion imaged without slice
+    selection has.
     """
 
     kernel: str = "standard"
     dose_relative: float = 1.0
-    slice_thickness_mm: float = 1.0
+    slice_thickness_mm: float | None = 1.0
     pixel_mm_object: float = 200.0 / 512.0
     kernel_sharpness: float = 2.0
     ramp_exponent: float = 1.0
@@ -66,19 +84,129 @@ class Acquisition:
     reference_slice_mm: float = 1.0
     f50_lpmm: float | None = None
     noise_scale_at_reference: float | None = None
+    #: Tabulated ((frequency_lpmm, value), ...) pairs. Tuples rather than arrays so
+    #: the condition stays frozen, comparable and JSON-serialisable: every result
+    #: file records the configuration that produced it.
+    mtf_points: tuple[tuple[float, float], ...] | None = None
+    nps_points: tuple[tuple[float, float], ...] | None = None
+    #: Where each curve came from. The pre-registration requires both to be
+    #: non-empty for an admitted non-CT study, because a measured curve with no
+    #: stated origin is an invented one.
+    mtf_source: str = ""
+    nps_source: str = ""
 
     def __post_init__(self):
-        if self.f50_lpmm is None and self.kernel not in CT_KERNEL_F50_LPMM:
-            raise ValueError(f"unknown kernel: {self.kernel!r}")
-        if self.reference_kernel not in CT_KERNEL_F50_LPMM:
-            raise ValueError("unknown reference kernel")
+        if self.measured:
+            self._check_measured()
+        else:
+            if self.f50_lpmm is None and self.kernel not in CT_KERNEL_F50_LPMM:
+                raise ValueError(f"unknown kernel: {self.kernel!r}")
+            if self.reference_kernel not in CT_KERNEL_F50_LPMM:
+                raise ValueError("unknown reference kernel")
+            if self.slice_thickness_mm is None:
+                raise ValueError(
+                    "the CT path needs a slice thickness; pass measured MTF and NPS "
+                    "for a projection"
+                )
         if self.pixel_mm_object <= 0 or self.dose_relative <= 0:
             raise ValueError("pixel size and dose must be positive")
+        if self.slice_thickness_mm is not None and self.slice_thickness_mm <= 0:
+            raise ValueError("slice thickness must be positive when given")
+
+    @property
+    def measured(self) -> bool:
+        return self.mtf_points is not None or self.nps_points is not None
+
+    def _check_measured(self):
+        if self.mtf_points is None or self.nps_points is None:
+            raise ValueError(
+                "a measured acquisition needs both an MTF and an NPS: one without "
+                "the other would take the other from a CT kernel"
+            )
+        if not (self.mtf_source.strip() and self.nps_source.strip()):
+            raise ValueError(
+                "mtf_source and nps_source must say where the curves came from"
+            )
+        for name, points in (("mtf", self.mtf_points), ("nps", self.nps_points)):
+            freqs = [float(x) for x, _ in points]
+            values = [float(y) for _, y in points]
+            if len(points) < 2:
+                raise ValueError(f"{name} needs at least two points")
+            if any(b <= a for a, b in zip(freqs, freqs[1:])):
+                raise ValueError(f"{name} frequencies must increase strictly")
+            if freqs[0] < 0:
+                raise ValueError(f"{name} frequencies must be non-negative")
+            if any(v < 0 for v in values):
+                raise ValueError(f"{name} values must be non-negative")
+        if self.mtf_points[0][0] > 0.0:
+            raise ValueError(
+                "the MTF must be given from zero frequency, where it is normalised "
+                "to one; extrapolating to the origin would invent its low-frequency "
+                "behaviour"
+            )
+        if abs(float(self.mtf_points[0][1]) - 1.0) > 1e-6:
+            raise ValueError("the MTF must be normalised to 1 at zero frequency")
+
+    def _interpolate(self, f, points, name):
+        """Linear in frequency, held flat outside the tabulated range.
+
+        Held rather than extrapolated: a measured curve says nothing above its
+        last point, and a linear extrapolation of an MTF crosses zero and goes
+        negative, which would silently invent a sign change.
+        """
+        f = np.asarray(f, dtype=float)
+        xs = np.array([x for x, _ in points], dtype=float)
+        ys = np.array([y for _, y in points], dtype=float)
+        if f.max() > xs[-1] * (1.0 + 1e-9):
+            raise ValueError(
+                f"the working grid reaches {f.max():.3f} lp/mm and the {name} is "
+                f"tabulated only to {xs[-1]:.3f} lp/mm; extend the table or narrow "
+                "the grid rather than extrapolating"
+            )
+        return np.interp(f, xs, ys, left=ys[0], right=ys[-1])
+
+    def mtf(self, f):
+        """System transfer on the working grid."""
+        if self.measured:
+            return self._interpolate(f, self.mtf_points, "MTF")
+        return ct_ttf(f, self.f50, self.kernel_sharpness)
+
+    def nps(self, f):
+        """Image noise power on the working grid, scaled by relative dose.
+
+        The measured curve is taken at the dose its source reports, so the dose
+        axis is applied here in the same inverse-proportional form the CT path
+        uses. Doing it anywhere else would make a study's dose axis mean
+        something different from phase 1's.
+        """
+        if self.measured:
+            return self._interpolate(f, self.nps_points, "NPS") / float(
+                self.dose_relative
+            )
+        return ct_nps(
+            f,
+            self.f50,
+            self.kernel_sharpness,
+            self.ramp_exponent,
+            self.noise_scale,
+        )
 
     @property
     def f50(self):
         if self.f50_lpmm is not None:
             return float(self.f50_lpmm)
+        if self.measured:
+            # Read off the tabulated curve rather than stored, so it cannot
+            # disagree with the MTF the chain actually uses. Reported only; the
+            # measured path never routes through it.
+            xs = np.array([x for x, _ in self.mtf_points], dtype=float)
+            ys = np.array([y for _, y in self.mtf_points], dtype=float)
+            below = np.nonzero(ys < 0.5)[0]
+            if not below.size:
+                return float(xs[-1])
+            i = below[0]
+            x0, y0, x1, y1 = xs[i - 1], ys[i - 1], xs[i], ys[i]
+            return float(x0 + (0.5 - y0) * (x1 - x0) / (y1 - y0))
         return CT_KERNEL_F50_LPMM[self.kernel]
 
     @property
@@ -191,18 +319,15 @@ def frequency_grid(acquisition, n_freq=2048):
 
 
 def build_chain(f, acquisition, reading):
-    """H_effective / N_effective for one condition."""
-    f50 = acquisition.f50
+    """H_effective / N_effective for one condition.
+
+    The acquisition supplies its own transfer and noise, by kernel or by measured
+    table. Everything after this line is the same for both.
+    """
     return assemble_chain(
         f,
-        ct_ttf(f, f50, acquisition.kernel_sharpness),
-        ct_nps(
-            f,
-            f50,
-            acquisition.kernel_sharpness,
-            acquisition.ramp_exponent,
-            acquisition.noise_scale,
-        ),
+        acquisition.mtf(f),
+        acquisition.nps(f),
         reading.viewing(acquisition),
         window_width_hu=reading.window_width_hu,
         n_grey_levels=reading.n_grey_levels,

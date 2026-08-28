@@ -22,6 +22,7 @@ from ptx.external import (
     CALIBRATION_FIELDS,
     MIN_CONDITIONS_PER_STUDY,
     OBSERVER_EFFICIENCY_FIELDS,
+    PROVENANCE_FIELDS,
     SCHEMA_VERSION,
     SPEARMAN_SUCCESS,
     TASK_CONGRUENCE,
@@ -159,9 +160,28 @@ class TestFrozenCriteria:
             for name, cls in owners.items()
             for f in dataclasses.fields(cls)
             if f.name
-            not in OBSERVER_EFFICIENCY_FIELDS + CALIBRATION_FIELDS
+            not in OBSERVER_EFFICIENCY_FIELDS + CALIBRATION_FIELDS + PROVENANCE_FIELDS
         }
         assert eligible - mapped == set(), "a model input with no axis"
+
+    def test_the_provenance_exemption_cannot_hide_a_model_input(self):
+        """The exemption above is the one a later field could be smuggled through.
+
+        A provenance field records where a curve came from and enters no
+        computation. Requiring the name to say so, and requiring it to be absent
+        from the axis table, keeps the category from quietly widening to cover a
+        quantity the chain actually reads.
+        """
+        mapped = {
+            field
+            for targets in AXIS_TO_MODEL_INPUT.values()
+            for _owner, field in targets
+        }
+        for field in PROVENANCE_FIELDS:
+            assert field.endswith("_source"), (
+                f"{field} is exempt as provenance but is not named as provenance"
+            )
+            assert field not in mapped, f"{field} is both provenance and an axis"
 
     def test_the_parameters_we_infer_are_not_condition_axes(self):
         # kappa and eta_cog are propagated over intervals, not read off a

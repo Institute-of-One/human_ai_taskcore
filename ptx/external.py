@@ -85,6 +85,13 @@ CALIBRATION_FIELDS = (
     "reference_slice_mm",
     "noise_scale_at_reference",
 )  # anchor the noise scale to a stated reference; not conditions of a reading.
+PROVENANCE_FIELDS = (
+    "mtf_source",
+    "nps_source",
+)  # where a measured curve came from. These enter no computation -- nothing reads
+# them but a human auditing the record -- so they are not model inputs and cannot
+# be condition axes. Pre-registration v2.0 §2.2 requires them to be non-empty for
+# a measured acquisition, because a curve with no stated origin is an invented one.
 
 AXIS_TO_MODEL_INPUT = {
     "dose": (("Acquisition", "dose_relative"),),
@@ -97,6 +104,14 @@ AXIS_TO_MODEL_INPUT = {
     "processing": (
         ("Acquisition", "f50_lpmm"),
         ("Acquisition", "ramp_exponent"),
+        # A measured MTF and NPS specify the same two things f50_lpmm and
+        # ramp_exponent specify for a CT reconstruction -- the system's transfer
+        # and the shape of its noise -- for a system that has no reconstruction
+        # kernel. They join the existing axis rather than opening a new one: the
+        # C2 vocabulary is frozen from v1.2 and pre-registration v2.0 changes
+        # only C1.
+        ("Acquisition", "mtf_points"),
+        ("Acquisition", "nps_points"),
     ),
     "slice_thickness": (("Acquisition", "slice_thickness_mm"),),
     "pixel_size": (("Acquisition", "pixel_mm_object"),),
