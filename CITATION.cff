@@ -44,6 +44,7 @@ keywords:
   - reproducibility
 license: MIT
 version: 0.1.0
+doi: 10.5281/zenodo.22144839
 # The concept DOI goes here once Zenodo has minted one, and it is deliberately absent
 # rather than guessed: it does not exist until the first deposit. The concept DOI
 # resolves to whichever release is latest, which is what a citation of the *project*

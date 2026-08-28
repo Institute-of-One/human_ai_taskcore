@@ -30,7 +30,13 @@
       "relation": "isSupplementTo",
       "resource_type": "software",
       "scheme": "url"
+    },
+    {
+      "identifier": "10.5281/zenodo.22144839",
+      "relation": "isVersionOf",
+      "resource_type": "software",
+      "scheme": "doi"
     }
   ],
-  "notes": "No top-level 'doi' is set: that would tell Zenodo the DOI was assigned elsewhere and stop it minting a version DOI for each release. This is the first deposit, so no concept DOI exists yet; once Zenodo mints one, record it here as an 'isVersionOf' related identifier, as ctsegdose-core does. A result should cite the version DOI of the release that produced it, not the concept DOI, which resolves to whichever release is latest. Add the article DOI as an isSupplementTo relation once the accompanying manuscript is accepted."
+  "notes": "No top-level 'doi' is set: that would tell Zenodo the DOI was assigned elsewhere and stop it minting a version DOI for each release. The concept DOI 10.5281/zenodo.22144839 is recorded below as an 'isVersionOf' relation, as ctsegdose-core does. A result should cite the version DOI of the release that produced it, not the concept DOI, which resolves to whichever release is latest. Add the article DOI as an isSupplementTo relation once the accompanying manuscript is accepted."
 }

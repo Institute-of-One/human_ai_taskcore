@@ -791,8 +791,8 @@ reading is reported, so that a widening cannot be what produced the conclusion.
 # Data and code availability
 
 All code, every results file the manuscript quotes, and the pre-registration
-documents are available at https://github.com/Institute-of-One/human_ai_taskcore, released as [UNSET: version_tag -- see results/release.json]
-(commit `[UNSET: release_commit -- see results/release.json]`) and archived at [UNSET: zenodo_version_doi -- see results/release.json]. That is
+documents are available at https://github.com/Institute-of-One/human_ai_taskcore, released as v0.1.0
+(commit `3ef4d9a`) and archived at https://doi.org/10.5281/zenodo.22144840. That is
 the version DOI of the release the
 numbers in this paper were computed from, not the concept DOI: it resolves to
 this snapshot and will continue to, whatever is released later.
