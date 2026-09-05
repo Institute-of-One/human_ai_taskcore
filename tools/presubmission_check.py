@@ -46,6 +46,92 @@ def _git(*args):
     )
 
 
+#: The upload files Medical Physics asks for, and where this repository builds them.
+BUILD = MANUSCRIPT.parent / "build"
+DOCX = BUILD / "manuscript.docx"
+TITLE_PAGE = BUILD / "title_page.docx"
+
+#: Every one of these is a requirement a companion submission was returned for, or
+#: one the submission form refused to advance without. None is hypothetical.
+ABSTRACT_HEADINGS = ("Background", "Purpose", "Methods", "Results", "Conclusions")
+ABSTRACT_WORD_LIMIT = 500
+CANONICAL_AFFILIATION = "Institute of One, LISIT Co., Ltd., Tokyo 150-0044, Japan"
+
+
+def _check_medical_physics(text: str) -> list[str]:
+    """The format requirements, checked on the artefacts the editor receives.
+
+    Medical Physics returned a companion submission before peer review for want of
+    line numbers and page numbers, and its Files step will not advance without a
+    separate title page. Page furniture exists only in the .docx, so a scan of the
+    Markdown cannot see it: these read the built files.
+    """
+    import re  # noqa: PLC0415
+    import zipfile  # noqa: PLC0415
+
+    problems: list[str] = []
+
+    abstract = text.partition("# Abstract")[2].partition("# 1.")[0]
+    if not abstract.strip():
+        problems.append("the manuscript has no Abstract section")
+    else:
+        for heading in ABSTRACT_HEADINGS:
+            if f"**{heading}.**" not in abstract:
+                problems.append(
+                    f"the structured abstract has no {heading} heading; Medical "
+                    f"Physics requires {', '.join(ABSTRACT_HEADINGS)}"
+                )
+        words = len(re.findall(r"[\w-]+", abstract))
+        if words > ABSTRACT_WORD_LIMIT:
+            problems.append(
+                f"the abstract is {words} words, over the {ABSTRACT_WORD_LIMIT} allowed"
+            )
+
+    title = re.search(r'^title:\s*"(.+)"\s*$', text, re.M)
+    if title is None:
+        problems.append("the manuscript has no title in its front matter")
+
+    if not DOCX.exists():
+        problems.append("paper/build/manuscript.docx has not been built")
+    else:
+        with zipfile.ZipFile(DOCX) as archive:
+            document = archive.read("word/document.xml").decode("utf-8")
+            names = archive.namelist()
+        if "lnNumType" not in document:
+            problems.append(
+                "the .docx carries no line numbering; Medical Physics returned a "
+                "companion submission before peer review for exactly that"
+            )
+        if not any(name.startswith("word/footer") for name in names):
+            problems.append("the .docx carries no footer, so no page numbers")
+        stripped = re.sub(r"<[^>]+>", "", document)
+        if "[@" in stripped:
+            problems.append("an unresolved [@citation] key survives in the .docx")
+        if "$" in stripped:
+            problems.append("a dollar sign survives in the .docx: an equation printed as source")
+        if "{{" in stripped:
+            problems.append("an unresolved {{placeholder}} survives in the .docx")
+
+    if not TITLE_PAGE.exists():
+        problems.append(
+            "paper/build/title_page.docx has not been built; Medical Physics will not "
+            "advance the Files step without a separate title page"
+        )
+    elif title is not None:
+        from docx import Document  # noqa: PLC0415
+
+        page = " ".join(p.text for p in Document(str(TITLE_PAGE)).paragraphs)
+        if title.group(1) not in page:
+            problems.append("the title page and the manuscript carry different titles")
+        if CANONICAL_AFFILIATION not in page:
+            problems.append(
+                f"the title page does not carry the canonical affiliation: "
+                f"{CANONICAL_AFFILIATION}"
+            )
+
+    return problems
+
+
 def check() -> list[str]:
     problems: list[str] = []
     text = MANUSCRIPT.read_text(encoding="utf-8")
@@ -84,6 +170,8 @@ def check() -> list[str]:
                     f"tag {tag} points at {resolved.stdout.strip()[:7]}, "
                     f"not at release_commit {commit[:7]}"
                 )
+
+    problems.extend(_check_medical_physics(text))
 
     # A release cut from a dirty tree archives something no commit describes.
     dirty = _git("status", "--porcelain").stdout.strip()

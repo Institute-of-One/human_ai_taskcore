@@ -1,5 +1,5 @@
 ---
-title: "Where does imaging resolution stop reaching the reader? A closed-form physics-to-perception transfer model with saturation frequencies"
+title: "Detection information saturates over a quarter of the reconstruction band, and the missing band is lost in the observer rather than the display"
 author: "Shuji Yamamoto"
 affiliation: "Institute of One, LISIT Co., Ltd., Tokyo, Japan"
 orcid: "0000-0001-9211-1071"
@@ -17,10 +17,13 @@ bibliography: references.bib
 
 # Abstract
 
-**Purpose.** Resolution and dose are specified at the scanner but reach the
-reader only through a display and an eye. This work locates, in closed form, the
-frequency above which further acquisition performance stops reaching a human
-observer's detection task.
+**Background.** Resolution and dose are specified at the scanner, but they reach
+the reader only through a display and an eye, and the imaging chain is usually
+optimised against metrics that stop at the reconstruction.
+
+**Purpose.** To locate, in closed form, the frequency above which further
+acquisition performance stops reaching a human observer's detection task, and to
+identify which stage of the chain withholds the rest.
 
 **Methods.** A serial transfer model carries the task from reconstruction
 through display, ocular optics and the neural internal noise of a published
