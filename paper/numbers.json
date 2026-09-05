@@ -107,8 +107,8 @@
     "r_perceptual_band_high": "0.319",
     "r_perceptual_band_low": "0.045",
     "r_perceptual_median": "0.226",
-    "release_commit": "3ef4d9a",
-    "release_tag": "v0.1.0",
+    "release_commit": "47f9631",
+    "release_tag": "v0.1.1",
     "repository_url": "https://github.com/Institute-of-One/human_ai_taskcore",
     "saturating_fraction_bands": "100",
     "saturating_fraction_phase1": "100",
@@ -117,6 +117,6 @@
     "small_task_dprime_uhrct": "0.36",
     "smallest_task_mm": "0.5",
     "spearman_npwe_cho": "1.00",
-    "zenodo_version_doi": "https://doi.org/10.5281/zenodo.22144840"
+    "zenodo_version_doi": "https://doi.org/10.5281/zenodo.22313885"
   }
 }
