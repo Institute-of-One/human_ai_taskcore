@@ -56,8 +56,9 @@ def build(output: Path = DEFAULT_OUTPUT) -> int:
     title = read_title()
 
     document = Document()
+    # sans serif at 11-12pt, as the journal's file rules require of both documents
     style = document.styles["Normal"]
-    style.font.name = "Times New Roman"
+    style.font.name = "Calibri"
     style.font.size = Pt(12)
     style.paragraph_format.space_after = Pt(10)
 
@@ -87,6 +88,24 @@ def build(output: Path = DEFAULT_OUTPUT) -> int:
         line.add_run(keywords)
 
     document.add_paragraph()
+    contribution = document.add_paragraph()
+    contribution.add_run("Author contribution statement. ").bold = True
+    contribution.add_run(
+        f"{AUTHOR} is the sole author. He conceived the study, derived and "
+        "implemented the model, designed and froze the pre-registered validation "
+        "protocol before the literature search, screened and judged every "
+        "candidate study, produced all results and figures, and wrote the "
+        "manuscript. He takes full responsibility for the content."
+    )
+
+    acknowledgement = document.add_paragraph()
+    acknowledgement.add_run("Acknowledgements. ").bold = True
+    acknowledgement.add_run(
+        "None. No person other than the author contributed to this work, and it "
+        "received no material support."
+    )
+
+    document.add_paragraph()
     conflict = document.add_paragraph()
     conflict.add_run("Conflict of interest. ").bold = True
     conflict.add_run(
@@ -107,7 +126,9 @@ def build(output: Path = DEFAULT_OUTPUT) -> int:
         f"All code, every results file the manuscript quotes and the pre-registration "
         f"documents are at {release['repository']}, released as "
         f"{release['version_tag']} (commit {release['release_commit'][:7]}) and "
-        f"archived at https://doi.org/{release['zenodo_version_doi']}."
+        f"archived at https://doi.org/{release['zenodo_version_doi']}. "
+        "The manuscript withholds these two identifiers because they name the "
+        "author; everything else about the archive is stated there."
     )
 
     output.parent.mkdir(parents=True, exist_ok=True)

@@ -48,6 +48,18 @@ TITLE_PAGE_OUTPUT = BUILD / "title_page.docx"
 #: PMB, wants LINE_NUMBERS False instead, or the reader gets two disagreeing columns.
 LINE_NUMBERS = True
 
+#: Medical Physics has been double-anonymised since 1 July 2026. Its de-identifying
+#: checklist names the author's own file metadata as a place identity leaks, and
+#: pandoc writes ``dc:creator`` from the operating system regardless of what the
+#: document says. Nothing in the manuscript text carries the name -- the front
+#: matter no longer declares an author, because identity belongs on the title page
+#: and only there -- so this is the last place it could survive.
+ANONYMOUS = True
+
+#: "The running text should be spaced at 1.5 lines (vertically)." Word stores that
+#: as twentieths of a point: 1.5 x 12pt = 18pt = 360.
+LINE_SPACING_TWIPS = 360
+
 _FOOTER_XML = (
     '<?xml version="1.0" encoding="UTF-8" standalone="yes"?>\n'
     '<w:ftr xmlns:w="http://schemas.openxmlformats.org/wordprocessingml/2006/main">'
@@ -149,6 +161,57 @@ def _refuse_if_stale() -> None:
             )
 
 
+def _rewrite_part(path: Path, part: str, transform) -> None:
+    """Replace one part of a .docx in place, leaving every other part byte-identical."""
+    with zipfile.ZipFile(path) as archive:
+        names = archive.namelist()
+        parts = {name: archive.read(name) for name in names}
+    if part not in parts:
+        raise SystemExit(f"{path.name} has no {part}")
+    parts[part] = transform(parts[part].decode("utf-8")).encode("utf-8")
+    with zipfile.ZipFile(path, "w", zipfile.ZIP_DEFLATED) as archive:
+        for name in names:
+            archive.writestr(name, parts[name])
+
+
+def set_line_spacing(path: Path, twips: int = LINE_SPACING_TWIPS) -> Path:
+    """Space the running text at 1.5 lines, as the journal's file rules require."""
+
+    def transform(styles: str) -> str:
+        default = '<w:pPr>\n        <w:spacing w:after="200" />\n      </w:pPr>'
+        spaced = (
+            '<w:pPr><w:spacing w:after="200" '
+            f'w:line="{twips}" w:lineRule="auto"/></w:pPr>'
+        )
+        if default not in styles:
+            raise SystemExit(
+                "the default paragraph properties are not where they were; "
+                "line spacing would have been set on nothing"
+            )
+        return styles.replace(default, spaced, 1)
+
+    _rewrite_part(path, "word/styles.xml", transform)
+    return path
+
+
+def strip_authorship_metadata(path: Path) -> Path:
+    """Empty the document properties that name the author.
+
+    Word and pandoc both fill ``dc:creator`` from the account that produced the
+    file. A reviewer sees it under File > Properties without opening anything, so
+    an anonymised manuscript that still carries it is not anonymised.
+    """
+    import re  # noqa: PLC0415
+
+    def transform(core: str) -> str:
+        for tag in ("dc:creator", "cp:lastModifiedBy"):
+            core = re.sub(f"<{tag}>[^<]*</{tag}>", f"<{tag}></{tag}>", core)
+        return core
+
+    _rewrite_part(path, "docProps/core.xml", transform)
+    return path
+
+
 def build(output: Path = DEFAULT_OUTPUT, line_numbers: bool = LINE_NUMBERS) -> int:
     import pypandoc  # noqa: PLC0415
 
@@ -167,6 +230,9 @@ def build(output: Path = DEFAULT_OUTPUT, line_numbers: bool = LINE_NUMBERS) -> i
         ],
     )
     number_pages_and_lines(output, line_numbers=line_numbers)
+    set_line_spacing(output)
+    if ANONYMOUS:
+        strip_authorship_metadata(output)
     print(f"wrote {output} ({output.stat().st_size // 1024} KB)")
     return 0
 

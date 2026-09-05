@@ -519,9 +519,13 @@ def figure_kernel_invariance(path, phase1):
             label=kernel,
         )
     right.axhline(1.0, color="#c1121f", lw=0.9, ls="--")
+    # why right-aligned at the far end: at the left end this label sat on top of
+    # the kernel legend and neither could be read
     right.annotate(
-        "neural floor takes over", (0.02, 1.0), xytext=(2, 4),
+        "neural floor takes over",
+        (reference.nyquist_lpmm, 1.0), xytext=(-2, 4),
         textcoords="offset points", color="#c1121f", fontsize=8,
+        ha="right", va="bottom",
     )
     right.set_yscale("log")
     right.set_xlabel("spatial frequency [lp/mm]")
@@ -659,32 +663,50 @@ def figure_added_band_vs_task(path, case):
 #: The list is derived from the captions in the body rather than typed, so a
 #: caption edited beneath a figure cannot leave a stale copy at the end.
 CAPTION_LIST_MARKER = "<!-- FIGURE-CAPTION-LIST -->"
-FIGURE = re.compile(r"!\[(?P<caption>.+?)\]\(figures/[^)]+\)", re.S)
+FIGURE = re.compile(r"!\[(?P<caption>.+?)\]\((?P<path>figures/[^)]+)\)", re.S)
 
 
-def expand_figure_caption_list(rendered):
-    """Replace the caption-list marker with the body's own captions, numbered.
+def number_figures(rendered):
+    """Prefix each caption with its figure number and build the list at the end.
 
-    Medical Physics asks for captions beneath each figure for review and again
-    as a list after the references. Two hand-maintained copies of one caption is
-    a drift the reader would find, so the second is generated from the first.
+    Pandoc does not number figures in docx output, so a caption left as written
+    reaches the reviewer with no label and the prose has nothing to point at.
+    Both the numbering beneath each figure and the list Medical Physics asks for
+    after the references are derived here from one source, in order of
+    appearance, so a figure inserted in the middle renumbers everything and
+    cannot leave a stale "Figure 4" behind in either place.
     """
     if CAPTION_LIST_MARKER not in rendered:
         raise ValueError(
             f"the template no longer carries {CAPTION_LIST_MARKER}; Medical "
             "Physics requires the figure captions listed after the references"
         )
-    captions = [
-        " ".join(match.group("caption").split())
-        for match in FIGURE.finditer(rendered.split(CAPTION_LIST_MARKER)[0])
-    ]
+    body, marker, tail = rendered.partition(CAPTION_LIST_MARKER)
+    captions = []
+
+    def numbered(match):
+        captions.append(" ".join(match.group("caption").split()))
+        return (
+            f"![**Figure {len(captions)}.** {match.group('caption')}]"
+            f"({match.group('path')})"
+        )
+
+    body = FIGURE.sub(numbered, body)
     if not captions:
-        raise ValueError("no figure captions found in the body to list")
+        raise ValueError("no figure captions found in the body to number")
+    prose = FIGURE.sub("", body)  # the captions themselves are not citations
+    cited = {int(number) for number in re.findall(r"Figure (\d+)", prose)}
+    uncited = [i for i in range(1, len(captions) + 1) if i not in cited]
+    if uncited:
+        raise ValueError(
+            f"figures {uncited} are never referred to by number in the prose; "
+            "a reviewer reaches them with nothing telling them where to look"
+        )
     listing = "\n\n".join(
         f"**Figure {index}.** {caption}"
         for index, caption in enumerate(captions, 1)
     )
-    return rendered.replace(CAPTION_LIST_MARKER, listing)
+    return body + listing + tail
 
 
 def render_manuscript(template_path, numbers, out_path):
@@ -701,7 +723,7 @@ def render_manuscript(template_path, numbers, out_path):
         raise KeyError(f"template asks for numbers that do not exist: {missing}")
     unused = sorted(set(numbers.values) - set(PLACEHOLDER.findall(template)))
     rendered = PLACEHOLDER.sub(lambda m: numbers.values[m.group(1)], template)
-    rendered = expand_figure_caption_list(rendered)
+    rendered = number_figures(rendered)
     out_path.write_text(rendered, encoding="utf-8", newline="\n")
     return unused
 

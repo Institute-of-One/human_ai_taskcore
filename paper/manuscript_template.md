@@ -1,12 +1,7 @@
 ---
 title: "Detection information saturates over a quarter of the reconstruction band, and the missing band is lost in the observer rather than the display"
-author: "Shuji Yamamoto"
-affiliation: "Institute of One, LISIT Co., Ltd., Tokyo, Japan"
-orcid: "0000-0001-9211-1071"
-email: "yamamoto@lisit.jp"
-date: "2026"
 geometry: margin=1in
-fontsize: 10.5pt
+fontsize: 11pt
 papersize: a4
 bibliography: references.bib
 ---
@@ -398,13 +393,6 @@ produce one.
 
 ## 4.1 Validation
 
-![Left: $d'^2$ across the three reconstruction kernels, relative to the
-standard kernel, with both noise floors switched off and switched on. With the
-floors off the kernel leaves the integral exactly, as an invertible filter
-must. Right: the mechanism — the kernel filters signal and image noise
-together and leaves the neural floor untouched, so all it can move is which of
-the two dominates at a given frequency.](figures/fig1_kernel_invariance.png)
-
 Two things are checked here, and they are different in kind. The first is that
 the model behaves as its own construction requires. The second is that its
 predictions order published human performance correctly, which is the only test
@@ -416,9 +404,16 @@ With the noise floors switched off, the reconstruction kernel cancels out of the
 detectability integral to {{invariance_primary}} relative spread, confirming
 invertible-filter invariance and identifying the kernel sensitivity observed with
 the floors on ({{kernel_sensitivity_median}}% median spread) as the footprint of
-the neural noise. NPWE [@burgess1994] and channelised Hotelling [@myers1987]
-observers rank the conditions
+the neural noise (Figure 1). NPWE [@burgess1994] and channelised Hotelling
+[@myers1987] observers rank the conditions
 alike (Spearman $\rho$ = {{spearman_npwe_cho}}).
+
+![Left: $d'^2$ across the three reconstruction kernels, relative to the
+standard kernel, with both noise floors switched off and switched on. With the
+floors off the kernel leaves the integral exactly, as an invertible filter
+must. Right: the mechanism — the kernel filters signal and image noise
+together and leaves the neural floor untouched, so all it can move is which of
+the two dominates at a given frequency.](figures/fig1_kernel_invariance.png)
 
 Neither result is evidence that the model is right. An invertible filter must
 cancel, and two observer models built on the same integral must agree; a failure
@@ -543,6 +538,17 @@ search term after seeing its yield is the search's own failure mode.
 
 ## 4.2 The delivered band sits far below Nyquist (H1)
 
+The contribution density to $d'^2$ falls away long before the reconstruction runs
+out of frequencies to deliver (Figure 2). Across the {{n_conditions}} conditions,
+$f_{\mathrm{sat}}(95\%)$ — the frequency below which 95% of $d'^2$ has already
+accumulated — spans {{f_sat_min_lpmm}} to {{f_sat_max_lpmm}} lp/mm with a median
+of {{f_sat_median_lpmm}} lp/mm (Figure 3). Against a reconstruction Nyquist frequency of
+{{nyquist_lpmm}} lp/mm, the median condition delivers detection information over
+{{f_sat_median_percent_of_nyquist}}% of the band the reconstruction supports. The
+perceptual utilisation ratio, which measures the same thing as a fraction of the
+detectability available before the display and the eye, has a median of
+{{r_perceptual_median}}.
+
 ![Contribution density to $d'^2$ against spatial frequency at three dose
 levels, with $f_{\mathrm{sat}}(95\%)$ marked. The reconstruction Nyquist
 frequency is {{nyquist_lpmm}} lp/mm.](figures/fig2_contribution_density.png)
@@ -551,17 +557,6 @@ frequency is {{nyquist_lpmm}} lp/mm.](figures/fig2_contribution_density.png)
 Left and centre: against dose for each kernel at both magnifications, with
 bands spanning task diameter, contrast and slice thickness. Right: the
 distribution over all {{n_conditions}} conditions.](figures/fig3_f_sat_atlas.png)
-
-The contribution density to $d'^2$ falls away long before the reconstruction runs
-out of frequencies to deliver. Across the {{n_conditions}} conditions,
-$f_{\mathrm{sat}}(95\%)$ — the frequency below which 95% of $d'^2$ has already
-accumulated — spans {{f_sat_min_lpmm}} to {{f_sat_max_lpmm}} lp/mm with a median
-of {{f_sat_median_lpmm}} lp/mm. Against a reconstruction Nyquist frequency of
-{{nyquist_lpmm}} lp/mm, the median condition delivers detection information over
-{{f_sat_median_percent_of_nyquist}}% of the band the reconstruction supports. The
-perceptual utilisation ratio, which measures the same thing as a fraction of the
-detectability available before the display and the eye, has a median of
-{{r_perceptual_median}}.
 
 The immediate question is what withholds the rest, and the model answers it by
 decomposition rather than by inference. The neural internal noise carries
@@ -582,16 +577,16 @@ contributing it to the decision.
 
 ## 4.3 The gain per unit dose declines in every condition (H1)
 
-![$G_{\mathrm{useful}}$ against relative dose with 95% bands, for the standard
-kernel at the lower of the two task contrasts.](figures/fig4_g_useful_bands.png)
-
 $G_{\mathrm{useful}}$, the increment in $d'^2$ bought by an increment in dose,
 declines monotonically in {{saturating_fraction_phase1}}% of the
-{{n_dose_series}} dose series at the point estimate. The direction is not in
+{{n_dose_series}} dose series at the point estimate (Figure 4). The direction is not in
 doubt within this model: added dose lowers the quantum noise and leaves the neural
 floor where it was, so each further increment buys less than the one before it.
 What the calculation supplies is where the decline becomes steep enough to matter,
 and that depends on the reading condition rather than on the acquisition.
+
+![$G_{\mathrm{useful}}$ against relative dose with 95% bands, for the standard
+kernel at the lower of the two task contrasts.](figures/fig4_g_useful_bands.png)
 
 A monotone decline at the point estimate would be worth little if the observer
 parameters could move it, since those parameters are literature ranges rather than
@@ -609,21 +604,18 @@ should not be quoted to the precision the median suggests.
 
 ## 4.4 The U-HRCT case study (H3)
 
+An ultra-high-resolution chain delivers frequencies a conventional one cannot. The
+question H3 puts is not whether those frequencies exist but whether they reach the
+observer, and the model answers it by integrating the contribution density above
+the conventional Nyquist frequency of {{added_band_cutoff_lpmm}} lp/mm
+(Figure 5).
+
 ![Share of $d'^2$ arriving from above the conventional Nyquist frequency of
 {{added_band_cutoff_lpmm}} lp/mm, over anatomical magnification and viewing
 distance.](figures/fig5_added_band_map.png)
 
-![Maximum added-band share against task diameter, with the absolute $d'$ of the
-U-HRCT chain at the reference reading condition on the right
-axis.](figures/fig6_added_band_vs_task.png)
-
-An ultra-high-resolution chain delivers frequencies a conventional one cannot. The
-question H3 puts is not whether those frequencies exist but whether they reach the
-observer, and the model answers it by integrating the contribution density above
-the conventional Nyquist frequency of {{added_band_cutoff_lpmm}} lp/mm.
-
 Across the case study that band contributes {{added_band_median_percent}}% of
-$d'^2$ in the median. The maximum is {{added_band_max_percent}}%, and where it
+$d'^2$ in the median (Figure 6). The maximum is {{added_band_max_percent}}%, and where it
 occurs is the finding rather than the number itself. It belongs to the
 {{smallest_task_mm}} mm task, whose added-band share is
 {{small_task_added_band_percent}}% and which gains
@@ -644,7 +636,11 @@ This is the shape of the result and it does not depend on the particular numbers
 the added band matters most exactly where detectability is lowest, and where
 detectability is adequate the added band is negligible. Reporting the maximum share
 alone would invert the reading, which is why the absolute $d'$ is carried alongside
-it in the figure and in the text.
+it on the right axis of Figure 6 and in the text.
+
+![Maximum added-band share against task diameter, with the absolute $d'$ of the
+U-HRCT chain at the reference reading condition on the right
+axis.](figures/fig6_added_band_vs_task.png)
 
 The magnification behaviour is consistent with the same mechanism. $d'$ is monotone
 in magnification in every row, and the magnification at which the delivered band
@@ -876,11 +872,13 @@ so the pool reported above is the first campaign's, unchanged.
 # Data and code availability
 
 All code, every results file the manuscript quotes, and the pre-registration
-documents are available at {{repository_url}}, released as {{release_tag}}
-(commit `{{release_commit}}`) and archived at {{zenodo_version_doi}}. That is
-the version DOI of the release the
-numbers in this paper were computed from, not the concept DOI: it resolves to
-this snapshot and will continue to, whatever is released later.
+documents are in a public repository, released as {{release_tag}}
+(commit `{{release_commit}}`) and archived under a DOI. That is the version DOI
+of the release the numbers in this paper were computed from, not the concept
+DOI: it resolves to this snapshot and will continue to, whatever is released
+later. The repository URL and that DOI both identify the author and are
+therefore withheld from this anonymised copy; both are given on the title page,
+and the commit hashes below are the ones a reader will find there.
 
 The manuscript is built from a template in which every quoted number is a
 placeholder resolved from `results/*.json`, so no result reaches the text by
@@ -890,7 +888,8 @@ it was read from.
 The claim that the H2 inclusion criteria were frozen before the literature
 search is checkable rather than asserted. Commit `{{h2_freeze_commit}}` froze
 the criteria; commit `{{h2_search_commit}}` recorded the first candidate scan.
-A reader can confirm the order in the released repository with
+A reader can confirm the order in the released repository, once its URL is
+disclosed at acceptance, with
 
 ```
 git merge-base --is-ancestor {{h2_freeze_commit}} {{h2_search_commit}}

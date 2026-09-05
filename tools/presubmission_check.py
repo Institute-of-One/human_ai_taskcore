@@ -102,6 +102,25 @@ def _check_medical_physics(text: str) -> list[str]:
             "for it in the manuscript text and the Files step affirms that it is there"
         )
 
+    # Medical Physics has been double-anonymised since 1 July 2026: no name or
+    # institutional affiliation anywhere in the manuscript, supplementary material
+    # or figures, and no author information in the file metadata. Everything below
+    # was in the document before the journal's own instructions page was read.
+    identifying = {
+        "the author's name": r"Yamamoto",
+        "the affiliation": r"LISIT|Institute of One|TexelCraft",
+        "the ORCID": r"0000-0001-9211-1071",
+        "the email address": r"lisit\.jp",
+        "the repository URL, whose organisation names the author": r"Institute-of-One",
+        "the archive DOI, whose record names the author": r"zenodo\.\d+|10\.5281/zenodo",
+    }
+    for what, pattern in identifying.items():
+        if re.search(pattern, text, re.I):
+            problems.append(
+                f"the manuscript carries {what}; Medical Physics is double-anonymised "
+                "and this belongs on the title page only"
+            )
+
     # "Figure Captions should be typed in the manuscript, appearing beneath each
     # figure for review, and listed at the end after the references."
     body, marker, listing = text.partition("# Figure captions")
@@ -130,6 +149,22 @@ def _check_medical_physics(text: str) -> list[str]:
         with zipfile.ZipFile(DOCX) as archive:
             document = archive.read("word/document.xml").decode("utf-8")
             names = archive.namelist()
+            core = archive.read("docProps/core.xml").decode("utf-8")
+            styles = archive.read("word/styles.xml").decode("utf-8")
+        # the journal's de-identifying checklist names file metadata explicitly:
+        # pandoc fills dc:creator from the operating system, not from the document
+        for tag in ("dc:creator", "cp:lastModifiedBy"):
+            named = re.search(f"<{tag}>([^<]+)</{tag}>", core)
+            if named:
+                problems.append(
+                    f"the .docx metadata still names {named.group(1)!r} in {tag}; "
+                    "a reviewer sees it under File > Properties"
+                )
+        if 'w:lineRule="auto"' not in styles:
+            problems.append(
+                "the .docx running text is not spaced at 1.5 lines, which the "
+                "journal's file rules require"
+            )
         if "lnNumType" not in document:
             problems.append(
                 "the .docx carries no line numbering; Medical Physics returned a "

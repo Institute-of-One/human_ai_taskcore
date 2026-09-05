@@ -247,12 +247,23 @@ class TestTheCitationFileAgreesWithTheRepository:
             f"pyproject says {declared.group(1)}; CITATION.cff says otherwise"
         )
 
-    def test_the_author_matches_the_manuscript(self):
+    def test_the_author_matches_the_title_page(self):
+        """The title page, not the manuscript.
+
+        Medical Physics has been double-anonymised since 1 July 2026, so identity
+        lives on the separate title page and must be absent from the manuscript.
+        This test used to require the author's name *in* the manuscript, which is
+        now the defect rather than the requirement, so it asserts both directions.
+        """
         cff = self._cff()
+        title_page = Path("paper/make_title_page.py").read_text(encoding="utf-8")
         manuscript = Path("paper/manuscript.md").read_text(encoding="utf-8")
         for field in ("Yamamoto", "Shuji", "0000-0001-9211-1071"):
             assert field in cff, f"CITATION.cff is missing {field}"
-            assert field in manuscript, f"the manuscript is missing {field}"
+            assert field in title_page, f"the title page is missing {field}"
+            assert field not in manuscript, (
+                f"the manuscript carries {field}; the review copy is anonymised"
+            )
 
     def test_the_repository_url_is_the_one_the_paper_names(self):
         """Both fields, separately. A substring search over the whole file passes while
