@@ -1,0 +1,111 @@
+{
+  "schema_version": "1.3",
+  "frozen": "docs/IORN-009A_H2_preregistration_v2.0.md, amended by v2.1",
+  "note": "Second-round registry for the H2 external validation. C1-C6 are unchanged from v1.0. v2.1 section C requires at least six admitted studies including those carried over, of which at least three must be newly admitted in this round, at least sixty condition points in total, and at least two non-CT studies. Studies carried over from the first round are in data/h2_studies.json and are not repeated here. This file records the second-round full-text judgements, admissions and rejections alike, as section 6.3 requires.",
+  "carried_over_from_round_one": [
+    "yu2013",
+    "paul2007",
+    "leng2013"
+  ],
+  "studies": [],
+  "screened": [
+    {
+      "study_id": "miro2001",
+      "candidate": "CAND-09",
+      "citation": "Miro SPM, Leung AN, Rubin GD, Choi YH, Kee ST, Mindelzun RE, Stark P, Wexler L, Plevritis SK, Betts BJ. Digital storage phosphor chest radiography: an ROC study of the effect of 2K versus 4K matrix size on observer performance. Radiology 2001;218(2):527-532. doi:10.1148/radiology.218.2.r01fe26527 (PMID 11161174).",
+      "failed_criterion": "C1a",
+      "exclusion_reason": "The full text characterises the imaging system nowhere: it contains no modulation transfer function, no noise power spectrum, no detective quantum efficiency and no spatial-frequency description of any kind. C1a requires that the resolution and noise properties be obtainable as MTF and NPS either from the study or from published characterisation of the device, tested as mtf_source and nps_source both non-empty; both are empty. This is not a judgement about the anatomical background, which v2.0 section 2.2 explicitly forbids using to exclude.",
+      "what_it_does_report": "Az from five-point confidence-rating ROC with CT as the reference standard, over two matrix sizes (2K = 1760x2140, 4K = 3520x4280) and five abnormality categories: opacities <=2 cm 0.62+/-0.056 and 0.59+/-0.045; opacities >2 cm 0.86+/-0.025 and 0.85+/-0.030; subtle interstitial 0.73+/-0.041 and 0.72+/-0.041; mediastinal 0.70+/-0.046 and 0.73+/-0.033; pleural 0.85+/-0.032 and 0.86+/-0.033.",
+      "note": "C5 and C3 would have been satisfied. The paper fails only on C1a, and would become admissible if a published MTF and NPS for this storage-phosphor configuration were located. That search was not performed, since section 6.2's search terms are frozen and this would be a new one."
+    },
+    {
+      "study_id": "lams1986",
+      "candidate": "CAND-10",
+      "citation": "Lams PM, Cocklin ML. Spatial resolution requirements for digital chest radiographs: an ROC study of observer performance in selected cases. Radiology 1986;158(1):11-19. doi:10.1148/radiology.158.1.3940365 (PMID 3940365).",
+      "failed_criterion": "C5",
+      "exclusion_reason": "No summary detection index is reported for any condition. ROC curves were formed by averaging true-positive rates over 18 observers at each of 17 false-positive rates, and conditions were compared by a Wilcoxon matched-pairs test on those rates. The paper contains no area under the curve, no 2AFC percent correct and no d-prime; the only decimal in the text, 0.33, is a pixel size quoted from another study. C5 admits AUC, 2AFC percent correct or d-prime only. C2 also fails, since performance is not reported numerically per condition.",
+      "what_it_does_report": "Thirty-eight clinical radiographs digitised and displayed at pixel sizes 1.6, 0.8, 0.4 and 0.2 mm, read by 18 radiologists on a sliding confidence scale. Result stated as significance: performance at 1.6 mm was significantly poorer than at all others (p<0.01), with no significant difference among 0.8, 0.4 and 0.2 mm.",
+      "note": "C1a would also fail. The only transfer function measured is the MTF of the microdensitometer used to digitise the films, not of the imaging system, and there is no NPS."
+    },
+    {
+      "study_id": "honey2005",
+      "candidate": "V2-01",
+      "citation": "Honey ID, Mackenzie A, Evans DS. Investigation of optimum energies for chest imaging using film-screen and computed radiography. Br J Radiol 2005;78(929):422-427. doi:10.1259/bjr/32912696 (PMID 15845936).",
+      "failed_criterion": "C5",
+      "exclusion_reason": "Performance is reported as a visibility index derived from CDRAD contrast-detail phantom scoring. A threshold contrast-detail index is not an AUC, a 2AFC percent correct or a d-prime, and C5 admits only those three. This agrees with the preliminary observation recorded on 2026-08-29.",
+      "what_it_does_report": "Visibility index from CDRAD threshold contrast-detail scoring, over tube potential and exposure.",
+      "note": ""
+    },
+    {
+      "study_id": "pascoal2005",
+      "candidate": "V2-02",
+      "citation": "Pascoal A, Lawinski CP, Honey I, Blake P. Evaluation of a software package for automated quality assessment of contrast detail images - comparison with subjective visual assessment. Phys Med Biol 2005;50(23):5743-5757. doi:10.1088/0031-9155/50/23/023 (PMID 16306665).",
+      "failed_criterion": "C5",
+      "exclusion_reason": "The reported quantity throughout is CDRAD contrast-detail scoring, compared between automated software and human visual assessment. No AUC, 2AFC percent correct or d-prime is reported. C2 also fails: the comparison is between two scoring methods, not human observer performance along axes corresponding to the model's declared inputs.",
+      "what_it_does_report": "Agreement between an automated CDRAD analyser and subjective scoring by observers.",
+      "note": ""
+    },
+    {
+      "study_id": "poels2014",
+      "candidate": "V2-05",
+      "citation": "Poels K, Depuydt T, Verellen D, et al. Fiducial marker and marker-less soft-tissue detection using fast MV fluoroscopy on a new generation EPID: investigating the influence of pulsing artifacts and artifact suppression techniques. Med Phys 2014;41(10):101911. doi:10.1118/1.4896116 (PMID 25281963).",
+      "failed_criterion": "C2",
+      "exclusion_reason": "No human observer experiment is performed. Detection is by automated tracking algorithms on megavoltage fluoroscopic images for treatment localisation; the word radiologist occurs once, in discussion. C2 requires human observer performance reported numerically along at least two condition axes corresponding to the model's declared inputs. C5 also fails: no AUC, 2AFC percent correct or d-prime is reported.",
+      "what_it_does_report": "Automated marker and soft-tissue tracking accuracy under pulsing artefacts and suppression techniques.",
+      "note": "This was one of the two candidates on which the non-CT requirement rested."
+    },
+    {
+      "study_id": "xu2015",
+      "candidate": "V2-06",
+      "citation": "Xu J, Fuld MK, Fung GSK, Tsui BMW. Task-based image quality evaluation of iterative reconstruction methods for low dose CT using computer simulations. Phys Med Biol 2015;60(7):2881-2901. doi:10.1088/0031-9155/60/7/2881 (PMID 25776521).",
+      "failed_criterion": "C2",
+      "exclusion_reason": "The study is entirely computer simulation evaluated with a channelized Hotelling observer. No human observer performed the task. Every occurrence of human observer in the text is in the introduction or discussion, motivating the model observer or citing prior correlation work, including Yu et al 2013 and Leng et al 2013, which are themselves already in this pool. H2 tests the model against human observers, so a model-observer study cannot validate it, whatever its AUC values.",
+      "what_it_does_report": "CHO AUC over five dose levels and several reconstruction methods on XCAT simulations.",
+      "note": "Admitting it would also have been circular: it cites the two studies already carried over as the evidence that its model observer stands in for humans."
+    },
+    {
+      "study_id": "mobinikesheh2025",
+      "candidate": "V2-07",
+      "citation": "Mobini Kesheh S, Vorbau R, et al. Characterization of two generations of digital detectors in a radiography system: technical image quality metrics, low-contrast detectability, and visual grading analysis. Phys Med 2025;138:105179. doi:10.1016/j.ejmp.2025.105179 (PMID 40974812).",
+      "failed_criterion": "C5",
+      "exclusion_reason": "Low-contrast detectability is reported as a single inverse image quality factor, IQFinv, from CDRAD 2.0 phantom analysis performed by the phantom analyser software, and the human component is a visual grading study scored on eight criteria by four radiologists. An inverse image quality factor is a threshold contrast-detail summary and visual grading is an ordinal rating; neither is an AUC, a 2AFC percent correct or a d-prime. C5 admits only those three.",
+      "what_it_does_report": "DQE(0), IQFinv from CDRAD, and visual grading analysis on an anthropomorphic phantom.",
+      "note": "This was the other candidate on which the non-CT requirement rested."
+    },
+    {
+      "study_id": "yu2017",
+      "candidate": "CAND-02",
+      "citation": "Yu L, Chen B, Kofler JM, Favazza CP, Leng S, Kupinski MA, McCollough CH. Correlation between a 2D channelized Hotelling observer and human observers in a low-contrast detection task with multislice reading in CT. Med Phys 2017;44(8):3990-3999. doi:10.1002/mp.12380 (PMID 28555878, PMC5553707). Read from the accepted-article author manuscript.",
+      "failed_criterion": "C1a (unresolved)",
+      "exclusion_reason": "C1b, C2, C3 and C5 all pass. C1a is unresolved and is the only thing standing between this study and admission. The paper characterises the imaging system by naming the reconstruction kernels, a medium-smooth FBP kernel Br40 and ADMIRE Br40-3 at strength 3, with 1 mm slice thickness, but reports neither an MTF nor an NPS. C1a is tested as mtf_source and nps_source both non-empty, from the study or from published characterisation of the device. A kernel name is neither. The group's own ensemble-averaging resolution paper, Med Phys 42:2261 (2015), is cited within it and may supply the MTF; no NPS source has been identified. Resolving this is a lookup, not a literature search, and the first round did the equivalent when it recorded acquisition as digitised_figure for yu2013.",
+      "what_it_does_report": "A CIRS phantom with 18 low-contrast spheres, 6 sizes by 3 contrast levels, scanned on a 192-slice CT at 5 dose levels, CTDIvol 27, 13.5, 6.8, 3.4 and 1.7 mGy, each repeated 100 times, reconstructed with FBP Br40 and ADMIRE Br40-3. Sixteen conditions were selected from the 50 possible combinations of 5 diameters, 5 dose levels and 2 reconstruction algorithms for the observer study. Three medical physicists acted as human observers in a 2AFC task, in both 2D and multislice reading, 1600 trials in total.",
+      "criteria": {
+        "C1a": "unresolved: no MTF and no NPS in the paper",
+        "C1b": "pass: detection",
+        "C2": "pass: lesion_size, dose and reconstruction are all in AXIS_TO_MODEL_INPUT, so 3 axes",
+        "C3": "pass: 16 condition points",
+        "C5": "pass: 2AFC percent correct"
+      },
+      "note": "n_readers 3. Even if admitted, this is one new study against the floor of three."
+    },
+    {
+      "study_id": "ba2019",
+      "candidate": "CAND-03",
+      "citation": "Ba A, Abbey CK, Racine D, Viry A, Verdun FR, Schmidt S, Bochud FO. Channelized Hotelling observer correlation with human observers for low-contrast detection in liver CT images. J Med Imaging (Bellingham) 2019;6(2):025501. doi:10.1117/1.JMI.6.2.025501 (PMID 31131292, PMC6527401).",
+      "failed_criterion": "C2",
+      "exclusion_reason": "Only one condition axis corresponds to a declared model input. Signal size was varied over 6, 8 and 10 mm, which is lesion_size. The other two things varied were the background, uniform against anatomical liver, and the reading mode, single-slice against multislice; neither maps to a field of Acquisition, Reading or Task in AXIS_TO_MODEL_INPUT. Acquisition was a single protocol throughout, one scanner at 120 kVp with a noise index of 25, ASIR at 50 per cent, 2.5 mm thickness, and the paper's own limitations say dose and reconstruction were not evaluated, so there is no dose, reconstruction or slice_thickness axis. One axis is fewer than the two C2 requires. Per v1.2 section A: no term corresponding to the current model exists, so an unpredictable axis is not counted as a validation axis.",
+      "what_it_does_report": "Human observer figure of merit is the area under the ROC curve under a multiple-reader multiple-case paradigm, with three readers, and the model observer figure of merit is d-prime. Six analyses, one per background-size combination. The paper also measures the noise power spectrum of both the uniform and the anatomical texture, so C1a would have been satisfiable.",
+      "criteria": {
+        "C1a": "satisfiable: NPS measured for both textures",
+        "C1b": "pass: detection",
+        "C2": "FAIL: one admissible axis, lesion_size",
+        "C3": "not reached",
+        "C5": "pass: AUC for the human observers"
+      },
+      "note": "This is the study the second round most expected to admit. It fails not on the quality of the work but because what it varied is what the model cannot predict."
+    }
+  ],
+  "outstanding": [],
+  "axis_vocabulary_source": "ptx/external.py AXIS_TO_MODEL_INPUT, canonical per v1.2 section A: contrast, displayed_matrix, dose, field_of_view, grey_levels, lesion_size, luminance, magnification, pixel_size, processing, reconstruction, slice_thickness, viewing_distance, window_width",
+  "round_two_outcome": "The second round did not succeed. Nine candidates were judged on full text and none was admitted; one, CAND-02, passes every criterion except C1a, which is unresolved for want of an MTF and an NPS source. v2.1 section C requires at least three newly admitted studies, and section C.2 declared in advance that the floor might not be reachable and that the round would then be reported as not having succeeded. It is reported so."
+}

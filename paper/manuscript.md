@@ -481,6 +481,51 @@ pre-registration fixed the consequence of an unfilled slot before the search
 began: **the generality claim narrows to CT**. The model is formulated generally
 and is validated here on CT alone.
 
+A second validation campaign was pre-registered after the above was complete, on
+the ground that a pool of three studies is thin whatever its correlations. C1–C6
+were carried over unchanged in substance; what was rewritten was the scope test,
+from a list of modalities to the condition the model actually requires — a linear
+system whose resolution and noise can be characterised by an MTF and an NPS — and
+the pool requirement, raised to at least six studies of which at least three must
+be newly admitted. The search terms were frozen before the search ran, and the
+pre-registration recorded in advance that the floor might not be reachable and
+that the round would then be reported as not having succeeded.
+
+Nine candidates were judged on full text and none was admitted. Four failed on
+the reported figure of merit: each reports a threshold contrast-detail index from
+a phantom, or an ordinal visual-grading score, and neither is an AUC, a
+two-alternative percent correct or a $d'$. Three failed on the condition-axis
+requirement: two report the performance of a model observer and of no human, and
+the third varied axes for which the model has no term. Two failed the scope test
+for want of a published MTF and NPS for the imaging system, and one of those two
+met every other criterion. The pool is therefore unchanged at three studies and
+**the second round did not succeed** — the outcome its pre-registration named in
+advance, rather than one it was amended to accommodate.
+
+How the nine failed is more informative than the fact that they did. The two
+requirements a study must meet — a background in which quantum and neural noise
+are the limiting terms, and a figure of merit that is an AUC, a two-alternative
+percent correct or a $d'$ — are each common on their own, but they rarely hold
+together outside CT. Detection studies on radiographic systems overwhelmingly
+report threshold contrast-detail indices or visual-grading scores, because those
+are what phantom-based quality assurance produces. The studies that report an AUC
+or a percent correct belong almost entirely to the lineage that compares model
+observers with human observers, and that lineage is predominantly CT. The non-CT
+slot is not empty because such work does not exist; it is empty because the two
+requirements select for different literatures.
+
+The clearest instance is a study that met every other requirement. It reports an
+AUC for three readers under a multiple-reader multiple-case analysis, and it
+measures the noise power spectrum of both its uniform and its anatomical
+backgrounds, so the scope test would have been satisfied. But the axes it varied
+were background type and single- against multislice reading, and the model has a
+term for neither, so it contributes one admissible axis where two are required.
+It fails not for any weakness of design but because what it set out to measure
+lies outside what the model can predict. Three of the six frozen search terms
+returned no hits at all, a consequence of combining seven to eleven terms
+conjunctively; that weakness is recorded rather than repaired, because changing a
+search term after seeing its yield is the search's own failure mode.
+
 ## 4.2 The delivered band sits far below Nyquist (H1)
 
 ![Contribution density to $d'^2$ against spatial frequency at three dose
@@ -713,10 +758,19 @@ generality statement, the second bounded the scope statement in Section 5.
 - The external validation rests on published studies whose display conditions
   are often unreported; substituted values are listed per condition and swept.
 - **The validation covers CT only.** The frozen pool required at least one
-  chest-radiography study so that the generality of the formulation would rest on
-  evidence; seven candidates were screened and all failed a criterion frozen
-  before the search. The pre-registration fixed the consequence in advance, and it
-  is taken here: the model is formulated generally and validated on CT.
+  non-CT study so that the generality of the formulation would rest on evidence.
+  Seven candidates were screened in the first campaign and a further nine, on full
+  text, in a second campaign pre-registered afterwards; none was admitted. The
+  pre-registration fixed the consequence in advance, and it is taken here: the
+  model is formulated generally and validated on CT. The second campaign also
+  showed why the slot stays empty. A study must have a background in which quantum
+  and neural noise are the limiting terms and must report an AUC, a
+  two-alternative percent correct or a $d'$, and outside CT those two conditions
+  select for different literatures: radiographic detection work reports
+  contrast-detail indices and visual-grading scores, while the studies reporting an
+  AUC or a percent correct are largely the model-observer lineage, which is CT.
+  This is a statement about what exists to validate against, not about the
+  quality of the excluded work.
 - **Anatomic noise has no term in the model.** The nearest miss in the
   chest-radiography search [@samei1999] was excluded on the number of condition
   points, but the
@@ -757,7 +811,8 @@ here on CT.
 Reproduced so that the criteria can be read without consulting the repository.
 The full documents, their version history and the commit that froze each are in
 `docs/`; every candidate screened and the criterion it failed are in
-`data/h2_studies.json`.
+`data/h2_studies.json` for the first campaign and `data/h2_studies_v2.json` for
+the second.
 
 **Inclusion criteria (frozen before the literature search).** A study is admitted
 when: (C1) the modality is CT or chest radiography and the task is detection;
@@ -787,6 +842,21 @@ $p$-value is reported: the comparison is against a threshold fixed in advance.
 being complete, so that no correlation is seen before deciding whether to keep
 searching. And the condition-axis vocabulary was widened twice; every frozen
 reading is reported, so that a widening cannot be what produced the conclusion.
+
+**The second campaign, pre-registered after the first was complete.** C2 to C6
+were carried over word for word. C1 was rewritten: where it had listed CT and
+chest radiography, it now requires a linear system whose resolution and noise can
+be characterised by an MTF and an NPS, obtainable either from the study or from
+published characterisation of the device, with the set of admissible modalities
+frozen in the same document. That is a statement of where the model applies, not
+a widening — the background type still carries no power to exclude, and is
+recorded as a descriptive variable with a prediction fixed in advance. The pool
+requirement became at least six studies including those carried over, of which at
+least three newly admitted, at least sixty condition points, and at least two
+non-CT studies; and the document recorded, before the search ran, that the floor
+might not be reachable and that the round would then be reported as not having
+succeeded. It was not reachable. Nine candidates were judged and none admitted,
+so the pool reported above is the first campaign's, unchanged.
 
 # Data and code availability
 
