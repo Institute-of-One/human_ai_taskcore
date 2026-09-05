@@ -13,6 +13,14 @@ jobs:
         python-version: ["3.11", "3.12"]
     steps:
       - uses: actions/checkout@v4
+        with:
+          # tests/test_release.py checks the claim the paper makes in its Data and
+          # code availability section: that the H2 inclusion criteria were frozen
+          # before the literature search, verified with git merge-base over two
+          # recorded commits. checkout is shallow by default, so those commits are
+          # not in the clone and the check cannot run. It had been failing for that
+          # reason on every run since 2026-08-28.
+          fetch-depth: 0
       - uses: actions/setup-python@v5
         with:
           python-version: ${{ matrix.python-version }}
