@@ -4,7 +4,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "human-ai-taskcore"
-version = "0.1.0"
+version = "0.1.1"
 description = "IORN-009: physics-to-perception framework for task-based medical imaging (ptx core)"
 readme = "README.md"
 requires-python = ">=3.11"
@@ -13,7 +13,12 @@ authors = [{ name = "Shuji Yamamoto", email = "yamamoto@lisit.jp" }]
 dependencies = ["numpy>=2.0", "scipy>=1.11"]
 
 [project.optional-dependencies]
-dev = ["pytest>=8"]
+# The test suite exercises the paper build: tests/test_paper.py imports
+# paper/make_figures.py, which imports matplotlib. A dev environment that cannot run
+# the tests is not a dev environment, so matplotlib belongs here and not only in the
+# paper extra. Continuous integration installed .[dev] alone and had been failing on
+# every run since 2026-08-28 for exactly this, unnoticed.
+dev = ["pytest>=8", "matplotlib>=3.8"]
 paper = ["matplotlib>=3.8"]
 
 [tool.setuptools]

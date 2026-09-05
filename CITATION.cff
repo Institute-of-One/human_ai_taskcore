@@ -11,7 +11,7 @@ authors:
     given-names: Shuji
     email: yamamoto@lisit.jp
     orcid: 'https://orcid.org/0000-0001-9211-1071'
-    affiliation: Institute of One, LISIT Co., Ltd., Tokyo, Japan
+    affiliation: Institute of One, LISIT Co., Ltd., Tokyo 150-0044, Japan
 repository-code: https://github.com/Institute-of-One/human_ai_taskcore
 url: https://github.com/Institute-of-One/human_ai_taskcore
 abstract: >-
@@ -43,7 +43,8 @@ keywords:
   - pre-registration
   - reproducibility
 license: MIT
-version: 0.1.0
+version: 0.1.1
+date-released: "2026-09-05"
 doi: 10.5281/zenodo.22144839
 # The concept DOI goes here once Zenodo has minted one, and it is deliberately absent
 # rather than guessed: it does not exist until the first deposit. The concept DOI
