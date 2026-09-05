@@ -91,6 +91,39 @@ def _check_medical_physics(text: str) -> list[str]:
     if title is None:
         problems.append("the manuscript has no title in its front matter")
 
+    # Wiley asks that generative AI use be declared in the manuscript text, and
+    # the Files step asks the author to affirm that it is. The affirmation and
+    # the manuscript have to agree, so the declaration is checked rather than
+    # remembered: a submission kit once asserted this was present when it was not.
+    methods = text.partition("# 3. Methods")[2].partition("# 4.")[0]
+    if not re.search(r"generative artificial intelligence", methods, re.I):
+        problems.append(
+            "the Methods carry no generative-AI declaration; Medical Physics asks "
+            "for it in the manuscript text and the Files step affirms that it is there"
+        )
+
+    # "Figure Captions should be typed in the manuscript, appearing beneath each
+    # figure for review, and listed at the end after the references."
+    body, marker, listing = text.partition("# Figure captions")
+    embedded = len(re.findall(r"!\[.+?\]\(figures/[^)]+\)", body, re.S))
+    if not marker:
+        problems.append(
+            "the manuscript has no figure-caption list after the references, "
+            "which Medical Physics requires in addition to the captions in the body"
+        )
+    else:
+        listed = len(re.findall(r"^\*\*Figure \d+\.\*\*", listing, re.M))
+        if listed != embedded:
+            problems.append(
+                f"{embedded} figures are captioned in the body but {listed} are "
+                "listed after the references"
+            )
+        if "FIGURE-CAPTION-LIST" in listing:
+            problems.append(
+                "the figure-caption list is still the unexpanded marker; run "
+                "paper/make_figures.py"
+            )
+
     if not DOCX.exists():
         problems.append("paper/build/manuscript.docx has not been built")
     else:

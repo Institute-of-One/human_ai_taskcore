@@ -36,7 +36,7 @@ is published: of the three studies in the validation pool, two are *Med Phys* pa
 
 The Note risk is small and measured rather than assumed: of 200 items Crossref records
 for *Medical Physics* since 2026-05-01, **one** is labelled a Note or Letter, 0.5 per
-cent. The paper is 8,408 words with 21 references, a density of 2.5 per 1000 words, and
+cent. The paper is 8,502 words with 21 references, a density of 2.5 per 1000 words, and
 it carries prespecified hypotheses with declared consequences — none of which reads as a
 Note.
 
@@ -56,9 +56,19 @@ mandates open access here, so no charge applies unless OnlineOpen is chosen.
   so the ordering is a property of the build and not of anyone's attention. Every DOI is
   resolved against Crossref by `tools/check_references.py`.
 - **Title in sentence case** — it is.
-- Figures: **6**, each embedded, each captioned once, each named in the prose.
-- **Generative AI** is declared in the Methods, which is where Wiley asks for it, and
-  again in the disclosures.
+- Figures: **6**, each embedded, each captioned beneath itself for review, and each
+  listed again after the references — the Files step asks for both. The list after
+  the references is generated from the body's own captions by `paper/make_figures.py`,
+  so the two copies of a caption cannot drift apart.
+- **Generative AI** is declared in Section 3.1 of the Methods, which is where Wiley
+  asks for it, and in the cover letter.
+
+  This kit asserted both of the above before either was true. It was written from the
+  IORN-005 kit and the two claims were carried over rather than checked; the
+  manuscript had neither until 2026-09-05, and the submission form's own wording is
+  what exposed it. Both are now gates in `tools/presubmission_check.py`, verified by
+  removing each and confirming the check fails — the general rule being that a claim
+  in a kit is worth nothing until something fails when it stops being true.
 
 ## Form fields (copy–paste)
 
@@ -110,7 +120,7 @@ Suggesting the authors of work you engage with is normal and is not a conflict.
 | Funding | No external funding. |
 | Ethics | No human participants and no animals. The external validation uses performance values published in the cited studies; no imaging or patient data was obtained or analysed. |
 | Data availability | Repository `https://github.com/Institute-of-One/human_ai_taskcore`, release **v0.1.1** (commit `47f9631`), archived at **https://doi.org/10.5281/zenodo.22313885**. Concept DOI 10.5281/zenodo.22144839. |
-| Generative AI | Declared in the Methods and in the disclosures. |
+| Generative AI | Declared in Section 3.1 of the Methods and in the cover letter. On the Files step, answer: **"Yes, I confirm my article used AIGC and declares so in the manuscript text, adhering to the policy."** |
 
 ## What a reviewer will ask first, and where it is answered
 

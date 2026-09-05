@@ -307,6 +307,18 @@ is the ideal-observer limit the appendix compares against and because a reader
 checking an intermediate quantity against the earlier draft should find out that
 the definition changed rather than conclude the implementation is wrong.
 
+A generative artificial intelligence assistant (Claude Opus 5, Anthropic) was used
+as a tool in developing and translating the software, in preparing figures from
+result files already computed, and in language editing of this manuscript. It was
+not used to generate, impute, or select any reported value: every number in the
+text is resolved at build time from a machine-readable result file produced by the
+code, and the build fails if a number cannot be traced to one. It was not used to
+identify, screen, or judge candidate studies for the external validation, which
+was carried out by the author against criteria frozen beforehand. The study design;
+the eligibility rules; the quality-control criteria; and all scientific judgements,
+interpretations, and conclusions are the author's, who takes full responsibility
+for the content of this paper.
+
 ## 3.2 Conditions
 
 The condition set is a full factorial over six axes: task diameter and task
@@ -901,3 +913,23 @@ kind is included in the repository.
 
 ::: {#refs}
 :::
+
+# Figure captions
+
+<!-- Medical Physics asks for the captions to appear beneath each figure for
+     review AND to be listed here after the references. The list below is
+     generated from the captions in the body by paper/make_figures.py, so the two
+     cannot disagree; do not type it by hand. -->
+
+**Figure 1.** Left: $d'^2$ across the three reconstruction kernels, relative to the standard kernel, with both noise floors switched off and switched on. With the floors off the kernel leaves the integral exactly, as an invertible filter must. Right: the mechanism — the kernel filters signal and image noise together and leaves the neural floor untouched, so all it can move is which of the two dominates at a given frequency.
+
+**Figure 2.** Contribution density to $d'^2$ against spatial frequency at three dose levels, with $f_{\mathrm{sat}}(95\%)$ marked. The reconstruction Nyquist frequency is 1.28 lp/mm.
+
+**Figure 3.** $f_{\mathrm{sat}}(95\%)$ relative to the reconstruction Nyquist frequency. Left and centre: against dose for each kernel at both magnifications, with bands spanning task diameter, contrast and slice thickness. Right: the distribution over all 540 conditions.
+
+**Figure 4.** $G_{\mathrm{useful}}$ against relative dose with 95% bands, for the standard kernel at the lower of the two task contrasts.
+
+**Figure 5.** Share of $d'^2$ arriving from above the conventional Nyquist frequency of 1.28 lp/mm, over anatomical magnification and viewing distance.
+
+**Figure 6.** Maximum added-band share against task diameter, with the absolute $d'$ of the U-HRCT chain at the reference reading condition on the right axis.
+

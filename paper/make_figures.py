@@ -655,6 +655,38 @@ def figure_added_band_vs_task(path, case):
     plt.close(fig)
 
 
+#: Where the caption list Medical Physics wants after the references is written.
+#: The list is derived from the captions in the body rather than typed, so a
+#: caption edited beneath a figure cannot leave a stale copy at the end.
+CAPTION_LIST_MARKER = "<!-- FIGURE-CAPTION-LIST -->"
+FIGURE = re.compile(r"!\[(?P<caption>.+?)\]\(figures/[^)]+\)", re.S)
+
+
+def expand_figure_caption_list(rendered):
+    """Replace the caption-list marker with the body's own captions, numbered.
+
+    Medical Physics asks for captions beneath each figure for review and again
+    as a list after the references. Two hand-maintained copies of one caption is
+    a drift the reader would find, so the second is generated from the first.
+    """
+    if CAPTION_LIST_MARKER not in rendered:
+        raise ValueError(
+            f"the template no longer carries {CAPTION_LIST_MARKER}; Medical "
+            "Physics requires the figure captions listed after the references"
+        )
+    captions = [
+        " ".join(match.group("caption").split())
+        for match in FIGURE.finditer(rendered.split(CAPTION_LIST_MARKER)[0])
+    ]
+    if not captions:
+        raise ValueError("no figure captions found in the body to list")
+    listing = "\n\n".join(
+        f"**Figure {index}.** {caption}"
+        for index, caption in enumerate(captions, 1)
+    )
+    return rendered.replace(CAPTION_LIST_MARKER, listing)
+
+
 def render_manuscript(template_path, numbers, out_path):
     """Substitute every placeholder, refusing to leave one unresolved."""
     template = template_path.read_text(encoding="utf-8")
@@ -669,6 +701,7 @@ def render_manuscript(template_path, numbers, out_path):
         raise KeyError(f"template asks for numbers that do not exist: {missing}")
     unused = sorted(set(numbers.values) - set(PLACEHOLDER.findall(template)))
     rendered = PLACEHOLDER.sub(lambda m: numbers.values[m.group(1)], template)
+    rendered = expand_figure_caption_list(rendered)
     out_path.write_text(rendered, encoding="utf-8", newline="\n")
     return unused
 
