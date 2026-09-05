@@ -1,5 +1,15 @@
 # Medical Physics (AAPM / Wiley) — Submission Kit — IORN-009 (human_ai_taskcore)
 
+> **Submitted 2026-09-05 as MS 26-1986.** Under editorial screening. What follows is
+> the kit as used, with the corrections the submission itself forced.
+>
+> **Medical Physics has been double-anonymised since 1 July 2026.** Its Author
+> Instructions say so in the first line, and this kit was built without reading them.
+> The manuscript failed three of the four items on the journal's de-identifying
+> checklist. Identity now lives on the title page only, and six patterns are gates in
+> `tools/presubmission_check.py`. Read the journal's instructions page every time; the
+> previous submission's kit is a memory, not a check.
+
 Built on the kit written for IORN-005, which was submitted to this journal as MS 26-1820
 and **returned before peer review for want of line numbers and page numbers**. Everything
 that return taught is machinery here rather than a note to remember.
@@ -18,13 +28,26 @@ python tools/presubmission_check.py # must print: ready
 
 ## Upload files
 
-| File | Designation |
+| File | Designation on the Files screen |
 |---|---|
-| `paper/build/manuscript.docx` | Main Document |
+| `paper/build/manuscript.docx` | Article File |
 | `paper/build/title_page.docx` | Title Page |
-| cover letter | pasted or attached per the form |
+| `paper/build/reviewer_supplement.docx` | Supplemental Material - to aid Reviewers |
 
-There is no supplementary file. Every figure is embedded in the main document.
+Every figure is embedded in the main document; no figure is uploaded separately.
+
+**There is no cover-letter field anywhere in this system.** All seven screens were
+walked and none has one, and Cover Letter is not among the file types the Files screen
+offers. `paper/cover_letter_medphys.txt` was therefore never sent. Everything it
+disclosed — the second campaign that did not succeed, and the one prespecified
+prediction that came out wrong — is in Section 4.1.2 and the Limitations, which is
+where it needed to be anyway. **Write the disclosure into the paper, not the letter.**
+
+The supplement exists because anonymising the manuscript withheld the repository URL,
+and with it the only route a reviewer had to the candidate registries that Section
+4.1.2 names. `paper/make_reviewer_supplement.py` renders both registries into one
+blinded `.docx` — the system rejects `.json` outright, and a dragged-in `.zip` is
+unpacked into loose files that are then rejected one by one.
 
 ## Why this venue
 
@@ -70,6 +93,33 @@ mandates open access here, so no charge applies unless OnlineOpen is chosen.
   removing each and confirming the check fails — the general rule being that a claim
   in a kit is worth nothing until something fails when it stops being true.
 
+## Double-anonymous review
+
+In force since 1 July 2026. The journal's de-identifying checklist has four items and
+the manuscript failed three of them:
+
+| Checklist item | What was wrong |
+|---|---|
+| No names or affiliations in the manuscript, supplementary material or figures | The pandoc front matter's `author:` printed the name under the title |
+| No author information in the file metadata | `docProps/core.xml` carried `dc:creator`, written by pandoc from the operating system whatever the document says |
+| Acknowledgements, contributions and COI on the title page, not in the manuscript | Already correct |
+| Supporting material blinded too | One digitisation note in a registry named the author |
+
+Two more leaks were not on the checklist: the repository URL names a GitHub
+organisation that identifies the author, and the Zenodo record names him. **Commit
+hashes do not identify anyone**, so they stay in the manuscript and the
+freeze-before-search argument survives the masking; the URL and the DOI move to the
+title page.
+
+`build_docx.py` empties `dc:creator` on every build. `tools/presubmission_check.py`
+refuses six patterns in the manuscript: the name, the affiliation, the ORCID, the
+email domain, the GitHub organisation, and any Zenodo DOI.
+
+`tests/test_release.py` used to require the author's name **in** the manuscript. Under
+double-anonymous review that is the defect, not the requirement, so it now asserts the
+name is on the title page and absent from the manuscript. **When a journal changes its
+review model, the tests change direction, not just the document.**
+
 ## Form fields (copy–paste)
 
 **Title:**
@@ -88,11 +138,22 @@ Enter the affiliation exactly as written. It is the string Crossref carries for 
 published papers under this affiliation; a second ordering of the same address reads to
 an affiliation-matching system as a second affiliation.
 
-**Keywords:**
+**Keywords:** not free text. The Classifications screen takes a Category from a
+six-item dropdown and between three and five terms from the AAPM taxonomy. As
+submitted:
 
-```
-task-based image quality; model observer; contrast sensitivity; detectability; ultra-high-resolution CT; display conditions
-```
+- Category: **Quantitative Imaging and Image Processing**
+- Quantitative Image Analysis and Radiomics: **Observer Performance**
+- Quantitative Image Analysis and Radiomics: **Image Quality Assessment**
+- Diagnostic and Interventional Imaging: **Computed Tomography**
+- Quantitative Image Analysis and Radiomics: **Power Spectrum Analysis**
+
+The taxonomy has no term for display, perception or detection; searching for those
+returns nothing. `Image Processing: Image Reconstruction` was available and left
+unselected, to avoid routing the paper to a reconstruction-algorithms reviewer.
+
+**Title: 145 characters maximum** on the form, not the 200 the Guide for Authors
+states. Ours is 143.
 
 **Abstract:** paste from `paper/build/manuscript.docx` or from `paper/manuscript.md`.
 **Not** from `paper/manuscript_template.md`, which still carries `{{placeholders}}`.
@@ -138,4 +199,29 @@ Suggesting the authors of work you engage with is normal and is not a conflict.
 
 ---
 
-Prepared 2026-09-05 from `paper/manuscript.md` at v0.1.1 and the IORN-005 kit.
+## As submitted, 2026-09-05
+
+Manuscript number **26-1986**. Research Article. Three files, all approved on the
+conversion-proof screen.
+
+| Declaration | Answer given |
+|---|---|
+| AI Usage | Yes, I confirm my article used AIGC and declares so in the manuscript text |
+| Conflict of interest | **Yes**, with the LISIT and TexelCraft roles stated in full |
+| Previously published data | No |
+| Previous online posting | Not applicable |
+| Data sharing | Zenodo version DOI and the repository URL, with a note that both identify the author |
+| Funder | **None**, matching the manuscript's own funding statement; the LISIT relationship is disclosed under COI rather than recorded as a grant |
+| NIH funding | None |
+| Excess page charges | **Accepted.** 9,359 words and six double-column figures give 9.8 to 13.4 typeset pages against a limit of ten, so USD 0 to about 700 at USD 200 per page. The Financials screen states that appendices count. |
+
+Two requirements were knowingly not met and are for revision if anyone raises them:
+the figures are 200 dpi with 9 pt labels against a guideline of 600 dpi for line art
+and roughly 20 pt, and spatial frequency is written **lp/mm** where the style rules ask
+for **mm⁻¹**. The second is a genuine conflict between the journal's style rule and the
+convention of the MTF literature the paper sits in.
+
+---
+
+Prepared 2026-09-05 from `paper/manuscript.md` at v0.1.1 and the IORN-005 kit;
+corrected the same day by what the submission screens actually asked for.
