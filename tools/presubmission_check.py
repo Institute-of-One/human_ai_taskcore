@@ -251,6 +251,53 @@ def check() -> list[str]:
     return problems
 
 
+#: The pre-registration is this paper's strongest claim and its weakest evidence.
+#: Section 4.1.2 and the Limitations rest on the criteria having been frozen before the
+#: literature search, and right now that is checkable only by cloning the repository and
+#: running git merge-base. A reviewer will not do that. Archiving the frozen
+#: pre-registration under its own DOI turns "trust my commit history" into a timestamp
+#: a third party issued, and the revision is the moment to do it: a resubmission may
+#: cite something the original could not.
+PREREGISTRATION_DOI_FIELD = "preregistration_doi"
+
+PREREGISTRATION_NOTICE = """\
+The frozen H2 pre-registration is not archived under its own DOI.
+
+  Why it matters: Section 4.1.2 and the Limitations turn on the criteria having been
+  frozen before the literature search. Today a reader can only confirm that by cloning
+  the repository and running
+
+      git merge-base --is-ancestor {freeze} {search}
+
+  A DOI'd copy of docs/IORN-009A_H2_preregistration_v*.md makes the same fact
+  confirmable in one click, and dates it against a third party rather than against a
+  commit anyone could have written.
+
+  When: at the first revision. A resubmission may cite a record the original could not,
+  and reviewers of a pre-registered study reliably ask how the freeze is verifiable.
+
+  How: upload the frozen pre-registration documents to Zenodo as their own record
+  (non-commercial, so it satisfies journals that restrict preprint servers), then put
+  the DOI in results/release.json as "{field}" and cite it in Section 4.1.2. This notice
+  clears itself once that field is present.
+"""
+
+
+def preregistration_notice() -> str | None:
+    """Whether the pre-registration still lacks a citable archive of its own."""
+    release_path = Path("results/release.json")
+    if not release_path.is_file():
+        return None
+    release = json.loads(release_path.read_text(encoding="utf-8"))
+    if release.get(PREREGISTRATION_DOI_FIELD):
+        return None
+    return PREREGISTRATION_NOTICE.format(
+        freeze=release.get("h2_criteria_frozen_commit", "<freeze commit>")[:7],
+        search=release.get("h2_first_search_commit", "<first search commit>")[:7],
+        field=PREREGISTRATION_DOI_FIELD,
+    )
+
+
 def main(argv: list[str] | None = None) -> int:
     parser = argparse.ArgumentParser(description=__doc__.splitlines()[0])
     parser.add_argument(
@@ -258,9 +305,22 @@ def main(argv: list[str] | None = None) -> int:
         action="store_true",
         help="also resolve every DOI in paper/references.bib against doi.org",
     )
+    parser.add_argument(
+        "--revision",
+        action="store_true",
+        help="preparing a revision rather than a first submission; the "
+        "pre-registration archive stops being a notice and becomes a requirement",
+    )
     args = parser.parse_args(argv)
 
     problems = check()
+
+    notice = preregistration_notice()
+    if notice and args.revision:
+        problems.append(
+            "the frozen pre-registration is still not archived under its own DOI, and "
+            "this is a revision -- see the notice below"
+        )
 
     if args.references:
         sys.path.insert(0, str(Path(__file__).parent))
@@ -278,9 +338,13 @@ def main(argv: list[str] | None = None) -> int:
             "Zenodo has minted the version DOI. Re-run paper/make_figures.py "
             "afterwards so the manuscript picks them up."
         )
+        if notice:
+            print(f"\n{notice}")
         return 1
 
     print("ready: no unset fields, no placeholders, no TODOs, tree is clean")
+    if notice:
+        print(f"\nDO THIS AT THE REVISION\n\n{notice}")
     return 0
 
 

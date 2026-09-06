@@ -183,6 +183,27 @@ Suggesting the authors of work you engage with is normal and is not a conflict.
 | Data availability | Repository `https://github.com/Institute-of-One/human_ai_taskcore`, release **v0.1.1** (commit `47f9631`), archived at **https://doi.org/10.5281/zenodo.22313885**. Concept DOI 10.5281/zenodo.22144839. |
 | Generative AI | Declared in Section 3.1 of the Methods and in the cover letter. On the Files step, answer: **"Yes, I confirm my article used AIGC and declares so in the manuscript text, adhering to the policy."** |
 
+## At the revision: archive the pre-registration
+
+`tools/presubmission_check.py` prints this on every run and turns it into a hard
+failure under `--revision`, so it cannot be forgotten at the moment it matters.
+
+The paper's strongest claim is that the H2 criteria were frozen before the literature
+search. Its weakest evidence is that a reader can only confirm this by cloning the
+repository and running `git merge-base`. **A reviewer will not do that.**
+
+Archiving the frozen pre-registration documents as their own Zenodo record turns that
+into a third-party timestamp confirmable in one click, and a resubmission may cite a
+record the original submission could not. Zenodo is non-commercial, which matters
+because Medical Physics accepts preprints only on non-commercial servers.
+
+Then record the DOI in `results/release.json` as `preregistration_doi` and cite it in
+Section 4.1.2. The notice clears itself.
+
+`tools/prove_preregistration_notice.py` checks all three states behave: shown but not
+blaming on an ordinary run, a failure under `--revision`, silent once the DOI exists.
+A reminder that never clears gets ignored, which is the same as no reminder.
+
 ## What a reviewer will ask first, and where it is answered
 
 - *Is the second validation round a failure being reported as a finding?* Section 4.1.2
